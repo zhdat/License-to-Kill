@@ -22,7 +22,10 @@ all: bin/monitor
 bin/monitor: src/monitor/main.o \
              src/monitor/monitor.o \
              src/monitor/monitor_common.o \
-             src/common/logger.o
+             src/common/logger.o \
+             src/character/spy.o \
+             src/character/citizen.o \
+             src/character/case_officer.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 src/monitor/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
@@ -42,6 +45,19 @@ src/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_commo
 src/common/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
+
+# ----------------------------------------------------------------------------
+# CHARACTER OBJECTS FILES
+# ----------------------------------------------------------------------------
+
+src/character/spy.o: src/character/spy.c include/spy.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+src/character/citizen.o: src/character/citizen.c include/citizen.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+src/character/case_officer.o: src/character/case_officer.c include/case_officer.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # CLEANING
