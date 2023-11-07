@@ -63,7 +63,7 @@ src/character/case_officer.o: src/character/case_officer.c include/case_officer.
 # CLEANING
 # ----------------------------------------------------------------------------
 clean:
-	rm src/monitor/*.o src/common/*.o
+	rm src/monitor/*.o src/common/*.o src/character/*.o
 
 distclean: clean
 	rm bin/monitor
