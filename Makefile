@@ -4,8 +4,8 @@ CFLAGS=-Wall -Wextra -pedantic -O2 -g
 # Compilation under MacOS X or Linux
 UNAME=$(shell uname -s)
 ifeq ($(UNAME),Darwin)
-    CPPFLAGS=-D_REENTRANT -I./include -I/usr/local/Cellar/ncurses/6.3/include
-    LDFLAGS=-L/usr/local/Cellar/ncurses/6.3/lib -lncurses -lpthread -lm
+    CPPFLAGS=-D_REENTRANT -I./include -I/opt/homebrew/opt/ncurses/include
+    LDFLAGS=-L/opt/homebrew/opt/ncurses/lib -lncurses -lpthread -lm
 endif
 ifeq ($(UNAME),Linux)
     CPPFLAGS=-D_REENTRANT -I./include
