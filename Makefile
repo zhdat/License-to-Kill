@@ -19,16 +19,16 @@ all: bin/monitor
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: src/monitor/main.o src/monitor/monitor.o src/monitor/monitor_common.o src/common/logger.o src/character/character.o src/cell.o
+bin/monitor: obj/main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-src/monitor/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/monitor/monitor.o: src/monitor/monitor.c include/monitor.h
+obj/monitor.o: src/monitor/monitor.c include/monitor.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
+obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 
@@ -37,7 +37,7 @@ src/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_commo
 # COMMON OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-src/common/logger.o: src/common/logger.c include/logger.h
+obj/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 
@@ -45,17 +45,17 @@ src/common/logger.o: src/common/logger.c include/logger.h
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-src/character/character.o: src/character/character.c include/character.h
+obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/cell/cell.o: src/cell/cell.c include/cell.h include/character.h
+obj/cell.o: src/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # CLEANING
 # ----------------------------------------------------------------------------
 clean:
-	rm src/monitor/*.o src/common/*.o
+	rm obj/*.o
 
 distclean: clean
 	rm bin/monitor
