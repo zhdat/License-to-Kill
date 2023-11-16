@@ -19,13 +19,7 @@ all: bin/monitor
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: src/monitor/main.o \
-             src/monitor/monitor.o \
-             src/monitor/monitor_common.o \
-             src/common/logger.o \
-             src/character/spy.o \
-             src/character/citizen.o \
-             src/character/case_officer.o
+bin/monitor: src/monitor/main.o src/monitor/monitor.o src/monitor/monitor_common.o src/common/logger.o src/character/character.o src/cell.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 src/monitor/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
@@ -36,6 +30,7 @@ src/monitor/monitor.o: src/monitor/monitor.c include/monitor.h
 
 src/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
 
 
 # ----------------------------------------------------------------------------
@@ -50,13 +45,10 @@ src/common/logger.o: src/common/logger.c include/logger.h
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-src/character/spy.o: src/character/spy.c include/spy.h
+src/character/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/character/citizen.o: src/character/citizen.c include/citizen.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
-
-src/character/case_officer.o: src/character/case_officer.c include/case_officer.h
+src/cell/cell.o: src/cell/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
