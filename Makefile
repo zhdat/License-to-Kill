@@ -19,30 +19,25 @@ all: bin/monitor
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: src/monitor/main.o \
-             src/monitor/monitor.o \
-             src/monitor/monitor_common.o \
-             src/common/logger.o \
-             src/character/spy.o \
-             src/character/citizen.o \
-             src/character/case_officer.o
+bin/monitor: obj/main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-src/monitor/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/monitor/monitor.o: src/monitor/monitor.c include/monitor.h
+obj/monitor.o: src/monitor/monitor.c include/monitor.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
+obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
 
 
 # ----------------------------------------------------------------------------
 # COMMON OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-src/common/logger.o: src/common/logger.c include/logger.h
+obj/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 
@@ -50,20 +45,17 @@ src/common/logger.o: src/common/logger.c include/logger.h
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-src/character/spy.o: src/character/spy.c include/spy.h
+obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-src/character/citizen.o: src/character/citizen.c include/citizen.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
-
-src/character/case_officer.o: src/character/case_officer.c include/case_officer.h
+obj/cell.o: src/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # CLEANING
 # ----------------------------------------------------------------------------
 clean:
-	rm src/monitor/*.o src/common/*.o src/character/*.o
+	rm obj/*.o
 
 distclean: clean
 	rm bin/monitor
