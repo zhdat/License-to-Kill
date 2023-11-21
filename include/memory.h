@@ -20,8 +20,14 @@
 
 #include "cell.h"
 #include "common.h"
+#include "character.h"
 
-#define MAX_SPY_COUNT 3
+#define MAX_CITIZEN_COUNT 127
+#define MAX_SOURCE_AGENT_COUNT 3
+#define MAX_ATTENDING_OFFICER_COUNT 1
+#define MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT 1
+#define MAX_MAILBOX_SIZE 100
+
 
 /**
  * \file memory.h
@@ -54,27 +60,28 @@ struct memory_s {
                                 *      wins!
                                 */
     int step; /*!< Numéro de l'étape de simulation en cours.*/
-    double elapsed_time; /*!< Temps écoulé depuis le début de la simulation.*/
-    int hour; /*!< Heure actuelle dans la simulation.*/
+    int total_steps; /*!< Nombre total d'étapes de simulation à effectuer.*/
+
+    int days; /*!< Nombre de jours écoulés depuis le début de la simulation.*/
+    int hours; /*!< Heure actuelle dans la simulation.*/
     int minutes; /*!< Minutes actuelles dans la simulation.*/
 
     int citizens_at_home; /*!< Nombre de citoyens actuellement à leur domicile.*/
     int citizens_at_work; /*!< Nombre de citoyens actuellement au travail.*/
-    int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/
+    int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/    
 
-    // spyt_t spies[MAX_SPY_COUNT];  /*!< Tableau contenant les espions.*/
-    int spy_count; /*!< Nombre d'espions actuellement dans la simulation.*/
+    character_t citizens[MAX_CITIZEN_COUNT]; /*!< Tableau contenant les citoyens.*/
 
-    int officer_health_points; /*!< Points de vie de l'officier.*/
-    int officer_location_row; /*!< Ligne actuelle où se trouve l'officier.*/
-    int officer_location_column; /*!< Colonne actuelle où se trouve l'officier.*/
-    int officer_mailbox_row; /*!< Ligne de la boîte aux lettres de l'officier.*/
-    int officer_mailbox_column; /*!< Colonne de la boîte aux lettres de l'officier.*/
-    int officer_targeted_character_id; /*!< ID du personnage ciblé par l'officier.*/
+    source_agent_t source_agents[MAX_SOURCE_AGENT_COUNT]; /*!< Tableau contenant les agents sources.*/
 
-    int mailbox_message_count; /*!< Nombre de messages dans la boîte aux lettres.*/
+    attending_officer_t attending_officers[MAX_ATTENDING_OFFICER_COUNT]; /*!< Tableau contenant les officiers de surveillance.*/
 
-    map_t city_map; /*!< Carte de la ville.*/
+    counter_intelligence_officer_t counter_intelligence_officers[MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT]; /*!<Tableau contenant les officiers de contre-espionnage.*/
+
+    int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
+
+    city_t city_map; /*!< Carte de la ville.*/
+    
 };
 
 #endif /* MEMORY_H */
