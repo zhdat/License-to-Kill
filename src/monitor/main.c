@@ -85,7 +85,7 @@ int main(void) {
 
     /* Simulation configuration */
     int number_of_turns = 2016;
-    int turn_duration = calculate_turn_duration();
+    // int turn_duration = calculate_turn_duration();
 
     /*  Loop and get user input  */
     while(true) {
