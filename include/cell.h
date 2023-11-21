@@ -18,6 +18,8 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include "common.h"
+
 /**
  * \file cell.h
  *
@@ -61,7 +63,7 @@ typedef struct city_s city_t;
 struct city_s {
 	int width;		/*!< Width of the map. */
 	int height;		/*!< Height of the map. */
-	cell_t** cells; /*!< The cells of the map. */
+	cell_t cells[MAX_COLUMNS][MAX_ROWS]; /*!< Cells of the map. */
 };
 
 /* Function to create a city */
@@ -70,6 +72,7 @@ city_t* delete_city(city_t* city);
 city_t* print_city(city_t* city);
 cell_t* get_cell(city_t* city, int x, int y);
 void define_monitoring(city_t* city, int x, int y, int nb_of_characters);
+void clear_city(city_t* city);
 void init_city(city_t* city);
 int should_be_monitored(cell_type_t cell_type);
 void initialize_surveillance_system(city_t* city);

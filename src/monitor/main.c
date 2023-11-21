@@ -74,6 +74,12 @@ int main(void) {
         return 1;
     }
     p->memory_has_changed = 1;
+    clear_city(&(p->city_map));
+    print_city(&(p->city_map));
+    init_city(&(p->city_map));
+    print_city(&(p->city_map));
+
+    p->step = 100;
 
 
     /* ---------------------------------------------------------------------- */

@@ -84,7 +84,6 @@ void create_color_pairs(void) {
 void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from mem to get the map               */
-    map_t map;
     /* ---------------------------------------------------------------------- */
 
     set_monitor_title(window, "LICENSE TO KILL (v. 0.2)");
@@ -101,7 +100,7 @@ void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns)
     box(enemy_country_monitor, 0, 0);
 
     show_general_information(city_window);
-    display_city(city_window, map, rows, columns);
+    display_city(city_window, mem->city_map, rows, columns);
     display_character_information(character_window, mem);
     display_mailbox_content(mailbox_content_window, mem);
     display_enemy_country_monitor(enemy_country_monitor);
@@ -137,7 +136,7 @@ void set_city_legend(WINDOW* window, int row, int col) {
     mvwprintw(window, row + 10, col + 4, "Wasteland");
 }
 
-void display_city(WINDOW* window, map_t map, int rows, int columns) {
+void display_city(WINDOW* window, city_t map, int rows, int columns) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from map to display city              */
     int map_columns;
@@ -159,7 +158,7 @@ void display_city(WINDOW* window, map_t map, int rows, int columns) {
         for(int j = 0; j < map_rows; j++) {
             row_offset = (rows / 6) + j;
             col_offset = (columns / 5) + (i * 3);
-            switch(type) {
+            switch(map.cells[i][j].type) {
             case SUPERMARKET:
                 wattron(window, colored_text[COLOR_YELLOW]);
                 mvwaddstr(window, row_offset, col_offset, " s ");

@@ -2,44 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-city_t* create_city(int width, int height)
-{
-	int i;
-	city_t* new_city = (city_t*)malloc(sizeof(city_t));
-	if(new_city == NULL)
-	{
-		printf("Error: malloc failed in create_city\n");
-		return NULL;
-	}
-
-	new_city->width = width;
-	new_city->height = height;
-	new_city->cells = (cell_t**)malloc(height * sizeof(cell_t*));
-	if(new_city->cells == NULL)
-	{
-		printf("Error: malloc of cells failed in create_city\n");
-		free(new_city);
-		return NULL;
-	}
-
-	for(i = 0; i < height; i++)
-	{
-		new_city->cells[i] = (cell_t*)calloc(width, sizeof(cell_t));
-		if(new_city->cells[i] == NULL)
-		{
-			printf("Error: malloc of cells[] failed in create_city\n", i);
-			while(i--)
-			{
-				free(new_city->cells[i]);
-			}
-			free(new_city->cells);
-			free(new_city);
-			return NULL;
-		}
-	}
-	return new_city;
-}
-
 city_t* delete_city(city_t* city)
 {
 	int i;
@@ -62,12 +24,30 @@ city_t* print_city(city_t* city)
 		printf("Error: city is NULL in print_city\n");
 		return NULL;
 	}
-
 	for(i = 0; i < city->height; i++)
 	{
 		for(j = 0; j < city->width; j++)
 		{
-			printf("%d ", city->cells[i][j].type);
+            switch (city->cells[i][j].type) {
+                case WASTELAND:
+                    printf("W");
+                    break;
+                case RESIDENTIAL_BUILDING:
+                    printf("R");
+                    break;
+                case CITY_HALL:
+                    printf("C");
+                    break;
+                case COMPANY:
+                    printf("O");
+                    break;
+                case SUPERMARKET:
+                    printf("S");
+                    break;
+                default:
+                    printf("?");
+                    break;
+            }
 		}
 		printf("\n");
 	}
@@ -93,41 +73,31 @@ void define_monitoring(city_t* city, int x, int y, int nb_of_characters)
 	}
 }
 
+void clear_city(city_t* city) {
+    for (int i = 0; i < city->height; i++) {
+        for (int j = 0; j < city->width; j++) {
+            city->cells[i][j].type = WASTELAND;
+            city->cells[i][j].nb_of_characters = 0;
+        }
+    }
+}
+
 void init_city(city_t* city)
 {
+    city->width = 7;
+    city->height = 7;
+
+    printf("Init city...\n");
+
 	if(city == NULL)
 	{
 		printf("Error: city is NULL in init_city\n");
 		return;
 	}
-
-	// Parcours de chaque cellule de la ville
-	/* for(int i = 0; i < city->height; i++)
-	{
-		for(int j = 0; j < city->width; j++)
-		{
-			// Ici, vous pouvez définir la logique pour déterminer le type de chaque cellule
-			// Exemple : assigner des types de bâtiments basés sur certaines règles ou de manière aléatoire
-			// Pour l'exemple, on assigne WASTELAND à toutes les cellules
-			city->cells[i][j].type = WASTELAND;
-			city->cells[i][j].nb_of_characters = 0; // Initialisation du nombre de personnages à 0
-		}
-	} */
-	city->cells[0][0].type = WASTELAND;
+	city->cells[0][0].type = COMPANY;
+    city->cells[0][1].type = CITY_HALL;
+    city->cells[3][3].type = SUPERMARKET;
 	city->cells[5][4].type = RESIDENTIAL_BUILDING;
-	switch(city->cells[5][4].type)
-	{
-	case RESIDENTIAL_BUILDING:
-		printf("residential building \n");
-		break;
-	case WASTELAND:
-		printf("wasteland \n");
-		break;
-	default:
-		printf("Invalid type \n");
-		break;
-	}
-	printf("BIP\n");
 }
 
 int should_be_monitored(cell_type_t cell_type)
