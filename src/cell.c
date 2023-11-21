@@ -102,7 +102,7 @@ void init_city(city_t* city)
 	}
 
 	// Parcours de chaque cellule de la ville
-	for(int i = 0; i < city->height; i++)
+	/* for(int i = 0; i < city->height; i++)
 	{
 		for(int j = 0; j < city->width; j++)
 		{
@@ -112,7 +112,22 @@ void init_city(city_t* city)
 			city->cells[i][j].type = WASTELAND;
 			city->cells[i][j].nb_of_characters = 0; // Initialisation du nombre de personnages à 0
 		}
+	} */
+	city->cells[0][0].type = WASTELAND;
+	city->cells[5][4].type = RESIDENTIAL_BUILDING;
+	switch(city->cells[5][4].type)
+	{
+	case RESIDENTIAL_BUILDING:
+		printf("residential building \n");
+		break;
+	case WASTELAND:
+		printf("wasteland \n");
+		break;
+	default:
+		printf("Invalid type \n");
+		break;
 	}
+	printf("BIP\n");
 }
 
 int should_be_monitored(cell_type_t cell_type)

@@ -31,8 +31,9 @@
 /** The number of fields to display for a spy. */
 #define NB_OF_INFORMATION_FIELDS 8
 
-struct monitor_s {
-    int has_to_update;
+struct monitor_s
+{
+	int has_to_update;
 };
 
 /**
@@ -58,7 +59,7 @@ void create_color_pairs();
  * \param rows The number of rows of the main window.
  * \param columns The number of columns of the main window.
  */
-void init_monitor_elements(WINDOW *window, memory_t *mem, int rows, int columns);
+void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns);
 
 /**
  * \brief Sets the given window with the given title.
@@ -66,7 +67,7 @@ void init_monitor_elements(WINDOW *window, memory_t *mem, int rows, int columns)
  * \param window The window.
  * \param title The title.
  */
-void set_monitor_title(WINDOW *window, const char *title);
+void set_monitor_title(WINDOW* window, const char* title);
 
 /**
  * \brief Detects and displays if the current version of NCurses supports mouse
@@ -82,7 +83,7 @@ void detect_mouse();
  * \param row The row of the top of city legend
  * \param col The column of the left of city legend
  */
-void set_city_legend(WINDOW *window, int row, int col);
+void set_city_legend(WINDOW* window, int row, int col);
 
 /**
  * \brief Sets a cell from the city map with the given color (the city map is
@@ -93,7 +94,7 @@ void set_city_legend(WINDOW *window, int row, int col);
  * \param row The row of the cell.
  * \param The column of the cell.
  */
-void set_cell_color(WINDOW *window, int color, int row, int col);
+void set_cell_color(WINDOW* window, int color, int row, int col);
 
 /**
  * \brief Displays the city map within the "City map and status information"
@@ -104,7 +105,7 @@ void set_cell_color(WINDOW *window, int color, int row, int col);
  * \param rows The number of rows of the city map.
  * \param columns The number of columns of the city map.
  */
-void display_city(WINDOW *window, map_t map, int rows, int columns);
+void display_city(WINDOW* window, map_t map, int rows, int columns);
 
 /**
  * \brief Shows information within the "City map and status information"
@@ -115,7 +116,7 @@ void display_city(WINDOW *window, map_t map, int rows, int columns);
  *
  * \param window The sub-window.
  */
-void show_general_information(WINDOW *window);
+void show_general_information(WINDOW* window);
 
 /**
  * \brief Displays the number of steps and the elapsed time such as an
@@ -124,14 +125,14 @@ void show_general_information(WINDOW *window);
  * \param window The sub-window.
  * \param mem The given shared memory.
  */
-void display_general_information_values(WINDOW *window, memory_t *mem);
+void display_general_information_values(WINDOW* window, memory_t* mem);
 
 /**
  * \brief Updates values after consulting the given memory.
  *
  * \param mem The given shared memory.
  */
-void update_values(memory_t *mem);
+void update_values(memory_t* mem);
 
 /**
  * \brief Displays the citizen information starting at the given row and column.
@@ -141,7 +142,7 @@ void update_values(memory_t *mem);
  * \param row The row to start.
  * \param column The column to start.
  */
-void display_citizen_information(WINDOW *window, memory_t *mem, int row, int column);
+void display_citizen_information(WINDOW* window, memory_t* mem, int row, int column);
 
 /**
  * \brief Displays the information of the spy whose number is given starting
@@ -153,7 +154,7 @@ void display_citizen_information(WINDOW *window, memory_t *mem, int row, int col
  * \param column The column to start.
  * \param number The number of the spy (0, 1 or 2)
  */
-void display_spy_information(WINDOW *window, memory_t *mem, int row, int column, int number);
+void display_spy_information(WINDOW* window, memory_t* mem, int row, int column, int number);
 
 /**
  * \brief Displays the information of case officer starting at the given row
@@ -164,7 +165,7 @@ void display_spy_information(WINDOW *window, memory_t *mem, int row, int column,
  * \param row The row to start.
  * \param column The column to start.
  */
-void display_case_officer_information(WINDOW *window, memory_t *mem, int row, int column);
+void display_case_officer_information(WINDOW* window, memory_t* mem, int row, int column);
 
 /**
  * \brief Displays the information of the counter officer starting at the
@@ -175,7 +176,7 @@ void display_case_officer_information(WINDOW *window, memory_t *mem, int row, in
  * \param row The row to start.
  * \param column The column to start.
  */
-void display_counter_officer_information(WINDOW *window, memory_t *mem, int row, int col);
+void display_counter_officer_information(WINDOW* window, memory_t* mem, int row, int col);
 
 /**
  * \brief Displays all characters information.
@@ -189,7 +190,7 @@ void display_counter_officer_information(WINDOW *window, memory_t *mem, int row,
  * \param window The sub-window.
  * \param mem The given shared memory.
  */
-void display_character_information(WINDOW *window, memory_t *mem);
+void display_character_information(WINDOW* window, memory_t* mem);
 
 /**
  * \brief Displays the mailbox content. Messages are encrypted.
@@ -198,13 +199,13 @@ void display_character_information(WINDOW *window, memory_t *mem);
  * \param mem The given shared memory in which encrypted messages from the 
  *            mailbox are retrieved.
  */
-void display_mailbox_content(WINDOW *window, memory_t *mem);
+void display_mailbox_content(WINDOW* window, memory_t* mem);
 
 /**
  * \brief Displays messages received by the enemy country.
  *
  * \param window The sub-window in which messages are displayed.
  */
-void display_enemy_country_monitor(WINDOW *window);
+void display_enemy_country_monitor(WINDOW* window);
 
 #endif /* MONITOR_H */
