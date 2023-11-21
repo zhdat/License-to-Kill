@@ -60,8 +60,10 @@ struct memory_s {
                                 *      wins!
                                 */
     int step; /*!< Numéro de l'étape de simulation en cours.*/
-    double elapsed_time; /*!< Temps écoulé depuis le début de la simulation.*/
-    int hour; /*!< Heure actuelle dans la simulation.*/
+    int total_steps; /*!< Nombre total d'étapes de simulation à effectuer.*/
+
+    int days; /*!< Nombre de jours écoulés depuis le début de la simulation.*/
+    int hours; /*!< Heure actuelle dans la simulation.*/
     int minutes; /*!< Minutes actuelles dans la simulation.*/
 
     int citizens_at_home; /*!< Nombre de citoyens actuellement à leur domicile.*/
@@ -78,7 +80,8 @@ struct memory_s {
 
     int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
 
-    map_t city_map; /*!< Carte de la ville.*/
+    city_t city_map; /*!< Carte de la ville.*/
+    
 };
 
 #endif /* MEMORY_H */

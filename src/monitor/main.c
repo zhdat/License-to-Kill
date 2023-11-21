@@ -19,12 +19,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "cell.h"
 #include "character.h"
 #include "memory.h"
 #include "monitor.h"
 #include "monitor_common.h"
+
+#define MAP_WRITE 0x0002
 
 extern WINDOW* main_window;
 extern int old_cursor;
@@ -47,14 +52,30 @@ int main(void) {
     int rows;
     int cols;
     int key;
-    memory_t* memory;
     monitor_t* monitor;
 
     /* ---------------------------------------------------------------------- */
     /* The following code only allows to avoid segmentation fault !           */
     /* Change it to access to the real shared memory.                         */
-    memory = (memory_t*)malloc(sizeof(memory_t));
-    memory->memory_has_changed = 1;
+
+    //memory = (memory_t*)malloc(sizeof(memory_t));
+
+
+    int memory = shm_open("/nothinghere", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+    if (memory == -1) {
+        perror("shm_open error");
+    }
+    if (ftruncate(memory, sizeof(memory_t)) == -1) {
+        perror("ftruncate");
+    }
+    memory_t* p = mmap(NULL, sizeof(memory_t), MAP_WRITE, MAP_SHARED, memory, 0);
+    if (p == MAP_FAILED) {
+        perror("mmap");
+        return 1;
+    }
+    p->memory_has_changed = 1;
+
+
     /* ---------------------------------------------------------------------- */
 
     monitor = (monitor_t*)malloc(sizeof(monitor_t));
@@ -81,7 +102,7 @@ int main(void) {
     }
 
     /* Initialize terminal user interface elements */
-    init_monitor_elements(main_window, memory, rows, cols);
+    init_monitor_elements(main_window, p, rows, cols);
 
     /* Simulation configuration */
     int number_of_turns = 2016;
@@ -90,16 +111,15 @@ int main(void) {
     /*  Loop and get user input  */
     while(true) {
         key = getch();
-
         switch(key) {
         case 'Q':
         case 'q':
         case 27: quit_nicely(NO_PARTICULAR_REASON);
         default: break;
         }
-        if(memory->memory_has_changed) {
-            update_values(memory);
-            memory->memory_has_changed = 0;
+        if(p->memory_has_changed) {
+            update_values(p);
+            p->memory_has_changed = 0;
         }
     }
 }
