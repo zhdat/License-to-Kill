@@ -42,6 +42,19 @@ enum cell_type_e {
 	SUPERMARKET			  /*!< A cell that contains a supermarket. */
 };
 
+#define MAX_NUMBER_OF_CHARACTERS_ON_WASTELAND = 999;
+#define MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING = 15;
+#define MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL = 20;
+#define MAX_NUMBER_OF_CHARACTERS_ON_COMPANY = 50;
+#define MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET = 30;
+
+#define NUMBER_OF_RESIDENTIAL_BUILDINGS = 11;
+#define NUMBER_OF_COMPANIES = 8;
+#define NUMBER_OF_SUPERMARKETS = 2;
+#define NUMBER_OF_CITY_HALLS = 1;
+
+#define
+
 typedef enum cell_type_e cell_type_t;
 typedef struct cell_s cell_t;
 
@@ -52,7 +65,7 @@ struct cell_s {
 	int column;			  /*!< Column of the cell. */
 	int row;			  /*!< Row of the cell. */
 	cell_type_t type;	  /*!< Type of the cell (@see \enum e_cell_type). */
-	int nb_of_characters; /*!< Max. number of characters on the cell. */
+	int nb_of_characters; /*!< Number of characters on the cell. */
 };
 
 typedef struct city_s city_t;
