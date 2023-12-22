@@ -27,16 +27,26 @@
 #define MAX_ATTENDING_OFFICER_COUNT 1
 #define MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT 1
 #define MAX_MAILBOX_SIZE 100
+#define SHARED_MEMORY_NAME "/nothinghere"
 
 
 /**
- * \file memory.h
+ * \file mem.h
  *
- * Defines structures and functions used to manipulate our shared memory.
+ * Defines structures and functions used to manipulate our shared mem.
  */
 
 typedef struct map_s map_t;
 typedef struct memory_s memory_t;
+typedef struct timer_s timer_t;
+
+struct timer_s {
+    int days;
+    int hours;
+    int minutes;
+    int step;
+    int turns;
+};
 
 /**
  * \brief The city map.
@@ -48,10 +58,10 @@ struct map_s {
 };
 
 /**
- * \brief Shared memory used by all processes.
+ * \brief Shared mem used by all processes.
  */
 struct memory_s {
-    int memory_has_changed; /*!< This flag is set to 1 when the memory has changed. */
+    int memory_has_changed; /*!< This flag is set to 1 when the mem has changed. */
     int simulation_has_ended; /*!< This flag is set to the following values:
                                 * - 0: has not ended;
                                 * - 1: the spy network has fled. It wins!
@@ -81,7 +91,15 @@ struct memory_s {
     int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
 
     city_t city_map; /*!< Carte de la ville.*/
+
+    timer_t my_timer; /*!< Timer de la simulation.*/
     
 };
+
+/* Open the shared mem */
+memory_t *open_shared_memory(void);
+
+/* Close the shared mem */
+void close_shared_memory(memory_t *memory);
 
 #endif /* MEMORY_H */

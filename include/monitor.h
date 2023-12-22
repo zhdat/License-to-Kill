@@ -55,7 +55,7 @@ void create_color_pairs();
  * \brief Creates the four sub-window boxes within the given window.
  *
  * \param window The main window in which we create the four boxes.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  * \param rows The number of rows of the main window.
  * \param columns The number of columns of the main window.
  */
@@ -123,14 +123,14 @@ void show_general_information(WINDOW* window);
  * ending message within the "City map and status information" sub-window.
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  */
 void display_general_information_values(WINDOW* window, memory_t* mem);
 
 /**
- * \brief Updates values after consulting the given memory.
+ * \brief Updates values after consulting the given mem.
  *
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  */
 void update_values(memory_t* mem);
 
@@ -138,7 +138,7 @@ void update_values(memory_t* mem);
  * \brief Displays the citizen information starting at the given row and column.
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  * \param row The row to start.
  * \param column The column to start.
  */
@@ -149,7 +149,7 @@ void display_citizen_information(WINDOW* window, memory_t* mem, int row, int col
  * at the given row and column.
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  * \param row The row to start.
  * \param column The column to start.
  * \param number The number of the spy (0, 1 or 2)
@@ -161,7 +161,7 @@ void display_spy_information(WINDOW* window, memory_t* mem, int row, int column,
  * and column.
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  * \param row The row to start.
  * \param column The column to start.
  */
@@ -172,7 +172,7 @@ void display_case_officer_information(WINDOW* window, memory_t* mem, int row, in
  * given row and column.
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  * \param row The row to start.
  * \param column The column to start.
  */
@@ -188,7 +188,7 @@ void display_counter_officer_information(WINDOW* window, memory_t* mem, int row,
  * - \fn display_counter_officer_information().
  *
  * \param window The sub-window.
- * \param mem The given shared memory.
+ * \param mem The given shared mem.
  */
 void display_character_information(WINDOW* window, memory_t* mem);
 
@@ -196,7 +196,7 @@ void display_character_information(WINDOW* window, memory_t* mem);
  * \brief Displays the mailbox content. Messages are encrypted.
  *
  * \param window The sub-window in which encrypted messages are displayed.
- * \param mem The given shared memory in which encrypted messages from the 
+ * \param mem The given shared mem in which encrypted messages from the
  *            mailbox are retrieved.
  */
 void display_mailbox_content(WINDOW* window, memory_t* mem);

@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <fcntl.h>
 #include <ncurses.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 #include "cell.h"
@@ -28,6 +29,7 @@
 #include "memory.h"
 #include "monitor.h"
 #include "monitor_common.h"
+#include "timer.h"
 
 #define MAP_WRITE 0x0002
 
@@ -38,7 +40,7 @@ extern int old_cursor;
  * \file main.c
  *
  * \brief Creates a new "Terminal User Interface" using ncurses and associated
- * with the given shared memory.
+ * with the given shared mem.
  *
  * The size of the terminal must have at least 40 rows and 145 columns. It
  * is decomposed in four sub-windows:
@@ -56,17 +58,18 @@ int main(void) {
 
     /* ---------------------------------------------------------------------- */
     /* The following code only allows to avoid segmentation fault !           */
-    /* Change it to access to the real shared memory.                         */
+    /* Change it to access to the real shared mem.                         */
 
-    //memory = (memory_t*)malloc(sizeof(memory_t));
+    //mem = (memory_t*)malloc(sizeof(memory_t));
 
+    shm_unlink("/nothinghere");
 
     int memory = shm_open("/nothinghere", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
     if (memory == -1) {
         perror("shm_open error");
     }
     if (ftruncate(memory, sizeof(memory_t)) == -1) {
-        perror("ftruncate");
+        perror("ftruncate error");
     }
     memory_t* p = mmap(NULL, sizeof(memory_t), MAP_WRITE, MAP_SHARED, memory, 0);
     if (p == MAP_FAILED) {
@@ -75,22 +78,21 @@ int main(void) {
     }
     p->memory_has_changed = 1;
     clear_city(&(p->city_map));
-    print_city(&(p->city_map));
+    /*print_city(&(p->city_map));*/
     init_city(&(p->city_map));
-    print_city(&(p->city_map));
+    /*print_city(&(p->city_map));*/
 
     p->step = 100;
 
-
     /* ---------------------------------------------------------------------- */
 
-    monitor = (monitor_t*)malloc(sizeof(monitor_t));
+    monitor = (monitor_t*) malloc(sizeof(monitor_t));
     monitor->has_to_update = 0;
 
     set_timer();
     set_signals();
 
-    if((main_window = initscr()) == NULL) {
+    if ((main_window = initscr()) == NULL) {
         quit_after_error("Error initializing library ncurses!");
     }
 
@@ -103,7 +105,7 @@ int main(void) {
     start_color(); /* Allow using colors... */
     create_color_pairs(); /* ... and create color pairs to use */
 
-    if(!is_terminal_size_larger_enough(&rows, &cols)) {
+    if (!is_terminal_size_larger_enough(&rows, &cols)) {
         quit_after_error("Minimal terminal dimensions: 45 rows and 140 columns!");
     }
 
@@ -114,16 +116,20 @@ int main(void) {
     int number_of_turns = 2016;
     // int turn_duration = calculate_turn_duration();
 
+    /* Start my_timer */
+
     /*  Loop and get user input  */
-    while(true) {
+    while (true) {
         key = getch();
-        switch(key) {
-        case 'Q':
-        case 'q':
-        case 27: quit_nicely(NO_PARTICULAR_REASON);
-        default: break;
+        switch (key) {
+            case 'Q':
+            case 'q':
+            case 27:
+                quit_nicely(NO_PARTICULAR_REASON);
+            default:
+                break;
         }
-        if(p->memory_has_changed) {
+        if (p->memory_has_changed) {
             update_values(p);
             p->memory_has_changed = 0;
         }

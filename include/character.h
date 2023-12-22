@@ -12,7 +12,7 @@ typedef struct counter_intelligence_officer_s counter_intelligence_officer_t;
 struct character_s {
 	int id; /*!< The id of the character. */
 	int x;	/*!< The x position of the character. */
-	int y;	/*!< The y position of the character. */
+	int y;    /*!< The y position of the character. */
 };
 
 /* Structure of source_agent */
