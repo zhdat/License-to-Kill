@@ -87,6 +87,15 @@ int main(void) {
     int number_of_turns = 2016;
     // int turn_duration = calculate_turn_duration();
 
+    
+    // do a thread to call the function in spy_simulation.c
+    pthread_t thread;
+    pthread_create(&thread, NULL, spy_simulation, NULL);
+    pthread_join(thread, NULL);
+
+    
+
+    
     /*  Loop and get user input  */
     while(true) {
         key = getch();

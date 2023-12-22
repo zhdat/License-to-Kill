@@ -13,6 +13,13 @@ struct character_s {
 	int id; /*!< The id of the character. */
 	int x;	/*!< The x position of the character. */
 	int y;	/*!< The y position of the character. */
+	int health_points; /*!< The health points of the character. */
+	int home_x;		  /*!< The x position of the home of the character. */
+	int home_y;		  /*!< The y position of the home of the character. */
+	int work_x;		  /*!< The x position of the work of the character. */
+	int work_y;		  /*!< The y position of the work of the character. */
+	int pid;		  /*!< The pid of the character. */
+
 };
 
 /* Structure of source_agent */
