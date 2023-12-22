@@ -52,6 +52,14 @@ obj/cell.o: src/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
+# CITIZEN MANAGER
+# ----------------------------------------------------------------------------
+
+obj/character_factory.o: src/character/character_factory.c include/character_factory.h  include/character.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+
+# ----------------------------------------------------------------------------
 # CLEANING
 # ----------------------------------------------------------------------------
 clean:
