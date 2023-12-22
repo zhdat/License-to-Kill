@@ -14,15 +14,24 @@ endif
 
 .PHONY: all clean distclean
 
-all: bin/monitor
+all: bin/main_program bin/monitor
+
+# ----------------------------------------------------------------------------
+# MAIN PROGRAM
+# ----------------------------------------------------------------------------
+bin/main_program: obj/main.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/main.o: src/main.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: obj/main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
+bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/monitor.o: src/monitor/monitor.c include/monitor.h
@@ -45,6 +54,9 @@ obj/logger.o: src/common/logger.c include/logger.h
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
+obj/character_factory.o: src/character/character_factory.c include/character_factory.h  include/character.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
 obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
@@ -55,8 +67,7 @@ obj/cell.o: src/cell.c include/cell.h include/character.h
 # CITIZEN MANAGER
 # ----------------------------------------------------------------------------
 
-obj/character_factory.o: src/character/character_factory.c include/character_factory.h  include/character.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
 
 
 # ----------------------------------------------------------------------------

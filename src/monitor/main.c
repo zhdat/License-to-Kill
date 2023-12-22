@@ -89,10 +89,6 @@ int main(void) {
 
     
     // do a thread to call the function in spy_simulation.c
-    pthread_t thread;
-    pthread_create(&thread, NULL, spy_simulation, NULL);
-    pthread_join(thread, NULL);
-
     
 
     
