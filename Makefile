@@ -17,12 +17,21 @@ endif
 all: bin/monitor
 
 # ----------------------------------------------------------------------------
-# MONITOR
+# MAIN PROGRAM
 # ----------------------------------------------------------------------------
-bin/monitor: obj/main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
+bin/main_program: obj/main.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/main.o: src/main.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+# ----------------------------------------------------------------------------
+# MONITOR
+# ----------------------------------------------------------------------------
+bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/monitor.o: src/monitor/monitor.c include/monitor.h
@@ -61,5 +70,5 @@ clean:
 	rm obj/*.o
 
 distclean: clean
-	rm bin/monitor
+	rm bin/*
 
