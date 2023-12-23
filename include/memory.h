@@ -70,13 +70,13 @@ struct memory_s {
     int citizens_at_work; /*!< Nombre de citoyens actuellement au travail.*/
     int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/    
 
-    character_t citizens[MAX_CITIZEN_COUNT]; /*!< Tableau contenant les citoyens.*/
+    character_t * citizens[MAX_CITIZEN_COUNT]; /*!< Tableau contenant les citoyens.*/
 
-    source_agent_t source_agents[MAX_SOURCE_AGENT_COUNT]; /*!< Tableau contenant les agents sources.*/
+    source_agent_t * source_agents[MAX_SOURCE_AGENT_COUNT]; /*!< Tableau contenant les agents sources.*/
 
-    attending_officer_t attending_officers[MAX_ATTENDING_OFFICER_COUNT]; /*!< Tableau contenant les officiers de surveillance.*/
+    attending_officer_t * attending_officers[MAX_ATTENDING_OFFICER_COUNT]; /*!< Tableau contenant les officiers de surveillance.*/
 
-    counter_intelligence_officer_t counter_intelligence_officers[MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT]; /*!<Tableau contenant les officiers de contre-espionnage.*/
+    counter_intelligence_officer_t * counter_intelligence_officers[MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT]; /*!<Tableau contenant les officiers de contre-espionnage.*/
 
     int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
 

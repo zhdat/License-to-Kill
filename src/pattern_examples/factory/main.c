@@ -1,7 +1,3 @@
-/*
- * A Factory design pattern.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 

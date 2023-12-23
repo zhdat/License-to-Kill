@@ -53,8 +53,6 @@ enum cell_type_e {
 #define NUMBER_OF_SUPERMARKETS = 2;
 #define NUMBER_OF_CITY_HALLS = 1;
 
-#define
-
 typedef enum cell_type_e cell_type_t;
 typedef struct cell_s cell_t;
 

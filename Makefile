@@ -12,17 +12,26 @@ ifeq ($(UNAME),Linux)
     LDFLAGS=-lncurses -lpthread -lrt -lm
 endif
 
-.PHONY: all clean distclean
+.PHONY: all clean distclean run
 
-all: bin/monitor
+all: bin/main_program bin/monitor bin/character_factory
+
+# ----------------------------------------------------------------------------
+# MAIN PROGRAM
+# ----------------------------------------------------------------------------
+bin/main_program: obj/main.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/main.o: src/main.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: obj/main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
+bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/monitor.o: src/monitor/monitor.c include/monitor.h
@@ -44,6 +53,14 @@ obj/logger.o: src/common/logger.c include/logger.h
 # ----------------------------------------------------------------------------
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
+bin/character_factory: obj/character_factory_main.o obj/character_factory.o obj/character.o obj/cell.o obj/logger.o
+	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@
+
+obj/character_factory_main.o: src/character/main.c include/character_factory.h include/logger.h include/memory.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/character_factory.o: src/character/character_factory.c include/character_factory.h include/logger.h include/memory.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
@@ -55,11 +72,11 @@ obj/cell.o: src/cell.c include/cell.h include/character.h
 # CLEANING
 # ----------------------------------------------------------------------------
 run: all
-	./bin/monitor
+	./bin/main_program
 
 clean:
 	rm obj/*.o
 
 distclean: clean
-	rm bin/monitor
+	rm bin/*
 
