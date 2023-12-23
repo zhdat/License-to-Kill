@@ -42,10 +42,10 @@ int main() {
 
     // Example of launching each program with their specific arguments
     char *monitor_args[] = {"monitor", NULL, NULL};
-    child_pids[1] = create_child("./bin/monitor", monitor_args);
+    child_pids[0] = create_child("./bin/monitor", monitor_args);
 
     char *spy_simulation_args[] = {"character_factory", NULL, NULL, NULL};
-    child_pids[0] = create_child("./bin/character_factory", spy_simulation_args);
+    child_pids[1] = create_child("./bin/character_factory", spy_simulation_args);
 
     /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
     child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/

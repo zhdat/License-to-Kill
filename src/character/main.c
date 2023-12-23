@@ -38,7 +38,6 @@ int main(void)
         }
         p->source_agents[i] = source_agent;
         printf("Source agent id: %d\n", source_agent->character.id);
-        free(source_agent);
     }
 
     log_info("Create one counterintelligence officer.");
@@ -50,11 +49,8 @@ int main(void)
         character_t *citizen = new_citizen();
         printf("Citizen id: %d\n", citizen->id);
         p->citizens[i] = citizen;
-        free(citizen);
     }
 
-    free(an_attending_officer);
-    free(a_counterintelligence_officer);
 
     exit(EXIT_SUCCESS);
 }
