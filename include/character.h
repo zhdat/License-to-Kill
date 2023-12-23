@@ -10,14 +10,23 @@ typedef struct counter_intelligence_officer_s counter_intelligence_officer_t;
 
 /* basic structure of character */
 struct character_s {
-	int id; /*!< The id of the character. */
-	int x;	/*!< The x position of the character. */
-	int y;	/*!< The y position of the character. */
+    int id; /*!< The id of the character. */
+    int x;	/*!< The x position of the character. */
+    int y;	/*!< The y position of the character. */
+    int health; /*!< The health points of the character. */
+    int home_x;		  /*!< The x position of the home of the character. */
+    int home_y;		  /*!< The y position of the home of the character. */
+    int work_x;		  /*!< The x position of the work of the character. */
+    int work_y;		  /*!< The y position of the work of the character. */
+    int pid;		  /*!< The pid of the character. */
+
 };
+
 
 /* Structure of source_agent */
 struct source_agent_s {
 	character_t character; /*!< The character. */
+	int has_licence_to_kill; /*!< The licence to kill. 1 if he has it, 0 otherwise. */
 	int level_agent;	   /*!< The level of the agent. */
 };
 
