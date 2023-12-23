@@ -46,79 +46,75 @@ character_t *new_citizen(void)
     return citizen;
 }
 
-character_t *new_spy(void)
+source_agent_t *new_spy(void)
 {
-    character_t *spy;
+    source_agent_t *spy;
 
-    spy = (character_t *) malloc(sizeof(character_t));
+    spy = (source_agent_t *) malloc(sizeof(source_agent_t));
     if (spy == NULL) {
         log_error("Failed to allocate memory for spy");
         return NULL;
     }
 
 
-    spy->id = generate_unique_id(); // Assuming a function to generate a unique ID
-    spy->x = 1; // Assuming variables for initial positions
-    spy->y = 1;
-    spy->health = 10;
-    spy->home_x = 1;
-    spy->home_y = 1;
-    spy->work_x = -1;
-    spy->work_y = -1;
+    spy->character.id = generate_unique_id(); // Assuming a function to generate a unique ID
+    spy->character.x = 1; // Assuming variables for initial positions
+    spy->character.y = 1;
+    spy->character.health = 10;
+    spy->character.home_x = 1;
+    spy->character.home_y = 1;
+    spy->character.work_x = -1;
+    spy->character.work_y = -1;
+    spy->has_licence_to_kill = 0;
+    spy->level_agent = 0;
+
     return spy;
 }
 
-character_t *new_case_officer(void)
+attending_officer_t *new_case_officer(void)
 {
-    character_t *case_officer;
+    attending_officer_t *case_officer;
 
-    case_officer = (character_t *) malloc(sizeof(character_t));
+    case_officer = (attending_officer_t *) malloc(sizeof(attending_officer_t));
     if (case_officer == NULL) {
         log_error("Failed to allocate memory for case officer");
         return NULL;
     }
 
-    case_officer->id = generate_unique_id(); // Assuming a function to generate a unique ID
-    case_officer->x = 1; // Assuming variables for initial positions
-    case_officer->y = 1;
-    case_officer->health = 10;
-    case_officer->home_x = 1;
-    case_officer->home_y = 1;
-    case_officer->work_x = -1;
-    case_officer->work_y = -1;
-
+    case_officer->character.id = generate_unique_id(); // Assuming a function to generate a unique ID
+    case_officer->character.x = 1; // Assuming variables for initial positions
+    case_officer->character.y = 1;
+    case_officer->character.health = 10;
+    case_officer->character.home_x = 1;
+    case_officer->character.home_y = 1;
+    case_officer->character.work_x = -1;
+    case_officer->character.work_y = -1;
+    case_officer->nb_agent = 0;
 
 
     return case_officer;
 }
 
-character_t *new_counterintelligence_officer(void)
+counter_intelligence_officer_t *new_counterintelligence_officer(void)
 {
-    character_t *counterintelligence_officer;
+    counter_intelligence_officer_t *counterintelligence_officer;
 
-    counterintelligence_officer = (character_t *) malloc(sizeof(character_t));
+    counterintelligence_officer = (counter_intelligence_officer_t *) malloc(sizeof(counter_intelligence_officer_t));
+    if (counterintelligence_officer == NULL) {
+        log_error("Failed to allocate memory for counterintelligence officer");
+        return NULL;
+    }
+
+    counterintelligence_officer->character.id = generate_unique_id(); // Assuming a function to generate a unique ID
+    counterintelligence_officer->character.x = 1; // Assuming variables for initial positions
+    counterintelligence_officer->character.y = 1;
+    counterintelligence_officer->character.health = 10;
+    counterintelligence_officer->character.home_x = 1;
+    counterintelligence_officer->character.home_y = 1;
+    counterintelligence_officer->character.work_x = -1;
+    counterintelligence_officer->character.work_y = -1;
+    counterintelligence_officer->radius_action = 0;
+
 
     return counterintelligence_officer;
-}
-
-
-
-void operation_citizen(character_t *citizen)
-{
-    printf(">> Operation of a citizen...\n");
-}
-
-void operation_spy(character_t *spy)
-{
-    printf(">> Operation of a spy...\n");
-}
-
-void operation_case_officer(character_t *case_officer)
-{
-    printf(">> Operation of a case officer...\n");
-}
-
-void operation_counterintelligence_officer(character_t *counterintelligence_officer)
-{
-    printf(">> Operation of a counterintelligence_officer...\n");
 }
