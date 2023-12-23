@@ -28,6 +28,8 @@
 #include "memory.h"
 #include "monitor.h"
 #include "monitor_common.h"
+#include "spy_simulation.h"
+#include "simulation_signals.h"
 
 #define MAP_WRITE 0x0002
 
@@ -60,26 +62,8 @@ int main(void) {
 
     //memory = (memory_t*)malloc(sizeof(memory_t));
 
-
-    int memory = shm_open("/nothinghere", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    if (memory == -1) {
-        perror("shm_open error");
-    }
-    if (ftruncate(memory, sizeof(memory_t)) == -1) {
-        perror("ftruncate");
-    }
-    memory_t* p = mmap(NULL, sizeof(memory_t), MAP_WRITE, MAP_SHARED, memory, 0);
-    if (p == MAP_FAILED) {
-        perror("mmap");
-        return 1;
-    }
-    p->memory_has_changed = 1;
-    clear_city(&(p->city_map));
-    print_city(&(p->city_map));
-    init_city(&(p->city_map));
-    print_city(&(p->city_map));
-
-    p->step = 100;
+    memory_t *memory = open_shared_memory();
+    set_memory(memory);
 
 
     /* ---------------------------------------------------------------------- */
@@ -108,7 +92,7 @@ int main(void) {
     }
 
     /* Initialize terminal user interface elements */
-    init_monitor_elements(main_window, p, rows, cols);
+    init_monitor_elements(main_window, memory, rows, cols);
 
     /* Simulation configuration */
     int number_of_turns = 2016;
@@ -120,12 +104,14 @@ int main(void) {
         switch(key) {
         case 'Q':
         case 'q':
-        case 27: quit_nicely(NO_PARTICULAR_REASON);
+        case 27:
+            memory->simulation_has_ended = 1;
+            quit_nicely(NO_PARTICULAR_REASON);
         default: break;
         }
-        if(p->memory_has_changed) {
-            update_values(p);
-            p->memory_has_changed = 0;
+        if(memory->memory_has_changed) {
+            update_values(memory);
+            memory->memory_has_changed = 0;
         }
     }
 }

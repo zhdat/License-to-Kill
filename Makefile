@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run
 
-all: bin/main_program bin/monitor bin/character_factory
+all: bin/main_program bin/monitor bin/spy_simulation
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
@@ -28,10 +28,10 @@ obj/main.o: src/main.c
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o
+bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o obj/memory.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h
+obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/monitor.o: src/monitor/monitor.c include/monitor.h
@@ -49,18 +49,31 @@ obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 obj/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
+obj/memory.o: src/common/memory.c include/memory.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
-# CHARACTER OBJECTS FILES
+# SPY SIMULATION
 # ----------------------------------------------------------------------------
-bin/character_factory: obj/character_factory_main.o obj/character_factory.o obj/character.o obj/cell.o obj/logger.o
+bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character.o obj/cell.o obj/logger.o obj/spy_simulation.o obj/memory.o obj/simulation_signals.o
 	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@
 
-obj/character_factory_main.o: src/character/main.c include/character_factory.h include/logger.h include/memory.h
+obj/character_factory_main.o: src/character/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/character_factory.o: src/character/character_factory.c include/character_factory.h include/logger.h include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/spy_simulation.o: src/character/spy_simulation.c include/spy_simulation.h include/logger.h include/memory.h include/character_factory.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/simulation_signals.o: src/character/simulation_signals.c include/simulation_signals.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+# ----------------------------------------------------------------------------
+# CHARACTER OBJECTS FILES
+# ----------------------------------------------------------------------------
+
 
 obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c

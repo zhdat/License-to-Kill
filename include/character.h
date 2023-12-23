@@ -33,13 +33,18 @@ struct source_agent_s {
 /* Structure of attending_officer */
 struct attending_officer_s {
 	character_t character; /*!< The character. */
-	int nb_agent;		   /*!< The number of agent under his control. */
+	int mailbox_row; /*!< The row of the mailbox. */
+	int mailbox_column; /*!< The column of the mailbox. */
 };
 
 /* Structure of counter_intelligence_officer */
 struct counter_intelligence_officer_s {
 	character_t character; /*!< The character. */
-	int radius_action;	   /*!< The radius of action of the officer. */
+    int city_hall_row;
+    int city_hall_column;
+    int mailbox_row;
+    int mailbox_column;
+    int targeted_character_id;
 };
 
 /* Character management functions */
