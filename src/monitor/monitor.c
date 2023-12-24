@@ -252,9 +252,22 @@ void display_citizen_information(WINDOW* window, memory_t* mem, int row, int col
     int number_of_citizens_at_work;
     int number_of_citizens_walking;
 
-    number_of_citizens_at_home = MAX_CITIZEN_COUNT;
+    number_of_citizens_at_home = 0;
     number_of_citizens_at_work = 0;
     number_of_citizens_walking = 0;
+
+    for (int i=0; i<MAX_CITIZEN_COUNT; i++){
+        if (mem->citizens[i].row == mem->citizens[i].home_row && mem->citizens[i].column == mem->citizens[i].home_column){
+            number_of_citizens_at_home++;
+        }
+        else if (mem->citizens[i].row == mem->citizens[i].work_row && mem->citizens[i].column == mem->citizens[i].work_column){
+            number_of_citizens_at_work++;
+        }
+        else{
+            number_of_citizens_walking++;
+        }
+    }
+
     /* ---------------------------------------------------------------------- */
 
     wattron(window, A_BOLD);
@@ -281,10 +294,10 @@ void display_spy_information(WINDOW* window, memory_t* mem, int row, int column,
 
     id = mem->source_agents[number].character.id;
     health_points = mem->source_agents[number].character.health;
-    location_row = mem->source_agents[number].character.x;
-    location_column = mem->source_agents[number].character.y;
-    home_row = mem->source_agents[number].character.home_x;
-    home_column = mem->source_agents[number].character.home_y;
+    location_row = mem->source_agents[number].character.row;
+    location_column = mem->source_agents[number].character.column;
+    home_row = mem->source_agents[number].character.home_row;
+    home_column = mem->source_agents[number].character.home_column;
     nb_of_stolen_companies = 0;
     has_license_to_kill = mem->source_agents[number].has_licence_to_kill;
     strcpy(stolen_message_content, "bla bla bla");
@@ -326,10 +339,10 @@ void display_case_officer_information(WINDOW* window, memory_t* mem, int row, in
 
     id = mem->attending_officers[0].character.id;
     health_points = mem->attending_officers[0].character.health;
-    location_row = mem->attending_officers[0].character.x;
-    location_column = mem->attending_officers[0].character.y;
-    home_row = mem->attending_officers[0].character.home_x;
-    home_column = mem->attending_officers[0].character.home_y;
+    location_row = mem->attending_officers[0].character.row;
+    location_column = mem->attending_officers[0].character.column;
+    home_row = mem->attending_officers[0].character.home_row;
+    home_column = mem->attending_officers[0].character.home_column;
     mailbox_row = mem->attending_officers[0].mailbox_row;
     mailbox_column = mem->attending_officers[0].mailbox_column;
     /* ---------------------------------------------------------------------- */
@@ -362,8 +375,8 @@ void display_counterintelligence_officer_information(WINDOW* window,
 
     id = mem->counter_intelligence_officers[0].character.id;
     health_points = mem->counter_intelligence_officers[0].character.health;
-    location_row = mem->counter_intelligence_officers[0].character.x;
-    location_column = mem->counter_intelligence_officers[0].character.y;
+    location_row = mem->counter_intelligence_officers[0].character.row;
+    location_column = mem->counter_intelligence_officers[0].character.column;
     city_hall_row = mem->counter_intelligence_officers[0].city_hall_row;
     city_hall_column = mem->counter_intelligence_officers[0].city_hall_column;
     mailbox_row = mem->counter_intelligence_officers[0].mailbox_row;

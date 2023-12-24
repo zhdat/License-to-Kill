@@ -42,16 +42,16 @@ enum cell_type_e {
 	SUPERMARKET			  /*!< A cell that contains a supermarket. */
 };
 
-#define MAX_NUMBER_OF_CHARACTERS_ON_WASTELAND = 999;
-#define MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING = 15;
-#define MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL = 20;
-#define MAX_NUMBER_OF_CHARACTERS_ON_COMPANY = 50;
-#define MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET = 30;
+#define MAX_NUMBER_OF_CHARACTERS_ON_WASTELAND 999
+#define MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING 15
+#define MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL 20
+#define MAX_NUMBER_OF_CHARACTERS_ON_COMPANY 50
+#define MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET 30
 
-#define NUMBER_OF_RESIDENTIAL_BUILDINGS = 11;
-#define NUMBER_OF_COMPANIES = 8;
-#define NUMBER_OF_SUPERMARKETS = 2;
-#define NUMBER_OF_CITY_HALLS = 1;
+#define NUMBER_OF_RESIDENTIAL_BUILDINGS 11
+#define NUMBER_OF_COMPANIES 8
+#define NUMBER_OF_SUPERMARKETS 2
+#define NUMBER_OF_CITY_HALLS 1
 
 typedef enum cell_type_e cell_type_t;
 typedef struct cell_s cell_t;
@@ -77,6 +77,13 @@ struct city_s {
 	cell_t cells[MAX_COLUMNS][MAX_ROWS]; /*!< Cells of the map. */
 };
 
+
+typedef struct {
+    int column;
+    int row;
+} coordinate_t;
+
+
 /* Function to create a city */
 city_t* create_city(int width, int height);
 city_t* delete_city(city_t* city);
@@ -87,5 +94,7 @@ void clear_city(city_t* city);
 void init_city(city_t* city);
 int should_be_monitored(cell_type_t cell_type);
 void initialize_surveillance_system(city_t* city);
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count);
+city_t * print_city_with_characters(city_t * city);
 
 #endif /* CELL_H */

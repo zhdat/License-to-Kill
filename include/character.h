@@ -11,13 +11,13 @@ typedef struct counter_intelligence_officer_s counter_intelligence_officer_t;
 /* basic structure of character */
 struct character_s {
     int id; /*!< The id of the character. */
-    int x;	/*!< The x position of the character. */
-    int y;	/*!< The y position of the character. */
+    int row;	/*!< The row position of the character. */
+    int column;	/*!< The column position of the character. */
     int health; /*!< The health points of the character. */
-    int home_x;		  /*!< The x position of the home of the character. */
-    int home_y;		  /*!< The y position of the home of the character. */
-    int work_x;		  /*!< The x position of the work of the character. */
-    int work_y;		  /*!< The y position of the work of the character. */
+    int home_row;		  /*!< The row position of the home of the character. */
+    int home_column;		  /*!< The column position of the home of the character. */
+    int work_row;		  /*!< The row position of the work of the character. */
+    int work_column;		  /*!< The column position of the work of the character. */
     int pid;		  /*!< The pid of the character. */
 
 };

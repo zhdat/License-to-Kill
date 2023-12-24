@@ -10,8 +10,8 @@ character_t* create_character(int id, int x, int y)
 		return NULL;
 	}
 	new_character->id = id;
-	new_character->x = x;
-	new_character->y = y;
+	new_character->row = x;
+	new_character->column = y;
 	return new_character;
 }
 
@@ -24,8 +24,8 @@ void delete_charactere(character_t* character)
 void move_character(character_t* character, int newX, int newY)
 {
 	if (character != NULL) {
-		character->x = newX;
-		character->y = newY;
+		character->row = newX;
+		character->column = newY;
 	}
 }
 
@@ -40,17 +40,17 @@ void initialize_characters(city_t* city)
 	// Vous pouvez ajuster la logique selon vos besoins spécifiques
 
 	// Création d'un agent source
-	character_t* source_agent = create_character(1, 2, 3); // ID, x, y
+	character_t* source_agent = create_character(1, 2, 3); // ID, row, column
 	if (source_agent != NULL) {
-		cell_t* cell = get_cell(city, source_agent->x, source_agent->y);
+		cell_t* cell = get_cell(city, source_agent->row, source_agent->column);
 		cell->nb_of_characters++; // Incrémenter le nombre de personnages sur la cellule
 								  // Vous pouvez également ajouter des informations supplémentaires à la cellule si nécessaire
 	}
 
 	// Création d'un officier traitant
-	character_t* attending_officer = create_character(2, 4, 5); // ID, x, y
+	character_t* attending_officer = create_character(2, 4, 5); // ID, row, column
 	if (attending_officer != NULL) {
-		cell_t* cell = get_cell(city, attending_officer->x, attending_officer->y);
+		cell_t* cell = get_cell(city, attending_officer->row, attending_officer->column);
 		cell->nb_of_characters++;
 		// Ajoutez ici d'autres actions pour l'officier traitant
 	}
