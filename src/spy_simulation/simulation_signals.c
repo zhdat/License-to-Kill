@@ -1,4 +1,4 @@
-#include "../../include/simulation_signals.h"
+#include "simulation_signals.h"
 #include <stdio.h>
 #include <stdlib.h>
 

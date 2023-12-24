@@ -82,6 +82,8 @@ struct memory_s {
     int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
 
     city_t city_map; /*!< Carte de la ville.*/
+
+    coordinate_t mailbox_coordinate; /*!< Coordonnées de la boîte aux lettres.*/
     
 };
 

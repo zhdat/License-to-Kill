@@ -56,18 +56,18 @@ obj/memory.o: src/common/memory.c include/memory.h
 # SPY SIMULATION
 # ----------------------------------------------------------------------------
 bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character.o obj/cell.o obj/logger.o obj/spy_simulation.o obj/memory.o obj/simulation_signals.o
-	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@
+	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@ -lm
 
-obj/character_factory_main.o: src/character/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
+obj/character_factory_main.o: src/spy_simulation/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/character_factory.o: src/character/character_factory.c include/character_factory.h include/logger.h include/memory.h
+obj/character_factory.o: src/spy_simulation/character_factory.c include/character_factory.h include/logger.h include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/spy_simulation.o: src/character/spy_simulation.c include/spy_simulation.h include/logger.h include/memory.h include/character_factory.h
+obj/spy_simulation.o: src/spy_simulation/spy_simulation.c include/spy_simulation.h include/logger.h include/memory.h include/character_factory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/simulation_signals.o: src/character/simulation_signals.c include/simulation_signals.h
+obj/simulation_signals.o: src/spy_simulation/simulation_signals.c include/simulation_signals.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ obj/simulation_signals.o: src/character/simulation_signals.c include/simulation_
 obj/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/cell.o: src/cell.c include/cell.h include/character.h
+obj/cell.o: src/spy_simulation/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------

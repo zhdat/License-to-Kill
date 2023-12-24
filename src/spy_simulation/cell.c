@@ -34,6 +34,37 @@ city_t* print_city(city_t* city) {
     }
 }
 
+city_t * print_city_with_characters(city_t * city) {
+    int i, j;
+    if(city == NULL) {
+        printf("Error: city is NULL in print_city\n");
+        return NULL;
+    }
+    for(i = 0; i < city->height; i++) {
+        for(j = 0; j < city->width; j++) {
+            switch(city->cells[i][j].type) {
+            case WASTELAND: printf("W"); break;
+            case RESIDENTIAL_BUILDING: printf("R"); break;
+            case CITY_HALL: printf("C"); break;
+            case COMPANY: printf("O"); break;
+            case SUPERMARKET: printf("S"); break;
+            default: printf("?"); break;
+            }
+            if(city->cells[i][j].nb_of_characters > 0) {
+                printf("[%d]", city->cells[i][j].nb_of_characters);
+            }
+            else {
+                printf(" ");
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
+
+
+
 cell_t* get_cell(city_t* city, int x, int y) {
     if(city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
         printf("Error: invalid parameters in get_cell\n");
@@ -152,3 +183,34 @@ void initialize_surveillance_system(city_t* city) {
         }
     }
 }
+
+
+// Function to find cells of a specific type and return their coordinates
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count) {
+    if (city == NULL || count <= 0) {
+        return NULL; // Null check for city and check for non-positive count
+    }
+
+    coordinate_t* coordinates = malloc(count * sizeof(coordinate_t));
+    if (coordinates == NULL) {
+        return NULL; // Memory allocation check
+    }
+
+    int found = 0; // Counter for found buildings
+    for (int i = 0; i < city->height; ++i) {
+        for (int j = 0; j < city->width; ++j) {
+            if (city->cells[i][j].type == building_type) {
+                coordinates[found].column = i;
+                coordinates[found].row = j;
+                found++;
+
+                if (found >= count) {
+                    return coordinates; // Return early if all buildings are found
+                }
+            }
+        }
+    }
+
+    return coordinates; // Return the found coordinates (may be fewer than count if not all are found)
+}
+
