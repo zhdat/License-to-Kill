@@ -1,14 +1,17 @@
-#include "memory.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
+#include "memory.h"
 
-memory_t* open_shared_memory() {
+memory_t *open_shared_memory(void){
+    int fd;
     memory_t *mem;
-    int fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
+
+    fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
     if (fd == -1) {
         perror("shm_open");
         exit(EXIT_FAILURE);

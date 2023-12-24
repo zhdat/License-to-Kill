@@ -34,10 +34,10 @@ bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o 
 obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor.o: src/monitor/monitor.c include/monitor.h
+obj/monitor/monitor.o: src/monitor/monitor.c include/monitor.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
+obj/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 
@@ -46,7 +46,7 @@ obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 # COMMON OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-obj/logger.o: src/common/logger.c include/logger.h
+obj/common/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/memory.o: src/common/memory.c include/memory.h
@@ -74,11 +74,23 @@ obj/simulation_signals.o: src/spy_simulation/simulation_signals.c include/simula
 # CHARACTER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-
-obj/character.o: src/character/character.c include/character.h
+obj/character/character.o: src/character/character.c include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/cell.o: src/spy_simulation/cell.c include/cell.h include/character.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+# ----------------------------------------------------------------------------
+# TIMER OBJECTS FILES
+# ----------------------------------------------------------------------------
+
+bin/timer: obj/timer/timer.o obj/timer/main.o obj/common/memory.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/timer/timer.o: src/timer/timer.c include/timer.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/timer/main.o: src/timer/main.c include/timer.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------

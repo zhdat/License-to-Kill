@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "monitor.h": "c",
+        "monitor_common.h": "c",
+        "memory.h": "c",
+        "minunit.h": "c",
+        "character.h": "c",
+        "cell.h": "c"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "enabled"
+}
