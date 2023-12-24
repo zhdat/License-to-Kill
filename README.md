@@ -7,7 +7,7 @@ The "Meslo LG L for Powerline" font that should already be installed on your
 system. The font can also be downloaded at [https://github.com/powerline/fonts](https://github.com/powerline/fonts).
 
 Here is what you should see by running "`bin/monitor`" from the root of your 
-project, once you will have implemented the shared memory ("`memory_t`" 
+project, once you will have implemented the shared mem ("`memory_t`" 
 structure).
 
 ![The monitor program](./doc/figures/spies_monitor.png)

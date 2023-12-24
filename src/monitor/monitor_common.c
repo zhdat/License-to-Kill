@@ -44,8 +44,8 @@ void quit_after_error(const char *msg)
     curs_set(old_cursor);
     endwin();
     refresh();
-	
-    /* Do not forget to clean shared memory calling a function*/
+
+    /* Do not forget to clean shared mem calling a function*/
 	/* cleanup_memory(mem); */
 
     perror(msg);
@@ -64,7 +64,7 @@ void quit_nicely(int reason)
     endwin();
     refresh();
 
-    /* Do not forget to clean shared memory calling a function*/
+    /* Do not forget to clean shared mem calling a function*/
 	/* cleanup_memory(mem); */
 
     switch (reason) {
@@ -76,7 +76,7 @@ void quit_nicely(int reason)
     exit(EXIT_SUCCESS);
 }
 
-void clear_line(WINDOW *window, int row) 
+void clear_line(WINDOW *window, int row)
 {
 	/* Have an idea for something smarter? */
     wmove(window, row, 1);
@@ -132,9 +132,9 @@ void set_timer(void)
     timerclear(&it.it_interval);
     timerclear(&it.it_value);
 
-    /* Set timer */
+    /* Set my_timer */
     it.it_interval.tv_usec = TIME_STEP;
-    it.it_value.tv_usec = TIME_STEP;
+    it.it_value.tv_usec = 10;
     setitimer(ITIMER_REAL, &it, NULL);
 }
 

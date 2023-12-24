@@ -10,6 +10,7 @@ typedef struct counter_intelligence_officer_s counter_intelligence_officer_t;
 
 /* basic structure of character */
 struct character_s {
+<<<<<<< HEAD
     int id; /*!< The id of the character. */
     int row;	/*!< The row position of the character. */
     int column;	/*!< The column position of the character. */
@@ -20,6 +21,14 @@ struct character_s {
     int work_column;		  /*!< The column position of the work of the character. */
     int pid;		  /*!< The pid of the character. */
 
+=======
+	int id; /*!< The id of the character. */
+	int x;	/*!< The x position of the character. */
+	int y;    /*!< The y position of the character. */
+<<<<<<< HEAD
+>>>>>>> a224402 (Timer)
+=======
+>>>>>>> a22440242775064688c85465b3e67225034773c7
 };
 
 
