@@ -14,6 +14,7 @@ city_t *delete_city(city_t *city) {
 }
 
 city_t *print_city(city_t *city) {
+<<<<<<< HEAD:src/spy_simulation/cell.c
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
@@ -47,20 +48,34 @@ city_t *print_city(city_t *city) {
 }
 
 city_t * print_city_with_characters(city_t * city) {
+=======
+>>>>>>> a22440242775064688c85465b3e67225034773c7:src/cell.c
     int i, j;
-    if(city == NULL) {
+    if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
         return NULL;
     }
-    for(i = 0; i < city->height; i++) {
-        for(j = 0; j < city->width; j++) {
-            switch(city->cells[i][j].type) {
-            case WASTELAND: printf("W"); break;
-            case RESIDENTIAL_BUILDING: printf("R"); break;
-            case CITY_HALL: printf("C"); break;
-            case COMPANY: printf("O"); break;
-            case SUPERMARKET: printf("S"); break;
-            default: printf("?"); break;
+    for (i = 0; i < city->height; i++) {
+        for (j = 0; j < city->width; j++) {
+            switch (city->cells[i][j].type) {
+                case WASTELAND:
+                    printf("W");
+                    break;
+                case RESIDENTIAL_BUILDING:
+                    printf("R");
+                    break;
+                case CITY_HALL:
+                    printf("C");
+                    break;
+                case COMPANY:
+                    printf("O");
+                    break;
+                case SUPERMARKET:
+                    printf("S");
+                    break;
+                default:
+                    printf("?");
+                    break;
             }
             if(city->cells[i][j].nb_of_characters > 0) {
                 printf("[%d]", city->cells[i][j].nb_of_characters);
@@ -74,11 +89,16 @@ city_t * print_city_with_characters(city_t * city) {
     return 0;
 }
 
+<<<<<<< HEAD:src/spy_simulation/cell.c
 
 
 
 cell_t* get_cell(city_t* city, int x, int y) {
     if(city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
+=======
+cell_t *get_cell(city_t *city, int x, int y) {
+    if (city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
+>>>>>>> a22440242775064688c85465b3e67225034773c7:src/cell.c
         printf("Error: invalid parameters in get_cell\n");
         return NULL;
     }

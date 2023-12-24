@@ -25,7 +25,10 @@ struct character_s {
 	int id; /*!< The id of the character. */
 	int x;	/*!< The x position of the character. */
 	int y;    /*!< The y position of the character. */
+<<<<<<< HEAD
 >>>>>>> a224402 (Timer)
+=======
+>>>>>>> a22440242775064688c85465b3e67225034773c7
 };
 
 
