@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <sys/time.h>
 
-#include "../../include/timer.h"
+#include "timer.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
     free_timer();
 
-    close_shared_memory(sharedMemory);
+    end_shared_memory(sharedMemory);
 
     printf("Timer : end \n");
     return 0;

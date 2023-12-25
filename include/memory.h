@@ -38,7 +38,7 @@
 
 typedef struct map_s map_t;
 typedef struct memory_s memory_t;
-typedef struct timer_s timer_t;
+typedef struct timer_s timer_type;
 
 struct timer_s {
     int days;
@@ -92,33 +92,15 @@ struct memory_s {
 
     city_t city_map; /*!< Carte de la ville.*/
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     coordinate_t mailbox_coordinate; /*!< Coordonnées de la boîte aux lettres.*/
+
+    timer_type my_timer; /*!< Timer de la simulation.*/
     
 };
 
 memory_t * open_shared_memory(void);
 void end_shared_memory(memory_t * mem);
-=======
-    timer_t my_timer; /*!< Timer de la simulation.*/
-    
-};
 
-=======
-    timer_t my_timer; /*!< Timer de la simulation.*/
-    
-};
 
->>>>>>> a22440242775064688c85465b3e67225034773c7
-/* Open the shared mem */
-memory_t *open_shared_memory(void);
-
-/* Close the shared mem */
-void close_shared_memory(memory_t *memory);
-<<<<<<< HEAD
->>>>>>> a224402 (Timer)
-=======
->>>>>>> a22440242775064688c85465b3e67225034773c7
 
 #endif /* MEMORY_H */

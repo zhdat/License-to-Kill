@@ -135,7 +135,8 @@ void set_mailbox(memory_t *mem) {
     coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     int random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
-    mem->mailbox_coordinate = residential_buildings[random];
+    mem->mailbox_coordinate.row = residential_buildings[random].row;
+    mem->mailbox_coordinate.column = residential_buildings[random].column;
 }
 
 coordinate_t get_mailbox(memory_t *mem) {

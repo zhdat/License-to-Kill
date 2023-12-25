@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run
 
-all: bin/main_program bin/monitor bin/spy_simulation
+all: bin/main_program bin/monitor bin/spy_simulation bin/timer
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
@@ -28,16 +28,16 @@ obj/main.o: src/main.c
 # ----------------------------------------------------------------------------
 # MONITOR
 # ----------------------------------------------------------------------------
-bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/logger.o obj/character.o obj/cell.o obj/memory.o obj/simulation_signals.o
+bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/common/logger.o obj/character/character.o obj/cell.o obj/common/memory.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor/monitor.o: src/monitor/monitor.c include/monitor.h
+obj/monitor.o: src/monitor/monitor.c include/monitor.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
+obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 
@@ -49,13 +49,13 @@ obj/monitor/monitor_common.o: src/monitor/monitor_common.c include/monitor_commo
 obj/common/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/memory.o: src/common/memory.c include/memory.h
+obj/common/memory.o: src/common/memory.c include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
 # SPY SIMULATION
 # ----------------------------------------------------------------------------
-bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character.o obj/cell.o obj/logger.o obj/spy_simulation.o obj/memory.o obj/simulation_signals.o
+bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character/character.o obj/cell.o obj/common/logger.o obj/spy_simulation.o obj/common/memory.o obj/simulation_signals.o
 	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@ -lm
 
 obj/character_factory_main.o: src/spy_simulation/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
@@ -100,7 +100,12 @@ run: all
 	./bin/main_program
 
 clean:
+	rm obj/character/*.o
+	rm obj/timer/*.o
+	rm obj/monitor/*.o
+	rm obj/common/*.o
 	rm obj/*.o
+
 
 distclean: clean
 	rm bin/*

@@ -64,49 +64,11 @@ int main(void) {
     /* Change it to access to the real shared mem.                         */
 
     //mem = (memory_t*)malloc(sizeof(memory_t));
-<<<<<<< HEAD
 
     memory_t *memory = open_shared_memory();
     set_memory(memory);
-=======
->>>>>>> a22440242775064688c85465b3e67225034773c7
 
-    shm_unlink("/nothinghere");
 
-<<<<<<< HEAD
-=======
-    int memory = shm_open("/nothinghere", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    if (memory == -1) {
-        perror("shm_open error");
-    }
-    if (ftruncate(memory, sizeof(memory_t)) == -1) {
-        perror("ftruncate error");
-    }
->>>>>>> a22440242775064688c85465b3e67225034773c7
-    memory_t* p = mmap(NULL, sizeof(memory_t), MAP_WRITE, MAP_SHARED, memory, 0);
-    if (p == MAP_FAILED) {
-        perror("mmap");
-        return 1;
-    }
-<<<<<<< HEAD
-    memory->memory_has_changed = 1;
-    clear_city(&(memory->city_map));
-    /*print_city(&(p->city_map));*/
-    init_city(&(memory->city_map));
-    /*print_city(&(p->city_map));*/
-
-    memory->step = 100;
-
-=======
-    p->memory_has_changed = 1;
-    clear_city(&(p->city_map));
-    /*print_city(&(p->city_map));*/
-    init_city(&(p->city_map));
-    /*print_city(&(p->city_map));*/
-
-    p->step = 100;
-
->>>>>>> a22440242775064688c85465b3e67225034773c7
     /* ---------------------------------------------------------------------- */
 
     monitor = (monitor_t*) malloc(sizeof(monitor_t));
@@ -144,8 +106,6 @@ int main(void) {
     /*  Loop and get user input  */
     while (true) {
         key = getch();
-<<<<<<< HEAD
-
         switch(key) {
         case 'Q':
         case 'q':
@@ -157,19 +117,7 @@ int main(void) {
         if(memory->memory_has_changed) {
             update_values(memory);
             memory->memory_has_changed = 0;
-=======
-        switch (key) {
-            case 'Q':
-            case 'q':
-            case 27:
-                quit_nicely(NO_PARTICULAR_REASON);
-            default:
-                break;
-        }
-        if (p->memory_has_changed) {
-            update_values(p);
-            p->memory_has_changed = 0;
->>>>>>> a22440242775064688c85465b3e67225034773c7
+
         }
     }
 }
