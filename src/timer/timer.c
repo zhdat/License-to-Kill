@@ -39,6 +39,16 @@ int simulationFinished(memory_t* memory) {
 
 void timer_handler(int signum) {
     mem->my_timer.turns++;
+    mem->my_timer.minutes += 10;
+    if (mem->my_timer.minutes >= 60) {
+        mem->my_timer.minutes = 0;
+        mem->my_timer.hours++;
+        if (mem->my_timer.hours >= 24) {
+            mem->my_timer.hours = 0;
+            mem->my_timer.days++;
+        }
+    }
+
     mem->memory_has_changed = 1;
     for (int i = 1; i < number_of_pids; i++) {
         kill(pids[i], SIGALRM);

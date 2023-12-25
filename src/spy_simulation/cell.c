@@ -14,14 +14,13 @@ city_t *delete_city(city_t *city) {
 }
 
 city_t *print_city(city_t *city) {
-<<<<<<< HEAD:src/spy_simulation/cell.c
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
         return NULL;
     }
-    for (i = 0; i < city->height; i++) {
-        for (j = 0; j < city->width; j++) {
+    for (i = 0; i < city->width; i++) {
+        for (j = 0; j < city->height; j++) {
             switch (city->cells[i][j].type) {
                 case WASTELAND:
                     printf("W");
@@ -48,15 +47,13 @@ city_t *print_city(city_t *city) {
 }
 
 city_t * print_city_with_characters(city_t * city) {
-=======
->>>>>>> a22440242775064688c85465b3e67225034773c7:src/cell.c
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
         return NULL;
     }
-    for (i = 0; i < city->height; i++) {
-        for (j = 0; j < city->width; j++) {
+    for (i = 0; i < city->width; i++) {
+        for (j = 0; j < city->height; j++) {
             switch (city->cells[i][j].type) {
                 case WASTELAND:
                     printf("W");
@@ -89,16 +86,11 @@ city_t * print_city_with_characters(city_t * city) {
     return 0;
 }
 
-<<<<<<< HEAD:src/spy_simulation/cell.c
 
 
 
 cell_t* get_cell(city_t* city, int x, int y) {
     if(city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
-=======
-cell_t *get_cell(city_t *city, int x, int y) {
-    if (city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
->>>>>>> a22440242775064688c85465b3e67225034773c7:src/cell.c
         printf("Error: invalid parameters in get_cell\n");
         return NULL;
     }
@@ -231,8 +223,8 @@ coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int co
     }
 
     int found = 0; // Counter for found buildings
-    for (int i = 0; i < city->height; ++i) {
-        for (int j = 0; j < city->width; ++j) {
+    for (int i = 0; i < city->width; ++i) {
+        for (int j = 0; j < city->height; ++j) {
             if (city->cells[i][j].type == building_type) {
                 coordinates[found].column = i;
                 coordinates[found].row = j;
