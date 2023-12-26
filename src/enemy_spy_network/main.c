@@ -1,5 +1,6 @@
 #include "enemy_spy_network.h"
 
-#define NUM_SPIES 3
+int main(void) {
 
-
+    return 0;
+}

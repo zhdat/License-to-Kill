@@ -55,6 +55,7 @@ enum cell_type_e {
 
 typedef enum cell_type_e cell_type_t;
 typedef struct cell_s cell_t;
+typedef struct city_s city_t;
 
 /**
  * \brief A cell within the map of the city.
@@ -65,8 +66,6 @@ struct cell_s {
 	cell_type_t type;	  /*!< Type of the cell (@see \enum e_cell_type). */
 	int nb_of_characters; /*!< Number of characters on the cell. */
 };
-
-typedef struct city_s city_t;
 
 /**
  * \brief The map of the city.
@@ -95,6 +94,6 @@ void init_city(city_t* city);
 int should_be_monitored(cell_type_t cell_type);
 void initialize_surveillance_system(city_t* city);
 coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count);
-city_t * print_city_with_characters(city_t * city);
+void print_city_with_characters(city_t * city);
 
 #endif /* CELL_H */

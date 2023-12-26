@@ -46,11 +46,11 @@ city_t *print_city(city_t *city) {
     }
 }
 
-city_t * print_city_with_characters(city_t * city) {
+void print_city_with_characters(city_t * city) {
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
-        return NULL;
+        exit(0);
     }
     for (i = 0; i < city->width; i++) {
         for (j = 0; j < city->height; j++) {
@@ -83,7 +83,6 @@ city_t * print_city_with_characters(city_t * city) {
         }
         printf("\n");
     }
-    return 0;
 }
 
 
