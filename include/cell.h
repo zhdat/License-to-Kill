@@ -73,7 +73,7 @@ struct cell_s {
 struct city_s {
 	int width;		/*!< Width of the map. */
 	int height;		/*!< Height of the map. */
-	cell_t cells[MAX_COLUMNS][MAX_ROWS]; /*!< Cells of the map. */
+	cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells of the map. */
 };
 
 

@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run
 
-all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_spy_network
+all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/testing
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
@@ -105,6 +105,27 @@ obj/timer/timer.o: src/timer/timer.c include/timer.h
 obj/timer/main.o: src/timer/main.c include/timer.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
+
+# ----------------------------------------------------------------------------
+# ENEMY COUNTRY
+# ----------------------------------------------------------------------------
+
+bin/enemy_country: obj/enemy_country/enemy_country.o obj/common/memory.o obj/enemy_country/main.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/enemy_country/enemy_country.o: src/enemy_country/enemy_country.c include/enemy_country.h include/memory.h include/common.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/enemy_country/main.o: src/enemy_country/main.c include/enemy_country.h include/common.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+
+bin/testing: obj/testing.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+obj/testing.o: src/enemy_country/testing.c include/enemy_country.h include/common.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
 # ----------------------------------------------------------------------------
 # CLEANING
 # ----------------------------------------------------------------------------
@@ -116,7 +137,7 @@ clean:
 	rm obj/common/*.o
 	rm obj/character/*.o
 	rm obj/timer/*.o
-	rm obj/monitor/*.o
+	rm obj/enemy_country/*.o
 
 distclean: clean
 	rm bin/*

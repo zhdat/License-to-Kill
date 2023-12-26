@@ -107,7 +107,7 @@ void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns)
     display_character_information(character_window, mem);
     printf("character done\n");
     display_mailbox_content(mailbox_content_window, mem);
-    display_enemy_country_monitor(enemy_country_monitor);
+    display_enemy_country_monitor(enemy_country_monitor, mem);
 }
 
 void set_monitor_title(WINDOW* window, const char* title) {
@@ -302,7 +302,7 @@ void display_spy_information(WINDOW* window, memory_t* mem, int row, int column,
     location_column = mem->source_agents[number].character.column;
     home_row = mem->source_agents[number].character.home_row;
     home_column = mem->source_agents[number].character.home_column;
-    nb_of_stolen_companies = 0;
+    nb_of_stolen_companies = mem->source_agents[number].nb_of_stolen_companies;
     has_license_to_kill = mem->source_agents[number].has_licence_to_kill;
     strcpy(stolen_message_content, "bla bla bla");
 
@@ -438,7 +438,7 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     int priority;
     char content[MAX_LENGTH_OF_MESSAGE];
 
-    mailbox_nb_of_msgs = 0;
+    mailbox_nb_of_msgs = mem->mailbox_size;
     priority = 0;
     /* ---------------------------------------------------------------------- */
 
@@ -458,6 +458,7 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     nb_lines = 3;
     for(i = 0; i < mailbox_nb_of_msgs; i++) {
         clear_line(window, nb_lines);
+        strcpy(content, mem->encrpyted_messages[i].msg_text);
         if(strcmp(content, FAKE_MESSAGE) == 0) {
             mvwprintw(window, nb_lines, 2, ">> [%d] %s (P%d)", (i + 1), "FAKE MESSAGE", priority);
         } else {
@@ -469,12 +470,16 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     wrefresh(window);
 }
 
-void display_enemy_country_monitor(WINDOW* window) {
+void display_enemy_country_monitor(WINDOW* window, memory_t* mem) {
     int nb_lines;
     int title_column;
     int maxx;
     char buffer[MAX_LENGTH_OF_MESSAGE];
     char* title = "ENEMY COUNTRY MONITOR";
+
+    int i;
+    int mailbox_nb_of_msgs = mem->decrypted_mailbox_size;
+
 
     maxx = getmaxx(window);
     nb_lines = 1;
@@ -492,6 +497,14 @@ void display_enemy_country_monitor(WINDOW* window) {
      * -------------------------------------------------------------------------
      */
 
+    nb_lines = 3;
+    for(i = 0; i < mailbox_nb_of_msgs; i++) {
+        clear_line(window, nb_lines);
+        strcpy(buffer, mem->decrypted_messages[i].msg_text);
+        mvwprintw(window, nb_lines, 2, ">> %s", buffer);
+        nb_lines += 1;
+    }
+
     wrefresh(window);
 }
 
@@ -499,6 +512,6 @@ void update_values(memory_t* mem) {
     display_general_information_values(city_window, mem);
     display_character_information(character_window, mem);
     display_mailbox_content(mailbox_content_window, mem);
-    display_enemy_country_monitor(enemy_country_monitor);
+    display_enemy_country_monitor(enemy_country_monitor, mem);
     mem->memory_has_changed = 0;
 }

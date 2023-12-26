@@ -21,6 +21,7 @@
 #include "cell.h"
 #include "common.h"
 #include "character.h"
+#include "enemy_country.h"
 
 #define MAX_CITIZEN_COUNT 127
 #define MAX_SOURCE_AGENT_COUNT 3
@@ -54,7 +55,7 @@ struct timer_s {
 struct map_s {
     int columns; /*!< The number of columns of the city map. */
     int rows; /*!< The number of rows of the city map.*/
-    cell_t cells[MAX_COLUMNS][MAX_ROWS]; /*!< Cells that constitute the city map. */
+    cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells that constitute the city map. */
 };
 
 /**
@@ -88,7 +89,11 @@ struct memory_s {
 
     counter_intelligence_officer_t counter_intelligence_officers[MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT]; /*!<Tableau contenant les officiers de contre-espionnage.*/
 
-    int mailbox[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
+    message_t encrpyted_messages[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages.*/
+    int mailbox_size; /*!< Taille de la boîte aux lettres.*/
+
+    message_t decrypted_messages[MAX_MAILBOX_SIZE]; /*!< Boîte aux lettres contenant les messages déchiffrés.*/
+    int decrypted_mailbox_size; /*!< Taille de la boîte aux lettres contenant les messages déchiffrés.*/
 
     city_t city_map; /*!< Carte de la ville.*/
 

@@ -24,16 +24,16 @@ character_factory_t *new_character_factory(character_t (*factory_method)(int, in
     return factory;
 }
 
-character_t new_citizen(int x, int y)
+character_t new_citizen(int row, int column)
 {
     character_t citizen;
 
     citizen.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    citizen.row = x; // Assuming variables for initial positions
-    citizen.column = y;
+    citizen.row = row; // Assuming variables for initial positions
+    citizen.column = column;
     citizen.health = 10;
-    citizen.home_row = x;
-    citizen.home_column = y;
+    citizen.home_row = row;
+    citizen.home_column = column;
     citizen.work_row = -1;
     citizen.work_column = -1;
 
@@ -53,39 +53,39 @@ source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method
 }
 
 
-source_agent_t new_spy_with_licence(int x, int y)
+source_agent_t new_spy_with_licence(int row, int column)
 {
     source_agent_t spy;
 
     spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    spy.character.row = x; // Assuming variables for initial positions
-    spy.character.column = y;
+    spy.character.row = row; // Assuming variables for initial positions
+    spy.character.column = column;
     spy.character.health = 10;
-    spy.character.home_row = x;
-    spy.character.home_column = y;
+    spy.character.home_row = row;
+    spy.character.home_column = column;
     spy.character.work_row = -1;
     spy.character.work_column = -1;
     spy.has_licence_to_kill = 1;
-    spy.level_agent = 0;
+    spy.nb_of_stolen_companies = 0;
 
     return spy;
 
 }
 
-source_agent_t new_spy_without_licence(int x, int y)
+source_agent_t new_spy_without_licence(int row, int column)
 {
     source_agent_t spy;
 
     spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    spy.character.row = x; // Assuming variables for initial positions
-    spy.character.column = y;
+    spy.character.row = row; // Assuming variables for initial positions
+    spy.character.column = column;
     spy.character.health = 10;
-    spy.character.home_row = x;
-    spy.character.home_column = y;
+    spy.character.home_row = row;
+    spy.character.home_column = column;
     spy.character.work_row = -1;
     spy.character.work_column = -1;
     spy.has_licence_to_kill = 0;
-    spy.level_agent = 0;
+    spy.nb_of_stolen_companies = 0;
 
     return spy;
 }
@@ -100,16 +100,16 @@ attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (
     return factory;
 }
 
-attending_officer_t new_case_officer(int x, int y)
+attending_officer_t new_case_officer(int row, int column)
 {
     attending_officer_t case_officer;
 
     case_officer.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    case_officer.character.row = x; // Assuming variables for initial positions
-    case_officer.character.column = y;
+    case_officer.character.row = row; // Assuming variables for initial positions
+    case_officer.character.column = column;
     case_officer.character.health = 10;
-    case_officer.character.home_row = x;
-    case_officer.character.home_column = y;
+    case_officer.character.home_row = row;
+    case_officer.character.home_column = column;
     case_officer.character.work_row = -1;
     case_officer.character.work_column = -1;
 
@@ -126,17 +126,17 @@ counter_intelligence_officer_factory_t *new_counter_intelligence_officer_factory
     return factory;
 }
 
-counter_intelligence_officer_t new_counter_intelligence_officer(int x, int y, int target_id)
+counter_intelligence_officer_t new_counter_intelligence_officer(int row, int column, int target_id)
 {
     counter_intelligence_officer_t counterintelligence_officer;
 
 
     counterintelligence_officer.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    counterintelligence_officer.character.row = x; // Assuming variables for initial positions
-    counterintelligence_officer.character.column = y;
+    counterintelligence_officer.character.row = row; // Assuming variables for initial positions
+    counterintelligence_officer.character.column = column;
     counterintelligence_officer.character.health = 10;
-    counterintelligence_officer.character.home_row = x;
-    counterintelligence_officer.character.home_column = y;
+    counterintelligence_officer.character.home_row = row;
+    counterintelligence_officer.character.home_column = column;
     counterintelligence_officer.character.work_row = -1;
     counterintelligence_officer.character.work_column = -1;
     counterintelligence_officer.city_hall_column = 4;
