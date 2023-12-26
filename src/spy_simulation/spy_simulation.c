@@ -319,10 +319,16 @@ void set_characters(memory_t *mem) {
     affect_work_to_citizens(mem);
 }
 
+void set_mailbox_messages(memory_t * mem){
+    mem->mailbox_size = 0;
+    mem->decrypted_mailbox_size = 0;
+}
+
 void set_content_memory(memory_t *mem) {
     srand(time(NULL));
     mem->memory_has_changed = 1;
     mem->simulation_has_ended = 0;
+    set_mailbox_messages(mem);
     set_city_map(mem);
     set_characters(mem);
     printf("Coordonnées de la boite aux lettres : (%d,%d)\n", mem->mailbox_coordinate.row,

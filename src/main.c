@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-#define NUMBER_OF_PROGRAMS 3
+#define NUMBER_OF_PROGRAMS 5
 #define NUMBER_OF_ARGS_TIMER (NUMBER_OF_PROGRAMS + 2 + 1)
 
 void handle_fatal_error_and_exit(const char *msg) {
@@ -70,7 +70,13 @@ int main() {
 
 
     // char *timer_args[] = {"timer", child_pids, NULL};
-    child_pids[2] = create_child("./bin/timer", args_for_timer(child_pids));
+    // child_pids[2] = create_child("./bin/timer", args_for_timer(child_pids));
+
+    char *enemy_country_args[] = {"enemy_country", NULL};
+    child_pids[3] = create_child("./bin/enemy_country", enemy_country_args);
+
+    char *testing_args[] = {"testing", NULL};
+    child_pids[4] = create_child("./bin/testing", testing_args);
 
     /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
     child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/
