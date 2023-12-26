@@ -111,9 +111,11 @@ void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns)
 }
 
 void set_monitor_title(WINDOW* window, const char* title) {
-    int title_column;
+    int title_column, maxx;
 
-    title_column = main_window->_maxx / 2 - strlen(title) / 2;
+    maxx = getmaxx(window);
+
+    title_column = maxx / 2 - strlen(title) / 2;
     wattron(window, A_BOLD);
     mvwprintw(main_window, 0, title_column, "%s", title);
     wattroff(window, A_BOLD);
@@ -201,10 +203,11 @@ void set_cell_color(WINDOW* window, int color, int row, int col) {
 }
 
 void show_general_information(WINDOW* window) {
-    int title_column;
+    int title_column, maxx;
     char* title = "CITY MAP AND GENERAL INFORMATION";
 
-    title_column = window->_maxx / 2 - strlen(title) / 2;
+    maxx = getmaxx(window);
+    title_column = maxx / 2 - strlen(title) / 2;
 
     wattron(window, A_BOLD | A_UNDERLINE);
     mvwprintw(window, 1, title_column, "%s", title);
@@ -407,11 +410,13 @@ void display_character_information(WINDOW* window, memory_t* mem) {
     int title_column;
     int first_column;
     int second_column;
+    int maxx;
     char* title = "CHARACTERS";
 
-    title_column = window->_maxx / 2 - strlen(title) / 2;
+    maxx = getmaxx(window);
+    title_column = maxx / 2 - strlen(title) / 2;
     first_column = 2;
-    second_column = window->_maxx / 2;
+    second_column = maxx / 2;
 
     wattron(window, A_BOLD | A_UNDERLINE);
     mvwprintw(window, 1, title_column, "%s", title);
@@ -440,10 +445,12 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     int i;
     int title_column;
     int nb_lines;
+    int maxx;
     char* title = "MAILBOX CONTENT";
 
+    maxx = getmaxx(window);
     nb_lines = 1;
-    title_column = window->_maxx / 2 - strlen(title) / 2;
+    title_column = maxx / 2 - strlen(title) / 2;
     wattron(window, A_BOLD | A_UNDERLINE);
     mvwprintw(window, nb_lines, title_column, "%s", title);
     wattroff(window, A_BOLD | A_UNDERLINE);
@@ -465,11 +472,13 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
 void display_enemy_country_monitor(WINDOW* window) {
     int nb_lines;
     int title_column;
+    int maxx;
     char buffer[MAX_LENGTH_OF_MESSAGE];
     char* title = "ENEMY COUNTRY MONITOR";
 
+    maxx = getmaxx(window);
     nb_lines = 1;
-    title_column = window->_maxx / 2 - strlen(title) / 2;
+    title_column = maxx / 2 - strlen(title) / 2;
 
     wattron(window, A_BOLD | A_UNDERLINE);
     mvwprintw(window, nb_lines, title_column, "%s", title);
