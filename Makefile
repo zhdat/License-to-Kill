@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run
 
-all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/testing
+all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/testing bin/enemy_spy_network
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
