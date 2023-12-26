@@ -100,12 +100,11 @@ run: all
 	./bin/main_program
 
 clean:
+	rm obj/*.o
+	rm obj/common/*.o
 	rm obj/character/*.o
 	rm obj/timer/*.o
 	rm obj/monitor/*.o
-	rm obj/common/*.o
-	rm obj/*.o
-
 
 distclean: clean
 	rm bin/*
