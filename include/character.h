@@ -27,8 +27,8 @@ struct character_s {
 /* Structure of source_agent */
 struct source_agent_s {
 	character_t character; /*!< The character. */
+	int nb_of_stolen_companies; /*!< The number of stolen companies. */
 	int has_licence_to_kill; /*!< The licence to kill. 1 if he has it, 0 otherwise. */
-	int level_agent;	   /*!< The level of the agent. */
 };
 
 /* Structure of attending_officer */

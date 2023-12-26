@@ -19,9 +19,9 @@ city_t *print_city(city_t *city) {
         printf("Error: city is NULL in print_city\n");
         return NULL;
     }
-    for (i = 0; i < city->width; i++) {
-        for (j = 0; j < city->height; j++) {
-            switch (city->cells[i][j].type) {
+    for (i = 0; i < city->height; i++) {
+        for (j = 0; j < city->width; j++) {
+            switch (city->cells[j][i].type) {
                 case WASTELAND:
                     printf("W");
                     break;
@@ -54,7 +54,7 @@ city_t * print_city_with_characters(city_t * city) {
     }
     for (i = 0; i < city->width; i++) {
         for (j = 0; j < city->height; j++) {
-            switch (city->cells[i][j].type) {
+            switch (city->cells[j][i].type) {
                 case WASTELAND:
                     printf("W");
                     break;
@@ -94,7 +94,7 @@ cell_t* get_cell(city_t* city, int x, int y) {
         printf("Error: invalid parameters in get_cell\n");
         return NULL;
     }
-    return &city->cells[y][x];
+    return &city->cells[x][y];
 }
 
 void define_monitoring(city_t *city, int x, int y, int nb_of_characters) {
@@ -108,8 +108,8 @@ void define_monitoring(city_t *city, int x, int y, int nb_of_characters) {
 void clear_city(city_t *city) {
     for (int i = 0; i < city->height; i++) {
         for (int j = 0; j < city->width; j++) {
-            city->cells[i][j].type = WASTELAND;
-            city->cells[i][j].nb_of_characters = 0;
+            city->cells[j][i].type = WASTELAND;
+            city->cells[j][i].nb_of_characters = 0;
         }
     }
 }
@@ -199,7 +199,7 @@ void initialize_surveillance_system(city_t *city) {
 
     for (int i = 0; i < city->height; i++) {
         for (int j = 0; j < city->width; j++) {
-            cell_t *cell = &city->cells[i][j];
+            cell_t *cell = &city->cells[j][i];
             if (should_be_monitored(cell->type)) {
                 // Configurez ici la surveillance pour la cellule
                 // Par exemple, augmenter un niveau de surveillance ou assigner des ressources de surveillance
@@ -225,9 +225,9 @@ coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int co
     int found = 0; // Counter for found buildings
     for (int i = 0; i < city->width; ++i) {
         for (int j = 0; j < city->height; ++j) {
-            if (city->cells[i][j].type == building_type) {
-                coordinates[found].column = i;
-                coordinates[found].row = j;
+            if (city->cells[j][i].type == building_type) {
+                coordinates[found].row = i;
+                coordinates[found].column = j;
                 found++;
 
                 if (found >= count) {
