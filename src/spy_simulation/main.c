@@ -9,6 +9,7 @@
 
 int main(void)
 {
+
     memory_t *mem = create_shared_memory();
     set_content_memory(mem);
     set_memory(mem);
