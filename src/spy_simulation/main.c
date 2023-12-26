@@ -6,7 +6,6 @@
 #include "simulation_signals.h"
 
 
-
 int main(void)
 {
 
