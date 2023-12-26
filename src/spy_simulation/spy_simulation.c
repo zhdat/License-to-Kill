@@ -19,6 +19,8 @@ int euclidean_distance(int x1, int y1, int x2, int y2) {
 memory_t *create_shared_memory(void) {
     memory_t *mem;
 
+    shm_unlink(SHARED_MEMORY_NAME);
+
     _fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
 
     if (_fd == -1) {
