@@ -160,7 +160,7 @@ coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
 }
 
 void increments_population_in_cell(memory_t *mem, int col, int row) {
-    (mem->city_map.cells[col][row].nb_of_characters)++;
+    (mem->city_map.cells[row][col].nb_of_characters)++;
 }
 
 // il ne faut pas que la résidence soit la même que la boite aux lettres
@@ -178,7 +178,7 @@ coordinate_t find_random_low_populated_residence(memory_t *mem) {
             continue; // Skip mailbox residence
         }
 
-        int current_population = mem->city_map.cells[residential_buildings[i].column][residential_buildings[i].row].nb_of_characters;
+        int current_population = mem->city_map.cells[residential_buildings[i].row][residential_buildings[i].column].nb_of_characters;
         if (current_population < min_population) {
             min_population = current_population;
             selected_index = i;
@@ -271,7 +271,7 @@ int* print_where_citizens_work(memory_t* mem) {
     printf("=============================\n");
     for(i = 0; i < mem->city_map.height; i++) {
         for(j = 0; j < mem->city_map.width; j++) {
-            switch(mem->city_map.cells[i][j].type) {
+            switch(mem->city_map.cells[j][i].type) {
                 case WASTELAND: printf("W"); break;
                 case RESIDENTIAL_BUILDING: printf("R"); break;
                 case CITY_HALL: printf("C"); break;
@@ -280,7 +280,7 @@ int* print_where_citizens_work(memory_t* mem) {
                 default: printf("?"); break;
             }
             for(int k = 0; k < MAX_CITIZEN_COUNT; k++) {
-                if(mem->citizens[k].work_row == j && mem->citizens[k].work_column == i) {
+                if(mem->citizens[k].work_row == i && mem->citizens[k].work_column == j) {
                     count++;
                 }
             }
@@ -323,8 +323,8 @@ void set_content_memory(memory_t *mem) {
     mem->simulation_has_ended = 0;
     set_city_map(mem);
     set_characters(mem);
-    printf("Coordonnées de la boite aux lettres : (%d,%d)\n", mem->mailbox_coordinate.column,
-           mem->mailbox_coordinate.row);
+    printf("Coordonnées de la boite aux lettres : (%d,%d)\n", mem->mailbox_coordinate.row,
+           mem->mailbox_coordinate.column);
     print_city_with_characters(&(mem->city_map));
     print_where_citizens_work(mem);
 

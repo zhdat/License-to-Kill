@@ -54,7 +54,7 @@ struct timer_s {
 struct map_s {
     int columns; /*!< The number of columns of the city map. */
     int rows; /*!< The number of rows of the city map.*/
-    cell_t cells[MAX_COLUMNS][MAX_ROWS]; /*!< Cells that constitute the city map. */
+    cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells that constitute the city map. */
 };
 
 /**

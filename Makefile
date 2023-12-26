@@ -104,7 +104,6 @@ clean:
 	rm obj/common/*.o
 	rm obj/character/*.o
 	rm obj/timer/*.o
-	rm obj/monitor/*.o
 
 distclean: clean
 	rm bin/*
