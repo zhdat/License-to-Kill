@@ -70,7 +70,7 @@ int main() {
 
 
     // char *timer_args[] = {"timer", child_pids, NULL};
-    child_pids[1] = create_child("./bin/timer", args_for_timer(child_pids));
+    child_pids[2] = create_child("./bin/timer", args_for_timer(child_pids));
 
     /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
     child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/
