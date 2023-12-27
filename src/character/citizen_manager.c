@@ -40,9 +40,15 @@ int is_valid_move(int column_end, int row_end, memory_t* mem) {
 
 void* citizen_thread_func(void* arg){
     citizen_thread_args_t* args = (citizen_thread_args_t*) arg;
-    int next_row = 1;
-    int next_column = 1;
-
+    int next_column = 0;
+    int next_row = 0;
+    for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
+        if (args->mem->citizens[i].id == args->id) {
+            next_column = args->mem->citizens[i].work_column;
+            next_row = args->mem->citizens[i].work_row;
+            break;
+        }
+    }
     move_citizen(args->mem, next_row, next_column, args->id);
     sleep(1);
     pthread_exit(NULL);
