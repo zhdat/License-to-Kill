@@ -61,7 +61,6 @@ void create_and_run_citizen_threads(memory_t* mem, all_threads_t* threads){
             perror("Error creating thread");
             exit(EXIT_FAILURE);
         } else {
-            printf("Thread created\n");
         }
     }
 }
