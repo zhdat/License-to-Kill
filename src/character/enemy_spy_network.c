@@ -5,22 +5,28 @@
 void move_source_agent(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         if (mem->source_agents[i].character.id == id) {
+            pthread_mutex_lock(&mem->mutex);
             decrements_population_in_cell(mem, mem->source_agents[i].character.column,
                                           mem->source_agents[i].character.row);
             mem->source_agents[i].character.row = row;
             mem->source_agents[i].character.column = column;
+            increments_population_in_cell(mem, column, row);
+            mem->memory_has_changed = 1;
+            pthread_mutex_unlock(&mem->mutex);
             break;
         }
     }
-    increments_population_in_cell(mem, column, row);
 }
 
 void move_attending_officer(memory_t* mem, int row, int column) {
+    pthread_mutex_lock(&mem->mutex);
     decrements_population_in_cell(mem, mem->attending_officers[0].character.column,
                                   mem->attending_officers[0].character.row);
     mem->attending_officers[0].character.row = row;
     mem->attending_officers[0].character.column = column;
     increments_population_in_cell(mem, column, row);
+    mem->memory_has_changed = 1;
+    pthread_mutex_unlock(&mem->mutex);
 }
 
 int is_valid_move(int column_end, int row_end, memory_t* mem) {
@@ -61,7 +67,7 @@ void source_agent_thread_func(void* arg, memory_t* mem) {
         // pthread_mutex_lock(&mem->mutex);
         move_source_agent(args->mem, next_row, next_column, args->id);
         // pthread_mutex_unlock(&mem->mutex);
-        mem->memory_has_changed = 1;
+        // printf("Source agent %d moved to %d %d\n", args->id, next_row, next_column);
 
     }
     // Mettez en pause le thread pour un certain temps si nécessaire
@@ -94,38 +100,32 @@ void attending_officer_thread_func(void* arg, memory_t* mem) {
 }
 
 void create_and_run_source_agent_threads(memory_t* mem) {
-    pthread_t threads[MAX_SOURCE_AGENT_COUNT];
-    agent_thread_args_t args[MAX_SOURCE_AGENT_COUNT];
+    all_threads_t threads;
 
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-        args[i].id = mem->source_agents[i].character.id;
-        args[i].mem = mem;
+        threads.source_agent_args[i].id = mem->source_agents[i].character.id;
+        threads.source_agent_args[i].mem = mem;
 
         // Créez le thread
-        pthread_create(&threads[i], NULL, (void* (*)(void*)) source_agent_thread_func, (void*) &args[i]);
+        pthread_create(&threads.source_agent_threads[i], NULL, (void* (*)(void*)) source_agent_thread_func, (void*) &threads.attending_officer_args[i]);
+        printf("thread created\n");
     }
 
+    printf("threads created\n");
+
     // Joignez les threads après leur achèvement
-    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-        pthread_join(threads[i], NULL);
-    }
+
 }
 
 void create_and_run_attending_officer_threads(memory_t* mem) {
-    pthread_t threads[MAX_ATTENDING_OFFICER_COUNT];
-    agent_thread_args_t args[MAX_ATTENDING_OFFICER_COUNT];
+    all_threads_t threads;
 
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
-        args[i].id = mem->attending_officers[i].character.id;
-        args[i].mem = mem;
+        threads.attending_officer_args[i].id = mem->attending_officers[i].character.id;
+        threads.attending_officer_args[i].mem = mem;
 
         // Créez le thread
-        pthread_create(&threads[i], NULL, (void* (*)(void*)) attending_officer_thread_func, (void*) &args[i]);
-    }
-
-    // Joignez les threads après leur achèvement
-    for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
-        pthread_join(threads[i], NULL);
+        pthread_create(&threads.attending_officer_threads[i], NULL, (void* (*)(void*)) attending_officer_thread_func, (void*) &threads.attending_officer_args[i]);
     }
 }
 
