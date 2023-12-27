@@ -31,7 +31,7 @@
 #define MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT 1
 #define MAX_MAILBOX_SIZE 100
 #define SHARED_MEMORY_NAME "/nothinghere"
-#define SEMAPHORE_NAME "/semaphore"
+#define SEMAPHORE_NAME "/my_semaphore"
 
 
 /**
