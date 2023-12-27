@@ -79,7 +79,6 @@ void* citizen_thread_func(void* arg) {
                 current_row--;
             }
         }
-        log_info("Citizen %d moved to (%d, %d)", args->id, current_column, current_row);
         move_citizen(args->mem, current_row, current_column, args->id);
     }
     sleep(1);
