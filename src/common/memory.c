@@ -70,8 +70,5 @@ void close_semaphore(sem_t* sem) {
 }
 
 void destroy_semaphore(sem_t* sem){
-    if (sem_destroy(sem) == -1) {
-        perror("sem_unlink");
-        exit(EXIT_FAILURE);
-    }
+    sem_destroy(sem);
 }
