@@ -20,8 +20,8 @@
 
 #include "memory.h"  // Assurez-vous d'inclure le fichier d'en-tête pour la mémoire partagée
 
-void writeToSharedMemory(char *message, int valid_message) {
-    memory_t *mem;
+void writeToSharedMemory(char* message, int valid_message) {
+    memory_t* mem;
     char decrpyted_message[MAX_LENGTH_OF_MESSAGE]; // Use a fixed-size buffer instead of malloc
     strcpy(decrpyted_message, message);
 
@@ -35,10 +35,10 @@ void writeToSharedMemory(char *message, int valid_message) {
     mem->mailbox_size++;
 
 
-
     if (valid_message) {
         decrpyt_message(decrpyted_message);
-        strncpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, decrpyted_message, MAX_LENGTH_OF_MESSAGE - 1);
+        strncpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, decrpyted_message,
+                MAX_LENGTH_OF_MESSAGE - 1);
         mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text[MAX_LENGTH_OF_MESSAGE - 1] = '\0';
         mem->decrypted_mailbox_size++;
     }
@@ -50,7 +50,7 @@ void writeToSharedMemory(char *message, int valid_message) {
     // (par exemple, dé-mapper la mémoire)
 }
 
-void decrpyt_message(char *message) {
+void decrpyt_message(char* message) {
     // Logique de déchiffrement
     int i = 0;
     while (message[i] != '\0') {
@@ -69,7 +69,7 @@ void decrpyt_message(char *message) {
     }
 }
 
-int isValidMessage(char *message) {
+int isValidMessage(char* message) {
     // Implémentez votre logique de filtrage ici
 
     // Retournez 1 si le message est valide, 0 sinon
