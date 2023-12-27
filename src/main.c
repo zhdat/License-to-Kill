@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-#define NUMBER_OF_PROGRAMS 6
+#define NUMBER_OF_PROGRAMS 3
 #define NUMBER_OF_ARGS_TIMER (NUMBER_OF_PROGRAMS + 2 + 1)
 
 void handle_fatal_error_and_exit(const char *msg) {
@@ -11,29 +11,21 @@ void handle_fatal_error_and_exit(const char *msg) {
     exit(EXIT_FAILURE);
 }
 
-pid_t create_child(const char *program_name, char *const argv[]) {
+pid_t create_child() {
+
     pid_t pid = fork();
 
-    if (pid == -1) {
+    if (pid == 1) {
         handle_fatal_error_and_exit("Error [fork()]: ");
-    } else if (pid == 0) {
-        // Child process
-        if (execvp(program_name, argv) == -1) {
-            handle_fatal_error_and_exit("Error [execvp()]: ");
-        }
-        exit(EXIT_SUCCESS);
     }
 
     return pid;
 }
 
 void wait_children(int nb_children) {
-    int status, i = 0;
+    int i = 0;
     while (i < nb_children) {
-        wait(&status);
-        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-            printf("Child process exited with error status.\n");
-        }
+        wait(NULL);
         i++;
     }
 }
@@ -58,36 +50,52 @@ char** args_for_timer(pid_t* array_pid) {
     return array_args;
 }
 
-int main(void) {
-    pid_t child_pids[NUMBER_OF_PROGRAMS];
-
-    // Example of launching each program with their specific arguments
-    char *spy_simulation_args[] = {"spy_simulation", NULL};
-    child_pids[0] = create_child("./bin/spy_simulation", spy_simulation_args);
-
-    char *monitor_args[] = {"monitor", NULL};
-    child_pids[1] = create_child("./bin/monitor", monitor_args);
-
-
-    // char *timer_args[] = {"timer", child_pids, NULL};
-    // child_pids[2] = create_child("./bin/timer", args_for_timer(child_pids));
-
-    char *enemy_country_args[] = {"enemy_country", NULL};
-    child_pids[3] = create_child("./bin/enemy_country", enemy_country_args);
-
-    char *testing_args[] = {"testing", NULL};
-    child_pids[4] = create_child("./bin/testing", testing_args);
-
-    char *enemy_spy_network_args[] = {"enemy_spy_network", NULL};
-    child_pids[5] = create_child("./bin/enemy_spy_network", enemy_spy_network_args);
-    /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
-    child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/
-
-    // ... Similar code for other components ...
-
-    wait_children(NUMBER_OF_PROGRAMS);
-
-    printf("All child processes have completed.\n");
-    return 0;
+void free_args_for_timer(char** array_args) {
+    for(int i = 0; i < NUMBER_OF_PROGRAMS; i++) {
+        free(array_args[i]);
+    }
+    free(array_args);
 }
 
+int main(void) {
+    pid_t* pids = (pid_t*) malloc(sizeof (pid_t) * (NUMBER_OF_PROGRAMS));
+    pid_t pid_timer;
+    pids[1] = create_child();
+    char** array_args_timer = NULL;
+
+    if (pids[1] == 0) {
+        execlp("./bin/spy_simulation", "spy_simulation", NULL);
+    }
+    else {
+        pids[0] = create_child();
+
+        if (pids[0] == 0) {
+            execlp("./bin/monitor", "monitor", NULL);
+        }
+        else {
+            pids[2] = create_child();
+
+            if (pids[2] == 0) {
+                execlp("./bin/enemy_spy_network", "enemy_spy_network", NULL);
+            }
+            else {
+                pid_timer = create_child();
+
+                if (pid_timer == 0) {
+                    array_args_timer = args_for_timer(pids);
+                    execvp("./bin/timer", array_args_timer);
+                }
+                else {
+                    wait_children(NUMBER_OF_PROGRAMS + 1);
+                    if(array_args_timer != NULL) {
+                        free_args_for_timer(array_args_timer);
+                    }
+
+                    free(pids);
+                }
+            }
+        }
+    }
+
+
+}
