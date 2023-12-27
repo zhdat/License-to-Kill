@@ -3,7 +3,7 @@
 #include "enemy_spy_network.h"
 
 
-void move_source_agent(memory_t *mem, int row, int column, int id) {
+void move_source_agent(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         if (mem->source_agents[i].character.id == id) {
             pthread_mutex_lock(&mem->mutex);
@@ -20,7 +20,7 @@ void move_source_agent(memory_t *mem, int row, int column, int id) {
     }
 }
 
-void move_attending_officer(memory_t *mem, int row, int column) {
+void move_attending_officer(memory_t* mem, int row, int column) {
     pthread_mutex_lock(&mem->mutex);
     decrements_population_in_cell(mem, mem->attending_officers[0].character.column,
                                   mem->attending_officers[0].character.row);
@@ -31,7 +31,7 @@ void move_attending_officer(memory_t *mem, int row, int column) {
     pthread_mutex_unlock(&mem->mutex);
 }
 
-int is_valid_move(int column_end, int row_end, memory_t *mem) {
+int is_valid_move(int column_end, int row_end, memory_t* mem) {
     if (column_end < 0 || column_end >= MAX_COLUMNS || row_end < 0 || row_end >= MAX_ROWS) {
         return 0;
     }
@@ -54,8 +54,8 @@ int is_valid_move(int column_end, int row_end, memory_t *mem) {
     return 1;
 }
 
-void *source_agent_thread_func(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* source_agent_thread_func(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
     // int old_timer = args->mem->my_timer.turns;
 
 
@@ -76,9 +76,9 @@ void *source_agent_thread_func(void *arg) {
     pthread_exit(NULL);
 }
 
-void *attending_officer_thread_func(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    memory_t *mem = open_shared_memory();
+void* attending_officer_thread_func(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    memory_t* mem = open_shared_memory();
     // int old_timer = args->mem->my_timer.turns;
     while (!args->mem->simulation_has_ended) {
         // if (args->mem->my_timer.turns != old_timer) {
@@ -100,9 +100,9 @@ void *attending_officer_thread_func(void *arg) {
     pthread_exit(NULL);
 }
 
-void create_and_run_source_agent_threads(memory_t *mem, all_threads_t *threads) {
+void create_and_run_source_agent_threads(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t * ptr;
+    agent_thread_args_t* ptr;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         ptr = &threads->source_agent_args[i];
         threads->source_agent_args[i].id = mem->source_agents[i].character.id;
@@ -119,14 +119,11 @@ void create_and_run_source_agent_threads(memory_t *mem, all_threads_t *threads) 
         }
 
     }
-
-    // Joignez les threads après leur achèvement
-
 }
 
-void create_and_run_attending_officer_threads(memory_t *mem, all_threads_t *threads) {
+void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t * ptr;
+    agent_thread_args_t* ptr;
 
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
         ptr = &threads->source_agent_args[i];
@@ -138,7 +135,6 @@ void create_and_run_attending_officer_threads(memory_t *mem, all_threads_t *thre
         pthread_create(&threads->attending_officer_threads[i], &attr, attending_officer_thread_func,
                        ptr);
     }
-
 
 
 }
