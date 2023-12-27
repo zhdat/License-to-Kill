@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
         writeToSharedMemory(msg.msg_text, 1);
 
         // Afficher le message sur le téléscripteur
-        printf("%s\n", msg.msg_text);
 
     }
 
