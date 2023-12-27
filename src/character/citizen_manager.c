@@ -53,7 +53,7 @@ void create_and_run_citizen_threads(memory_t* mem, all_threads_t* threads){
     citizen_thread_args_t* ptr;
     for (int i = 0; i < MAX_CITIZEN_COUNT; i++){
         ptr = &threads->citizen_args[i];
-        threads->citizen_args[i].id = i = mem->citizens[i].id;
+        threads->citizen_args[i].id = mem->citizens[i].id;
         threads->citizen_args[i].mem = mem;
 
         pthread_attr_init(&attr);
