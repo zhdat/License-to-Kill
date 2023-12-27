@@ -1,13 +1,5 @@
 #include "citizen_manager.h"
 
-volatile int move_signal_flag = 0;
-
-void signal_handler(int signum) {
-    if (signum == SIGALRM) {
-        move_signal_flag = 1;
-    }
-}
-
 void move_citizen(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         if (mem->citizens[i].id == id) {
@@ -63,33 +55,24 @@ void* citizen_thread_func(void* arg) {
     }
 
     while (args->mem->simulation_has_ended == 0) {
-        if (move_signal_flag == 1) {
-            move_signal_flag = 0;
-            int current_column = start_column;
-            int current_row = start_row;
+        sem_wait(&move_sem);
+        int current_column = start_column;
+        int current_row = start_row;
 
-            while (!is_valid_move(current_column, current_row, args->mem)) {
-                if (current_column < end_column) {
-                    current_column++;
-                } else if (current_column > end_column) {
-                    current_column--;
-                } else if (current_row < end_row) {
-                    current_row++;
-                } else if (current_row > end_row) {
-                    current_row--;
-                }
-            }
-
-            move_citizen(args->mem, current_row, current_column, args->id);
-
-            pthread_barrier_wait(&move_barrier);
-            if (pthread_barrier_wait(&move_barrier) > 0) {
-                move_signal_flag = 0;
+        while (!is_valid_move(current_column, current_row, args->mem)) {
+            if (current_column < end_column) {
+                current_column++;
+            } else if (current_column > end_column) {
+                current_column--;
+            } else if (current_row < end_row) {
+                current_row++;
+            } else if (current_row > end_row) {
+                current_row--;
             }
         }
-        sleep(1);
+        move_citizen(args->mem, current_row, current_column, args->id);
     }
-
+    sleep(1);
     pthread_exit(NULL);
 }
 

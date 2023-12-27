@@ -6,11 +6,14 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <semaphore.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"
 #include "monitor.h"
 #include "logger.h"
+
+extern sem_t move_sem;
 
 typedef struct {
     int id;
