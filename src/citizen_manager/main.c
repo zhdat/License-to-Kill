@@ -5,7 +5,9 @@ volatile int move_signal_flag = 0;
 
 void signal_handler(int signum) {
     if (signum == SIGALRM) {
-        sem_post(&move_sem); // Signaler le sémaphore pour autoriser le mouvement
+        for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
+            sem_post(&move_sem);
+        }
     }
 }
 
