@@ -4,7 +4,6 @@
 
 
 void move_source_agent(memory_t *mem, int row, int column, int id) {
-    printf("\nmove source agent\n");
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         if (mem->source_agents[i].character.id == id) {
             pthread_mutex_lock(&mem->mutex);
@@ -14,7 +13,6 @@ void move_source_agent(memory_t *mem, int row, int column, int id) {
             mem->source_agents[i].character.column = column;
             increments_population_in_cell(mem, column, row);
             mem->memory_has_changed = 1;
-            printf("Source agent %d moved to %d %d\n", id, row, column);
             pthread_mutex_unlock(&mem->mutex);
 
             break;
@@ -58,8 +56,8 @@ int is_valid_move(int column_end, int row_end, memory_t *mem) {
 
 void *source_agent_thread_func(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    int old_timer = args->mem->my_timer.turns;
-    log_info("out the while");
+    // int old_timer = args->mem->my_timer.turns;
+
 
 
     int next_row = 1;
@@ -80,12 +78,11 @@ void *source_agent_thread_func(void *arg) {
 
 void *attending_officer_thread_func(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    printf("attending officer thread func\n");
     memory_t *mem = open_shared_memory();
-    int old_timer = args->mem->my_timer.turns;
+    // int old_timer = args->mem->my_timer.turns;
     while (!args->mem->simulation_has_ended) {
         // if (args->mem->my_timer.turns != old_timer) {
-        old_timer = args->mem->my_timer.turns;
+        // old_timer = args->mem->my_timer.turns;
         int current_row = args->mem->attending_officers[args->id].character.row;
         int current_column = args->mem->attending_officers[args->id].character.column;
 
@@ -103,16 +100,19 @@ void *attending_officer_thread_func(void *arg) {
     pthread_exit(NULL);
 }
 
-void create_and_run_source_agent_threads(memory_t *mem) {
-    all_threads_t threads;
-
+void create_and_run_source_agent_threads(memory_t *mem, all_threads_t *threads) {
+    pthread_attr_t attr;
+    agent_thread_args_t * ptr;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-        threads.source_agent_args[i].id = mem->source_agents[i].character.id;
-        threads.source_agent_args[i].mem = mem;
+        ptr = &threads->source_agent_args[i];
+        threads->source_agent_args[i].id = mem->source_agents[i].character.id;
+        printf("id : %d\n", threads->source_agent_args[i].id);
+        threads->source_agent_args[i].mem = mem;
 
         // Créez le thread
-        if (pthread_create(&threads.source_agent_threads[i], NULL, source_agent_thread_func,
-                           (void *) &threads.attending_officer_args[i]) == 0) {
+        pthread_attr_init(&attr);
+        if (pthread_create(&threads->source_agent_threads[i], &attr, source_agent_thread_func,
+                           ptr) == 0) {
             printf("thread created\n");
         } else {
             printf("thread not created\n");
@@ -120,29 +120,25 @@ void create_and_run_source_agent_threads(memory_t *mem) {
 
     }
 
-
-    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-        printf("agent source in position : %d %d\n", mem->source_agents[i].character.row,
-               mem->source_agents[i].character.column);
-    }
-
-    printf("threads created\n");
-
     // Joignez les threads après leur achèvement
 
 }
 
-void create_and_run_attending_officer_threads(memory_t *mem) {
-    all_threads_t threads;
+void create_and_run_attending_officer_threads(memory_t *mem, all_threads_t *threads) {
+    pthread_attr_t attr;
+    agent_thread_args_t * ptr;
 
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
-        threads.attending_officer_args[i].id = mem->attending_officers[i].character.id;
-        threads.attending_officer_args[i].mem = mem;
+        ptr = &threads->source_agent_args[i];
+        threads->attending_officer_args[i].id = mem->attending_officers[i].character.id;
+        threads->attending_officer_args[i].mem = mem;
 
         // Créez le thread
-        pthread_create(&threads.attending_officer_threads[i], NULL, attending_officer_thread_func,
-                       (void *) &threads.attending_officer_args[i]);
+        pthread_attr_init(&attr);
+        pthread_create(&threads->attending_officer_threads[i], &attr, attending_officer_thread_func,
+                       ptr);
     }
+
 
 
 }

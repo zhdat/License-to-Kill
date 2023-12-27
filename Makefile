@@ -129,7 +129,7 @@ obj/testing.o: src/enemy_country/testing.c include/enemy_country.h include/commo
 # ----------------------------------------------------------------------------
 # CLEANING
 # ----------------------------------------------------------------------------
-run: all
+run: distclean all
 	./bin/main_program
 
 clean:
