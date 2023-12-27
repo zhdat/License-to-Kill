@@ -92,6 +92,15 @@ obj/enemy_spy_network/main.o: src/enemy_spy_network/main.c include/enemy_spy_net
 bin/enemy_spy_network: obj/enemy_spy_network/main.o obj/character/enemy_spy_network.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/character/character.o obj/cell.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
+obj/character/citizen_manager.o: src/character/citizen_manager.c include/citizen_manager.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/citizen_manager/main.o: src/citizen_manager/main.c include/citizen_manager.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+bin/citizen_manager: obj/citizen_manager/main.o obj/character/citizen_manager.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/character/character.o obj/cell.o obj/simulation_signals.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
 # ----------------------------------------------------------------------------
 # TIMER OBJECTS FILES
 # ----------------------------------------------------------------------------
