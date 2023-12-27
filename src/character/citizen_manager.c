@@ -55,7 +55,9 @@ void* citizen_thread_func(void* arg) {
     }
 
     while (args->mem->simulation_has_ended == 0) {
+        log_info("Citizen %d is waiting for the signal to move", args->id);
         sem_wait(&move_sem);
+        log_info("Citizen %d received the signal to move", args->id);
         int current_column = start_column;
         int current_row = start_row;
 
