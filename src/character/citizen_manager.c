@@ -64,20 +64,12 @@ void* citizen_thread_func(void* arg) {
 
     while (args->mem->simulation_has_ended == 0) {
         if (move_signal_flag == 1) {
-            log_info("Citizen %d is moving", args->id);
             move_signal_flag = 0;
             int current_column = start_column;
             int current_row = start_row;
 
-            if (current_column < end_column) {
-                current_column++;
-            } else if (current_column > end_column) {
-                current_column--;
-            } else if (current_row < end_row) {
-                current_row++;
-            } else if (current_row > end_row) {
-                current_row--;
-            }
+            current_column++;
+            current_row++;
 
             move_citizen(args->mem, current_row, current_column, args->id);
         }
