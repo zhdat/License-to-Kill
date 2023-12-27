@@ -7,7 +7,7 @@
 
 #include "memory.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     key_t key;
     int msgid;
     message_t msg;
@@ -22,7 +22,6 @@ int main(int argc, char *argv[]) {
     while (1) {
 
         msgrcv(msgid, &msg, sizeof(msg), 1, 0);
-
 
         writeToSharedMemory(msg.msg_text, 1);
 
