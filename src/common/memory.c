@@ -7,9 +7,9 @@
 
 #include "memory.h"
 
-memory_t *open_shared_memory(void){
+memory_t* open_shared_memory(void) {
     int fd;
-    memory_t *mem;
+    memory_t* mem;
 
     fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
     if (fd == -1) {
@@ -22,6 +22,13 @@ memory_t *open_shared_memory(void){
         perror("mmap");
         exit(EXIT_FAILURE);
     }
+
+    // Initialize the mutex
+    if (pthread_mutex_init(&mem->mutex, NULL) != 0) {
+        perror("pthread_mutex_init");
+        exit(EXIT_FAILURE);
+    }
+
     return mem;
 }
 
@@ -30,4 +37,4 @@ void end_shared_memory(memory_t* mem) {
         perror("munmap");
         exit(EXIT_FAILURE);
     }
-    }
+}

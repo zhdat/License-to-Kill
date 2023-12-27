@@ -9,26 +9,18 @@ void move_source_agent(memory_t* mem, int row, int column, int id) {
                                           mem->source_agents[i].character.row);
             mem->source_agents[i].character.row = row;
             mem->source_agents[i].character.column = column;
-            printf("Source agent %d moved to (%d, %d)\n", id, column, row);
             break;
         }
     }
     increments_population_in_cell(mem, column, row);
 }
 
-void move_case_officer(memory_t* mem, int row, int column, int id) {
-    if (is_valid_move(column, row, mem)) {
-        for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
-            if (mem->attending_officers[i].character.id == id) {
-                decrements_population_in_cell(mem, mem->attending_officers[i].character.column,
-                                              mem->attending_officers[i].character.row);
-                mem->attending_officers[i].character.row = row;
-                mem->attending_officers[i].character.column = column;
-                break;
-            }
-        }
-        increments_population_in_cell(mem, column, row);
-    }
+void move_attending_officer(memory_t* mem, int row, int column) {
+    decrements_population_in_cell(mem, mem->attending_officers[0].character.column,
+                                  mem->attending_officers[0].character.row);
+    mem->attending_officers[0].character.row = row;
+    mem->attending_officers[0].character.column = column;
+    increments_population_in_cell(mem, column, row);
 }
 
 int is_valid_move(int column_end, int row_end, memory_t* mem) {
@@ -63,33 +55,37 @@ void source_agent_thread_func(void* arg, memory_t* mem) {
         int current_row = args->mem->source_agents[args->id].character.row;
         int current_column = args->mem->source_agents[args->id].character.column;
 
-        // Déterminez les positions possibles
-        int positions[8][2] = {
-                {current_row - 1, current_column},     // Nord
-                {current_row - 1, current_column + 1}, // Nord-Est
-                {current_row,     current_column + 1},     // Est
-                {current_row + 1, current_column + 1}, // Sud-Est
-                {current_row + 1, current_column},     // Sud
-                {current_row + 1, current_column - 1}, // Sud-Ouest
-                {current_row,     current_column - 1},     // Ouest
-                {current_row - 1, current_column - 1}  // Nord-Ouest
-        };
+        int next_row = 1;
+        int next_column = 1;
 
-        // Choisissez une position au hasard
-        int index = rand() % 8;
-        int next_row = positions[index][0];
-        int next_column = positions[index][1];
-
-        // Vérifiez si le mouvement est valide
-        while (!is_valid_move(next_column, next_row, args->mem)) {
-            // Déplacez l'agent
-            index = rand() % 8;
-            next_row = positions[index][0];
-            next_column = positions[index][1];
-        }
+        // pthread_mutex_lock(&mem->mutex);
         move_source_agent(args->mem, next_row, next_column, args->id);
+        // pthread_mutex_unlock(&mem->mutex);
         mem->memory_has_changed = 1;
-        sleep(100000000);
+
+    }
+    // Mettez en pause le thread pour un certain temps si nécessaire
+
+    // }
+    pthread_exit(NULL);
+}
+
+void attending_officer_thread_func(void* arg, memory_t* mem) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    int old_timer = args->mem->my_timer.turns;
+    while (!args->mem->simulation_has_ended) {
+        // if (args->mem->my_timer.turns != old_timer) {
+        old_timer = args->mem->my_timer.turns;
+        int current_row = args->mem->attending_officers[args->id].character.row;
+        int current_column = args->mem->attending_officers[args->id].character.column;
+
+        int next_row = 1;
+        int next_column = 1;
+
+        // pthread_mutex_lock(&mem->mutex);
+        move_attending_officer(args->mem, next_row, next_column);
+        // pthread_mutex_unlock(&mem->mutex);
+        mem->memory_has_changed = 1;
     }
     // Mettez en pause le thread pour un certain temps si nécessaire
 
@@ -111,6 +107,24 @@ void create_and_run_source_agent_threads(memory_t* mem) {
 
     // Joignez les threads après leur achèvement
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+}
+
+void create_and_run_attending_officer_threads(memory_t* mem) {
+    pthread_t threads[MAX_ATTENDING_OFFICER_COUNT];
+    agent_thread_args_t args[MAX_ATTENDING_OFFICER_COUNT];
+
+    for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
+        args[i].id = mem->attending_officers[i].character.id;
+        args[i].mem = mem;
+
+        // Créez le thread
+        pthread_create(&threads[i], NULL, (void* (*)(void*)) attending_officer_thread_func, (void*) &args[i]);
+    }
+
+    // Joignez les threads après leur achèvement
+    for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
         pthread_join(threads[i], NULL);
     }
 }

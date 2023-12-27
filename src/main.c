@@ -78,10 +78,8 @@ int main(void) {
     char *testing_args[] = {"testing", NULL};
     child_pids[4] = create_child("./bin/testing", testing_args);
 
-    printf("BIP\n");
     char *enemy_spy_network_args[] = {"enemy_spy_network", NULL};
     child_pids[5] = create_child("./bin/enemy_spy_network", enemy_spy_network_args);
-    printf("BOOP\n");
     /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
     child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/
 
