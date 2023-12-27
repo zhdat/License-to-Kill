@@ -61,9 +61,12 @@ void* citizen_thread_func(void* arg) {
             break;
         }
     }
+    log_info("Citizen %d is starting at (%d, %d)", args->id, start_row, start_column);
 
     while (args->mem->simulation_has_ended == 0) {
+        log_info("Citizen %d is waiting", args->id);
         if (move_signal_flag == 1) {
+            log_info("Citizen %d is moving", args->id);
             move_signal_flag = 0;
             int current_column = start_column;
             int current_row = start_row;
