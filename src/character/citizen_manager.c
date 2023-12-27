@@ -55,11 +55,18 @@ void* citizen_thread_func(void* arg) {
     }
 
     while (args->mem->simulation_has_ended == 0) {
-        log_info("Citizen %d is waiting for the signal to move", args->id);
         sem_wait(&move_sem);
-        log_info("Citizen %d received the signal to move", args->id);
         int current_column = start_column;
         int current_row = start_row;
+        if (current_column < end_column) {
+            current_column++;
+        } else if (current_column > end_column) {
+            current_column--;
+        } else if (current_row < end_row) {
+            current_row++;
+        } else if (current_row > end_row) {
+            current_row--;
+        }
 
         while (!is_valid_move(current_column, current_row, args->mem)) {
             if (current_column < end_column) {
