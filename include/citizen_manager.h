@@ -22,6 +22,8 @@ typedef struct {
     citizen_thread_args_t citizen_args[MAX_CITIZEN_COUNT];
 } all_threads_t;
 
+void signal_handler(int signum);
+
 void move_citizen(memory_t* mem, int row, int column, int id);
 
 int is_valid_move(int column_end, int row_end, memory_t* mem);

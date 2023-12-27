@@ -1,6 +1,7 @@
 #include "citizen_manager.h"
 
 int main(void){
+    signal(SIGALRM, signal_handler);
     all_threads_t *threads;
     threads = malloc(sizeof(all_threads_t));
     memory_t* mem = open_shared_memory();
