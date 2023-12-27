@@ -18,6 +18,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <pthread.h>
 #include "cell.h"
 #include "common.h"
 #include "character.h"
@@ -100,6 +101,8 @@ struct memory_s {
     coordinate_t mailbox_coordinate; /*!< Coordonnées de la boîte aux lettres.*/
 
     timer_type my_timer; /*!< Timer de la simulation.*/
+
+    pthread_mutex_t mutex; /*!< Mutex pour la synchronisation des threads.*/
     
 };
 

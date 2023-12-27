@@ -65,7 +65,7 @@ int main(void) {
 
     //mem = (memory_t*)malloc(sizeof(memory_t));
 
-    memory_t *memory = open_shared_memory();
+    memory_t* memory = open_shared_memory();
     set_memory(memory);
 
 
@@ -106,15 +106,18 @@ int main(void) {
     /*  Loop and get user input  */
     while (true) {
         key = getch();
-        switch(key) {
-        case 'Q':
-        case 'q':
-        case 27:
-            memory->simulation_has_ended = 1;
-            quit_nicely(NO_PARTICULAR_REASON);
-        default: break;
+        switch (key) {
+            case 'Q':
+            case 'q':
+                memory->simulation_has_ended = 1;
+                quit_nicely(NO_PARTICULAR_REASON);
+            case 27:
+                memory->simulation_has_ended = 1;
+                quit_nicely(NO_PARTICULAR_REASON);
+            default:
+                break;
         }
-        if(memory->memory_has_changed) {
+        if (memory->memory_has_changed) {
             update_values(memory);
             memory->memory_has_changed = 0;
 

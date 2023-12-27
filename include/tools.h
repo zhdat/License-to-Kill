@@ -20,6 +20,8 @@ int calculate_day(int turn);
 
 void increments_population_in_cell(memory_t *mem, int col, int row);
 
+void decrements_population_in_cell(memory_t *mem, int col, int row);
+
 int is_cell_filled(cell_t cells[MAX_COLUMNS][MAX_ROWS], int row, int col);
 
 void next_move(cell_t cells[MAX_COLUMNS][MAX_ROWS], cell_t cell_start, cell_t cell_end, int speed, int* new_pos_col,

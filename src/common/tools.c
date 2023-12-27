@@ -9,6 +9,10 @@ void increments_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)++;
 }
 
+void decrements_population_in_cell(memory_t *mem, int col, int row){
+    (mem->city_map.cells[col][row].nb_of_characters)--;
+}
+
 int is_cell_filled(cell_t cells[MAX_COLUMNS][MAX_ROWS], int row, int col) {
     if (row < 0 || row >= MAX_ROWS) {
         return 0;
