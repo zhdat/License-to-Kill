@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <semaphore.h>
 
 #include "memory.h"
 
@@ -35,6 +36,42 @@ memory_t* open_shared_memory(void) {
 void end_shared_memory(memory_t* mem) {
     if (munmap(mem, sizeof(memory_t)) == -1) {
         perror("munmap");
+        exit(EXIT_FAILURE);
+    }
+}
+
+sem_t* create_semaphore(void) {
+    sem_t* sem;
+    sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_EXCL, 0660, 1);
+    if (sem == SEM_FAILED) {
+        perror("sem_open");
+        exit(EXIT_FAILURE);
+    }
+
+    return sem;
+}
+
+sem_t* open_semaphore(void) {
+    sem_t* sem;
+    sem = sem_open(SEMAPHORE_NAME, O_RDWR);
+    if (sem == SEM_FAILED) {
+        perror("sem_open");
+        exit(EXIT_FAILURE);
+    }
+
+    return sem;
+}
+
+void close_semaphore(sem_t* sem) {
+    if (sem_close(sem) == -1) {
+        perror("sem_close");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void destroy_semaphore(sem_t* sem){
+    if (sem_destroy(sem) == -1) {
+        perror("sem_unlink");
         exit(EXIT_FAILURE);
     }
 }

@@ -12,8 +12,8 @@
 #include "common.h"
 #include "monitor.h"
 #include "logger.h"
+#include "cell.h"
 
-extern sem_t move_sem;
 
 typedef struct {
     int id;
@@ -21,18 +21,37 @@ typedef struct {
 } citizen_thread_args_t;
 
 typedef struct {
-    pthread_t citizen_threads[MAX_CITIZEN_COUNT];
-    citizen_thread_args_t citizen_args[MAX_CITIZEN_COUNT];
-} all_threads_t;
+    int index;
+    memory_t* mem;
+} citizen_monitor_args_t;
 
-void signal_handler(int signum);
+void set_semaphore(sem_t* sem);
 
-void move_citizen(memory_t* mem, int row, int column, int id);
+void timer_handler(int signum);
 
-int is_valid_move(int column_end, int row_end, memory_t* mem);
+void set_timer_citizens(void);
 
-void* citizen_thread_func(void* arg);
+void set_signal_handler(void);
 
-void create_and_run_citizen_threads(memory_t* mem, all_threads_t* threads);
+void move_citizen(citizen_monitor_args_t* arg, int row, int column);
+
+void* citizen_to_work(void* args);
+
+void* citizen_to_home(void* args);
+
+void* citizen_to_home_supermarket(void* args);
+
+int work(memory_t mem, character_t citizen);
+
+void
+create_morning_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
+
+void create_evening_company_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT],
+                                   citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
+
+void create_evening_supermarket_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT],
+                                       citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
+
+void create_citizens_thread(memory_t* mem);
 
 #endif //TP_SYS_CITIZEN_MANGER_H
