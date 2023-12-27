@@ -19,6 +19,7 @@
 #define MEMORY_H
 
 #include <pthread.h>
+#include <semaphore.h>
 #include "cell.h"
 #include "common.h"
 #include "character.h"
