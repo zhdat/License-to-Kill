@@ -305,10 +305,8 @@ int* print_where_citizens_work(memory_t* mem) {
 
 void set_city_map(memory_t *mem) {
     clear_city(&(mem->city_map));
-    print_city(&(mem->city_map));
     init_city(&(mem->city_map));
     set_mailbox(mem);
-    print_city(&(mem->city_map));
 }
 
 void set_characters(memory_t *mem) {
@@ -331,10 +329,6 @@ void set_content_memory(memory_t *mem) {
     set_mailbox_messages(mem);
     set_city_map(mem);
     set_characters(mem);
-    printf("Coordonnées de la boite aux lettres : (%d,%d)\n", mem->mailbox_coordinate.row,
-           mem->mailbox_coordinate.column);
-    print_city_with_characters(&(mem->city_map));
-    print_where_citizens_work(mem);
 
     mem->step = 100;
 }

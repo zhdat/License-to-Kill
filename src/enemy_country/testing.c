@@ -46,7 +46,6 @@ int main() {
         strcpy(msg.msg_text, messages[i]);
         caesarCipher(msg.msg_text, shift);  // Chiffrer le message
 
-        printf("Sending message: %s\n", msg.msg_text);
 
         msg.type = 1;
 

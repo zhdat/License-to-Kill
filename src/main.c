@@ -70,16 +70,19 @@ int main(void) {
 
 
     // char *timer_args[] = {"timer", child_pids, NULL};
-    // child_pids[2] = create_child("./bin/timer", args_for_timer(child_pids));
+
 
     char *enemy_country_args[] = {"enemy_country", NULL};
-    child_pids[3] = create_child("./bin/enemy_country", enemy_country_args);
+    child_pids[2] = create_child("./bin/enemy_country", enemy_country_args);
 
     char *testing_args[] = {"testing", NULL};
-    child_pids[4] = create_child("./bin/testing", testing_args);
+    child_pids[3] = create_child("./bin/testing", testing_args);
 
     char *enemy_spy_network_args[] = {"enemy_spy_network", NULL};
-    child_pids[5] = create_child("./bin/enemy_spy_network", enemy_spy_network_args);
+    child_pids[4] = create_child("./bin/enemy_spy_network", enemy_spy_network_args);
+
+
+    // child_pids[5] = create_child("./bin/timer", args_for_timer(child_pids));
     /*char *citizen_manager_args[] = {"citizen_manager", "arg1", NULL};
     child_pids[1] = create_child("citizen_manager", citizen_manager_args);*/
 

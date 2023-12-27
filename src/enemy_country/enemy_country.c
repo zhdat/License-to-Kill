@@ -43,10 +43,6 @@ void writeToSharedMemory(char *message, int valid_message) {
         mem->decrypted_mailbox_size++;
     }
 
-    printf("Message written to shared memory: %s\n", message);
-    printf("Number of messages in shared memory: %d\n", mem->mailbox_size);
-    printf("Decrypted message: %s\n", decrpyted_message);
-    printf("Number of decrypted messages in shared memory: %d\n", mem->decrypted_mailbox_size);
 
     // Vous pouvez ajouter ici des mécanismes de synchronisation si nécessaire
 
