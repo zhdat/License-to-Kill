@@ -1,5 +1,13 @@
 #include "citizen_manager.h"
 
+volatile int move_signal_flag = 0;
+
+void signal_handler(int signum) {
+    if (signum == SIGALRM) {
+        move_signal_flag = 1;
+    }
+}
+
 void move_citizen(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         if (mem->citizens[i].id == id) {
@@ -38,32 +46,56 @@ int is_valid_move(int column_end, int row_end, memory_t* mem) {
     return 1;
 }
 
-void* citizen_thread_func(void* arg){
+void* citizen_thread_func(void* arg) {
     citizen_thread_args_t* args = (citizen_thread_args_t*) arg;
-    int next_column = 0;
-    int next_row = 0;
+    int end_column = 0;
+    int end_row = 0;
+    int start_column = 0;
+    int start_row = 0;
     for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         if (args->mem->citizens[i].id == args->id) {
-            next_column = args->mem->citizens[i].work_column;
-            next_row = args->mem->citizens[i].work_row;
+            end_column = args->mem->citizens[i].work_column;
+            end_row = args->mem->citizens[i].work_row;
+            start_row = args->mem->citizens[i].row;
+            start_column = args->mem->citizens[i].column;
             break;
         }
     }
-    move_citizen(args->mem, next_row, next_column, args->id);
-    sleep(1);
+
+    while (args->mem->simulation_has_ended == 0) {
+        if (move_signal_flag == 1) {
+            move_signal_flag = 0;
+            int current_column = start_column;
+            int current_row = start_row;
+
+            if (current_column < end_column) {
+                current_column++;
+            } else if (current_column > end_column) {
+                current_column--;
+            } else if (current_row < end_row) {
+                current_row++;
+            } else if (current_row > end_row) {
+                current_row--;
+            }
+
+            move_citizen(args->mem, current_row, current_column, args->id);
+        }
+        sleep(1);
+    }
+
     pthread_exit(NULL);
 }
 
-void create_and_run_citizen_threads(memory_t* mem, all_threads_t* threads){
+void create_and_run_citizen_threads(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
     citizen_thread_args_t* ptr;
-    for (int i = 0; i < MAX_CITIZEN_COUNT; i++){
+    for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         ptr = &threads->citizen_args[i];
         threads->citizen_args[i].id = mem->citizens[i].id;
         threads->citizen_args[i].mem = mem;
 
         pthread_attr_init(&attr);
-        if (pthread_create(&threads->citizen_threads[i], &attr, citizen_thread_func, ptr) != 0){
+        if (pthread_create(&threads->citizen_threads[i], &attr, citizen_thread_func, ptr) != 0) {
             perror("Error creating thread");
             exit(EXIT_FAILURE);
         } else {
