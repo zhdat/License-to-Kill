@@ -68,8 +68,15 @@ void* citizen_thread_func(void* arg) {
             int current_column = start_column;
             int current_row = start_row;
 
-            current_column++;
-            current_row++;
+            if (current_column < end_column) {
+                current_column++;
+            } else if (current_column > end_column) {
+                current_column--;
+            } else if (current_row < end_row) {
+                current_row++;
+            } else if (current_row > end_row) {
+                current_row--;
+            }
 
             move_citizen(args->mem, current_row, current_column, args->id);
         }
