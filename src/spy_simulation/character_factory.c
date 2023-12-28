@@ -139,11 +139,7 @@ counter_intelligence_officer_t new_counter_intelligence_officer(int row, int col
     counterintelligence_officer.character.home_column = column;
     counterintelligence_officer.character.work_row = -1;
     counterintelligence_officer.character.work_column = -1;
-    counterintelligence_officer.city_hall_column = 4;
-    counterintelligence_officer.city_hall_row = 4;
     counterintelligence_officer.targeted_character_id = target_id;
-
-
 
     return counterintelligence_officer;
 }
