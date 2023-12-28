@@ -86,9 +86,8 @@ void *morning_source_agent(void *arg) {
         int random_supermarket = rand() % NUMBER_OF_SUPERMARKETS;
         coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
 
-        while ((args->mem->source_agents[args->id].character.row != supermarket_coordinates[random_supermarket].row)
-               ||
-               (args->mem->source_agents[args->id].character.column != supermarket_coordinates[random_supermarket].column)) {
+
+        while (!character_is_at(args->mem->source_agents[args->id].character, supermarket_coordinates[random_supermarket])) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, supermarket_coordinates[random_supermarket].row,
                                   supermarket_coordinates[random_supermarket].column);
@@ -96,10 +95,7 @@ void *morning_source_agent(void *arg) {
             }
         }
         // il rentre chez lui
-        while ((args->mem->source_agents[args->id].character.row !=
-                args->mem->source_agents[args->id].character.home_row)
-               || (args->mem->source_agents[args->id].character.column !=
-                   args->mem->source_agents[args->id].character.home_column)) {
+        while (!is_at_home(args->mem->source_agents[args->id].character)) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                                   args->mem->source_agents[args->id].character.home_column);
@@ -116,9 +112,7 @@ void *morning_source_agent(void *arg) {
         coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
 
 
-        while ((args->mem->source_agents[args->id].character.row != companies_coordinates[random_company].row)
-               ||
-               (args->mem->source_agents[args->id].character.column != companies_coordinates[random_company].column)) {
+        while (!character_is_at(args->mem->source_agents[args->id].character, companies_coordinates[random_company])) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, companies_coordinates[random_company].row,
                                   companies_coordinates[random_company].column);
@@ -128,10 +122,7 @@ void *morning_source_agent(void *arg) {
 
         // il rentre chez lui
 
-        while ((args->mem->source_agents[args->id].character.row !=
-                args->mem->source_agents[args->id].character.home_row)
-               || (args->mem->source_agents[args->id].character.column !=
-                   args->mem->source_agents[args->id].character.home_column)) {
+        while (!is_at_home(args->mem->source_agents[args->id].character)) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                                   args->mem->source_agents[args->id].character.home_column);
@@ -146,10 +137,7 @@ void *morning_source_agent(void *arg) {
 
 void *evening_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    while ((args->mem->source_agents[args->id].character.row !=
-            args->mem->source_agents[args->id].character.home_row)
-           || (args->mem->source_agents[args->id].character.column !=
-               args->mem->source_agents[args->id].character.home_column)) {
+    while (!is_at_home(args->mem->source_agents[args->id].character)) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                               args->mem->source_agents[args->id].character.home_column);
@@ -163,10 +151,7 @@ void *evening_source_agent(void *arg) {
 
 void *evening_attending_officer(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    while ((args->mem->attending_officers[args->id].character.row !=
-            args->mem->attending_officers[args->id].character.home_row)
-           || (args->mem->attending_officers[args->id].character.column !=
-               args->mem->attending_officers[args->id].character.home_column)) {
+    while (!is_at_home(args->mem->attending_officers[args->id].character)) {
         if (signal_received_officer) {
             move_attending_officer(args, args->mem->attending_officers[args->id].character.home_row,
                                    args->mem->attending_officers[args->id].character.home_column);
@@ -181,12 +166,11 @@ void *evening_attending_officer(void *arg) {
 void *morning_attending_officer(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
 
-    int next_row = rand() % 7;
-    int next_column = rand() % 7;
-    while ((args->mem->attending_officers[args->id].character.row != next_row)
-           || (args->mem->attending_officers[args->id].character.column != next_column)) {
+    coordinate_t next = {rand() % 7, rand() % 7};
+    
+    while (!character_is_at(args->mem->attending_officers[args->id].character, next)) {
         if (signal_received_officer) {
-            move_attending_officer(args, next_row, next_column);
+            move_attending_officer(args, next.row, next.column);
             signal_received_officer = 0;
         }
 
