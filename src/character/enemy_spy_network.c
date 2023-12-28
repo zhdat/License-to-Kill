@@ -127,7 +127,7 @@ void *morning_source_agent(void *arg) {
 
     // Mappez le PID du thread à l'objet source_agent correspondant
     map_pid_to_agent(pid, current_agent);
-
+    log_info("Source agent %d has PID %d", current_agent->character.id, pid);
     int random_activity = rand() % 100;
 
     if (random_activity < 10){
