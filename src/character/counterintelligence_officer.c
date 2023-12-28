@@ -48,7 +48,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
         if (agent->character.row == officer->character.row && agent->character.column == officer->character.column) {
             // Un espion est sur la même cellule, envoyez un signal SIGUSR1
             if (mem->my_timer.turns >= 10) {
-                kill(agent->character.pid, SIGUSR1);
+                //kill(agent->character.pid, SIGUSR1);
             }
             break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule
         }
