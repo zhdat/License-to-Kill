@@ -5,7 +5,14 @@
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0,0,0};
 volatile int signal_received_officer = 0;
 
+sem_t* move_sem;
 
+
+void set_semaphore(sem_t* sem) {
+    move_sem = sem;
+}
+
+/*
 void move_source_agent(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         if (mem->source_agents[i].character.id == id) {
@@ -21,19 +28,47 @@ void move_source_agent(memory_t* mem, int row, int column, int id) {
             break;
         }
     }
+}*/
+
+void move_source_agent(agent_thread_args_t* arg, int row, int column) {
+    int start_row, start_column;
+    memory_t* mem = arg->mem;
+    source_agent_t * spies = &(mem->source_agents[arg->id]);
+
+    start_row = spies->character.row;
+    start_column = spies->character.column;
+
+
+    coordinate_t start_cell;
+    start_cell.row = start_row;
+    start_cell.column = start_column;
+    coordinate_t end_cell;
+    end_cell.row = row;
+    end_cell.column = column;
+
+    //log_debug("start_row: %d, start_column: %d", start_row, start_column);
+
+
+    sem_wait(move_sem);
+    decrements_population_in_cell(mem, start_column, start_row);
+    next_move(&(mem->city_map), start_cell, end_cell, &spies->character.column, &spies->character.row);
+    increments_population_in_cell(mem, spies->character.column, spies->character.row);
+    sem_post(move_sem);
+
 }
 
 void move_attending_officer(memory_t* mem, int row, int column) {
-    pthread_mutex_lock(&mem->mutex);
+    sem_wait(move_sem);
     decrements_population_in_cell(mem, mem->attending_officers[0].character.column,
                                   mem->attending_officers[0].character.row);
     mem->attending_officers[0].character.row = row;
     mem->attending_officers[0].character.column = column;
     increments_population_in_cell(mem, column, row);
     mem->memory_has_changed = 1;
-    pthread_mutex_unlock(&mem->mutex);
+    sem_post(move_sem);
 }
 
+/*
 int is_valid_move(int column_end, int row_end, memory_t* mem) {
     if (column_end < 0 || column_end >= MAX_COLUMNS || row_end < 0 || row_end >= MAX_ROWS) {
         return 0;
@@ -55,24 +90,16 @@ int is_valid_move(int column_end, int row_end, memory_t* mem) {
             return 0;
     }
     return 1;
-}
+}*/
 
 void *source_agent_thread_func(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-
-
-
+    int random_company = rand()%NUMBER_OF_COMPANIES;
+    coordinate_t* companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
     while (args->mem->simulation_has_ended == 0) {
-        if (signal_received_spies[(args->id - 1)]) {
-
-            int current_row = args->mem->source_agents[args->id].character.row;
-            int current_column = args->mem->source_agents[args->id].character.column;
-
-            int next_row = rand()%7;
-            int next_column = rand()%7;
-
-            move_source_agent(args->mem, next_row, next_column, args->id);
-            signal_received_spies[(args->id - 1)] = 0;
+        if (signal_received_spies[args->id]) {
+            move_source_agent(args, companies_coordinates[random_company].row, companies_coordinates[random_company].column);
+            signal_received_spies[args->id] = 0;
         }
     }
 
@@ -132,7 +159,7 @@ void create_and_run_source_agent_threads(memory_t *mem, all_threads_t *threads) 
 
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         ptr = &threads->source_agent_args[i];
-        threads->source_agent_args[i].id = mem->source_agents[i].character.id;
+        threads->source_agent_args[i].id = i;
         threads->source_agent_args[i].mem = mem;
 
         pthread_attr_init(&attr);
@@ -152,7 +179,7 @@ void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* thre
 
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; ++i) {
         ptr = &threads->source_agent_args[i];
-        threads->attending_officer_args[i].id = mem->attending_officers[i].character.id;
+        threads->attending_officer_args[i].id = i;
         threads->attending_officer_args[i].mem = mem;
 
         pthread_attr_init(&attr);

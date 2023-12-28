@@ -52,7 +52,7 @@ obj/common/logger.o: src/common/logger.c include/logger.h
 obj/common/memory.o: src/common/memory.c include/memory.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h
+obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c -lm
 
 # ----------------------------------------------------------------------------
@@ -83,6 +83,10 @@ obj/character/character.o: src/character/character.c include/character.h
 obj/cell.o: src/spy_simulation/cell.c include/cell.h include/character.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
+# ----------------------------------------------------------------------------
+# ENEMY SPY NETWORK
+# ----------------------------------------------------------------------------
+
 obj/character/enemy_spy_network.o: src/character/enemy_spy_network.c include/enemy_spy_network.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
@@ -91,6 +95,10 @@ obj/enemy_spy_network/main.o: src/enemy_spy_network/main.c include/enemy_spy_net
 
 bin/enemy_spy_network: obj/enemy_spy_network/main.o obj/character/enemy_spy_network.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/character/character.o obj/cell.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
+
+# ----------------------------------------------------------------------------
+# CITIZEN MANAGER
+# ----------------------------------------------------------------------------
 
 obj/character/citizen_manager.o: src/character/citizen_manager.c include/citizen_manager.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c

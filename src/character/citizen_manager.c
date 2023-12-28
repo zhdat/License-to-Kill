@@ -36,12 +36,16 @@ void move_citizen(citizen_monitor_args_t* arg, int row, int column) {
     start_row = citizen->row;
     start_column = citizen->column;
 
-    cell_t start_cell = (mem->city_map.cells[start_row][start_column]);
-    cell_t end_cell = (mem->city_map.cells[row][column]);
+    coordinate_t start_cell;
+    start_cell.row = start_row;
+    start_cell.column = start_column;
+    coordinate_t end_cell;
+    end_cell.row = row;
+    end_cell.column = column;
 
     sem_wait(move_sem);
     decrements_population_in_cell(mem, start_column, start_row);
-    next_move(mem->city_map.cells, start_cell, end_cell, 1, &citizen->column, &citizen->row);
+    next_move(&(mem->city_map), start_cell, end_cell, &citizen->column, &citizen->row);
     increments_population_in_cell(mem, citizen->column, citizen->row);
     sem_post(move_sem);
 

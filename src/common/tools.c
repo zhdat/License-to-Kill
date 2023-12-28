@@ -1,5 +1,7 @@
 #include "tools.h"
+#include "logger.h"
 #include <math.h>
+#include <stdbool.h>
 
 int euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -13,98 +15,62 @@ void decrements_population_in_cell(memory_t *mem, int col, int row){
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
-int is_cell_filled(cell_t cells[MAX_COLUMNS][MAX_ROWS], int row, int col) {
-    if (row < 0 || row >= MAX_ROWS) {
-        return 0;
+int is_cell_filled(cell_t cells[MAX_ROWS][MAX_COLUMNS], int row, int col) {
+    if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLUMNS) {
+        return 1; // Retourner vrai si en dehors des limites, pour éviter le déplacement
     }
 
-    if (col < 0 || col >= MAX_ROWS) {
-        return 0;
+    switch (cells[row][col].type) {
+        case CITY_HALL:
+            return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL;
+        case COMPANY:
+            return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_COMPANY;
+        case RESIDENTIAL_BUILDING:
+            return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING;
+        case SUPERMARKET:
+            return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET;
+        default:
+            return 0; // Si aucun type n'est spécifié, considérer comme non rempli
     }
-
-    if (cells[col][row].type == CITY_HALL) {
-        return MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL == cells[col][row].nb_of_characters;
-    }
-    if (cells[col][row].type == COMPANY) {
-        return MAX_NUMBER_OF_CHARACTERS_ON_COMPANY == cells[col][row].nb_of_characters;
-    }
-    if (cells[col][row].type == RESIDENTIAL_BUILDING) {
-        return MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING == cells[col][row].nb_of_characters;
-    }
-    if (cells[col][row].type == SUPERMARKET) {
-        return MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET == cells[col][row].nb_of_characters;
-    }
-    return 0;
 }
 
-void next_move(cell_t cells[MAX_COLUMNS][MAX_ROWS], cell_t cell_start, cell_t cell_end, int speed, int* new_pos_col,
-               int* new_pos_row) {
-    int step_row = (cell_end.row > cell_start.row) ? 1 : -1;
-    int step_col = (cell_end.column > cell_start.column) ? 1 : -1;
 
-    int i = cell_start.row;
-    int j = cell_start.column;
+void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row) {
+    int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
+    int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
-    int current_i = i, current_j = j;
+    int current_row = cell_start.row, current_column = cell_start.column;
 
-    for (int distance = 0; distance < speed; distance++) {
-        if (i != cell_end.row) {
-            current_i = i + step_row;
-        }
-
-        if (j != cell_end.column) {
-            current_j = j + step_col;
-        }
-
-        if (is_cell_filled(cells, current_i, current_j)) {
-            /* If final cell is full */
-            if (current_i == cell_end.row && current_j == cell_end.column) {
-                break;
-            } else {
-                /* If the movement is a diagonal */
-                if (current_i != i && current_j != j) {
-                    int without_i = euclidean_distance(current_i - step_row, current_j, cell_end.row, cell_end.column);
-                    int without_j = euclidean_distance(current_i, current_j - step_col, cell_end.row, cell_end.column);
-
-                    if (without_i < without_j) {
-                        current_j -= step_col;
-                    } else {
-                        current_i -= step_row;
-                    }
-                }
-                    /* If the movement is a row */
-                else if (current_i != i) {
-                    if (!is_cell_filled(cells, current_i, current_j + 1)) {
-                        current_j++;
-                    } else if (!is_cell_filled(cells, current_i, current_j - 1)) {
-                        current_j--;
-                    } else {
-                        break;
-                    }
-                }
-                    /* If the movement is a column */
-                else {
-                    if (!is_cell_filled(cells, current_i + 1, current_j)) {
-                        current_i++;
-                    } else if (!is_cell_filled(cells, current_i - 1, current_j)) {
-                        current_i--;
-                    } else {
-                        break;
+    // Essayez de bouger dans la direction principale
+    if (!is_cell_filled(city->cells, current_row + step_row, current_column + step_col)) {
+        current_row += step_row;
+        current_column += step_col;
+    } else {
+        // Essayez de bouger verticalement ou horizontalement si directement bloqué
+        if (step_row != 0 && !is_cell_filled(city->cells, current_row + step_row, current_column)) {
+            current_row += step_row;
+        } else if (step_col != 0 && !is_cell_filled(city->cells, current_row, current_column + step_col)) {
+            current_column += step_col;
+        } else {
+            // Prendre un détour
+            bool detour_taken = false;
+            for (int d_row = -1; d_row <= 1 && !detour_taken; d_row++) {
+                for (int d_col = -1; d_col <= 1; d_col++) {
+                    if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
+                        if (!is_cell_filled(city->cells, current_row + d_row, current_column + d_col)) {
+                            current_row += d_row;
+                            current_column += d_col;
+                            detour_taken = true;
+                            break;
+                        }
                     }
                 }
             }
         }
-
-        i = current_i;
-        j = current_j;
     }
 
-    // Mettre à jour les nouvelles positions si nous ne sommes pas à la destination
-    if (i != cell_end.row || j != cell_end.column) {
-        *new_pos_col = j;
-        *new_pos_row = i;
-    } else { // Si nous sommes arrivés à la destination
-        *new_pos_col = cell_end.column;
-        *new_pos_row = cell_end.row;
-    }
+    // Mettre à jour les nouvelles positions
+    *new_pos_row = current_row;
+    *new_pos_col = current_column;
 }
+

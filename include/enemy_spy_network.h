@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <semaphore.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"
@@ -24,7 +25,7 @@ typedef struct {
     agent_thread_args_t attending_officer_args[MAX_ATTENDING_OFFICER_COUNT];
 } all_threads_t;
 
-void move_source_agent(memory_t* mem, int row, int column, int id);
+void move_source_agent(agent_thread_args_t* arg, int row, int column);
 void move_attending_officer(memory_t* mem, int row, int column);
 int is_valid_move(int column_end, int row_end, memory_t* mem);
 void * source_agent_thread_func(void* arg);
@@ -33,5 +34,6 @@ void create_and_run_source_agent_threads(memory_t* mem, all_threads_t* threads);
 void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* threads);
 void handle_signal(int);
 void set_signals(void);
+void set_semaphore(sem_t* sem);
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H
