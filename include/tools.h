@@ -24,7 +24,6 @@ void decrements_population_in_cell(memory_t *mem, int col, int row);
 
 int is_cell_filled(cell_t cells[MAX_COLUMNS][MAX_ROWS], int row, int col);
 
-void next_move(cell_t cells[MAX_COLUMNS][MAX_ROWS], cell_t cell_start, cell_t cell_end, int speed, int* new_pos_col,
-               int* new_pos_row);
+void next_move(city_t* cells, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row);
 
 #endif //PROJECT_TOOLS_H

@@ -6,6 +6,8 @@ int main(void) {
     all_threads_t *threads;
     threads = malloc(sizeof(all_threads_t));
     memory_t* mem = open_shared_memory();
+    sem_t* move_sem = open_semaphore();
+    set_semaphore(move_sem);
 
     set_signals();
     create_and_run_source_agent_threads(mem, threads);
@@ -17,5 +19,8 @@ int main(void) {
     }
     pthread_join(threads->attending_officer_threads[0], NULL);
     pthread_kill(threads->attending_officer_threads[0], SIGALRM);
+    close_semaphore(move_sem);
+    end_shared_memory(mem);
+
     return 0;
 }

@@ -11,7 +11,7 @@ void handle_fatal_error_and_exit(const char* msg) {
     exit(EXIT_FAILURE);
 }
 
-pid_t create_child() {
+pid_t create_child(void) {
 
     pid_t pid = fork();
 
