@@ -56,6 +56,7 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
 
     if (agent != NULL) {
         // Mettre à jour la santé de l'espion
+        log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
         agent->character.health -= 1;
     }
 }
