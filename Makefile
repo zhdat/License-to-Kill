@@ -20,6 +20,7 @@ all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country
 # MAIN PROGRAM
 # ----------------------------------------------------------------------------
 bin/main_program: obj/main.o
+	rm -rf /dev/shm/nothinghere /dev/shm/sem.*
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 obj/main.o: src/main.c
@@ -169,4 +170,4 @@ clean:
 
 distclean: clean
 	rm -rf bin/*
-
+	rm -rf /dev/shm/nothinghere /dev/shm/sem.*
