@@ -25,10 +25,10 @@ typedef struct {
     agent_thread_args_t attending_officer_args[MAX_ATTENDING_OFFICER_COUNT];
 } all_threads_t;
 
-typedef struct pid_to_agent_map {
-    int pid;
+typedef struct tid_to_agent_map {
+    pthread_t tid;
     source_agent_t *agent;
-} pid_to_agent_map_t;
+} tid_to_agent_map_t;
 
 void move_source_agent(agent_thread_args_t* arg, int row, int column);
 void move_attending_officer(agent_thread_args_t* arg, int row, int column);
@@ -43,7 +43,7 @@ void set_signals(void);
 void set_semaphore(sem_t* sem);
 void create_enemy_spy_thread(memory_t* mem);
 void map_pid_to_agent(int pid, source_agent_t *agent, int id);
-int get_agent_by_pid(int pid);
+int get_agent_by_tid(pthread_t tid);
 void handle_sigusr1(int sig, siginfo_t *info, void *unused);
 void set_signals_bullet(void);
 

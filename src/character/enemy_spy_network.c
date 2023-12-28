@@ -4,7 +4,7 @@
 
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
-pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0},
+tid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0},
                                                         {0, 0},
                                                         {0, 0}};
 
@@ -31,33 +31,25 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
-// Fonction pour initialiser la correspondance PID -> Espion
-void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
-    //log_info("Mapping PID %d to agent %d", pid, id);
-    agent_map[id].pid = pid;
+void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
+    agent_map[id].tid = tid;
     agent_map[id].agent = agent;
-
 }
 
-int get_agent_by_pid(int pid) {
+int get_agent_by_tid(pthread_t tid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        //log_info("PID: %d, Agent ID: %d", pid, agent_map[i].pid);
-        if (agent_map[i].pid == pid) {
+        if (pthread_equal(agent_map[i].tid, tid)) { // Utilisez pthread_equal pour comparer les TID
             return i;
         }
     }
-    return -1; // Espion non trouvé
+    return -1; // Thread non trouvé
 }
 
-// Gestionnaire de signal SIGUSR1
-void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
-    int pid = getpid(); // Obtenir le PID du thread actuel
-    int index = get_agent_by_pid(pid);
-    source_agent_t* agent = agent_map[index].agent;
-
+void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+    pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
+    int index = get_agent_by_tid(tid);
     if (index != -1) {
-        // Mettre à jour la santé de l'espion
-        //log_info("Index: %d, Agent ID: %d, PID: %d, Row: %d, Column: %d",index, agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
+        source_agent_t *agent = agent_map[index].agent;
         agent->character.health -= 1;
     }
 }
@@ -124,14 +116,9 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
 void* morning_source_agent(void* arg) {
     set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
-    int pid = getpid();
-    log_info("PID: %d", pid);
-    // Obtenez la référence à l'objet source_agent pour le thread courant
-    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
-
-    // Mappez le PID du thread à l'objet source_agent correspondant
-    map_pid_to_agent(pid, current_agent, args->id);
-    current_agent->character.pid = pid;
+    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
+    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
     int random_activity = rand() % 100;
 
     if (random_activity < 10) {
