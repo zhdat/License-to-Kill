@@ -115,7 +115,7 @@ void set_counter_intelligence_officers(memory_t *mem) {
         counter_intelligence_officer.mailbox_row = mem->mailbox_coordinate.row;
 
 
-        increments_population_in_cell(mem, counter_intelligence_officer.city_hall_column, counter_intelligence_officer.city_hall_row);
+        // increments_population_in_cell(mem, counter_intelligence_officer.city_hall_column, counter_intelligence_officer.city_hall_row);
 
         mem->counter_intelligence_officers[i] = counter_intelligence_officer;
     }
