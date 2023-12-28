@@ -35,6 +35,8 @@ int is_same_cell(coordinate_t cell1, coordinate_t cell2);
 
 int is_at_work(character_t character);
 
+int is_at_home(character_t character);
+
 int character_is_at(character_t character1, coordinate_t cell2);
 
 int characters_are_at_same_cell(character_t character1, character_t character2);

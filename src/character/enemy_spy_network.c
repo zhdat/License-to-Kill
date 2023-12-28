@@ -196,7 +196,6 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
                 printf("thread not created\n");
             }
             sleep(1);
-
         }
 
         ptr2 = &threads->attending_officer_args[0];
