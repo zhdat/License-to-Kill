@@ -49,9 +49,11 @@ int get_agent_by_tid(pthread_t tid) {
 void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
     pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
     int index = get_agent_by_tid(tid);
+    log_info("Tid %ld received SIGUSR1", tid);
+    log_info("Agent %d was shot", index);
     if (index != -1) {
         source_agent_t *agent = agent_map[index].agent;
-        agent->character.health -= 1;
+        agent->character.health = 1;
     }
 }
 
