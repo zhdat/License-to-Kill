@@ -62,6 +62,7 @@ sem_t* create_semaphore(void) {
 
 sem_t* open_semaphore(void) {
     sem_t* sem;
+    sem_unlink(SEMAPHORE_NAME);
     sem = sem_open(SEMAPHORE_NAME, O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
