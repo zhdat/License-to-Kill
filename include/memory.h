@@ -19,6 +19,7 @@
 #define MEMORY_H
 
 #include <pthread.h>
+#include <semaphore.h>
 #include "cell.h"
 #include "common.h"
 #include "character.h"
@@ -30,6 +31,7 @@
 #define MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT 1
 #define MAX_MAILBOX_SIZE 100
 #define SHARED_MEMORY_NAME "/nothinghere"
+#define SEMAPHORE_NAME "/my_semaphore"
 
 
 /**
@@ -108,6 +110,14 @@ struct memory_s {
 
 memory_t * open_shared_memory(void);
 void end_shared_memory(memory_t * mem);
+
+sem_t* create_semaphore(void);
+
+sem_t* open_semaphore(void);
+
+void close_semaphore(sem_t* sem);
+
+void destroy_semaphore(sem_t* sem);
 
 
 
