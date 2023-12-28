@@ -12,6 +12,8 @@ memory_t* open_shared_memory(void) {
     int fd;
     memory_t* mem;
 
+    shm_unlink(SHARED_MEMORY_NAME);
+
     fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
     if (fd == -1) {
         perror("shm_open");
