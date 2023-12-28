@@ -83,15 +83,64 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
 
 void *morning_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    int random_company = rand() % NUMBER_OF_COMPANIES;
-    coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
-    while ((args->mem->source_agents[args->id].character.row != companies_coordinates[random_company].row)
-           ||
-           (args->mem->source_agents[args->id].character.column != companies_coordinates[random_company].column)) {
-        if (signal_received_spies[args->id]) {
-            move_source_agent(args, companies_coordinates[random_company].row,
-                              companies_coordinates[random_company].column);
-            signal_received_spies[args->id] = 0;
+    int random_activity = rand() % 100;
+
+    if (random_activity < 10){
+        // va au supermarché
+        int random_supermarket = rand() % NUMBER_OF_SUPERMARKETS;
+        coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
+
+        while ((args->mem->source_agents[args->id].character.row != supermarket_coordinates[random_supermarket].row)
+               ||
+               (args->mem->source_agents[args->id].character.column != supermarket_coordinates[random_supermarket].column)) {
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, supermarket_coordinates[random_supermarket].row,
+                                  supermarket_coordinates[random_supermarket].column);
+                signal_received_spies[args->id] = 0;
+            }
+        }
+        // il rentre chez lui
+        while ((args->mem->source_agents[args->id].character.row !=
+                args->mem->source_agents[args->id].character.home_row)
+               || (args->mem->source_agents[args->id].character.column !=
+                   args->mem->source_agents[args->id].character.home_column)) {
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
+                                  args->mem->source_agents[args->id].character.home_column);
+                signal_received_spies[args->id] = 0;
+            }
+        }
+
+    }else if (random_activity >= 10 && random_activity < 40) {
+        // reste chez lui
+
+    }else {
+
+        int random_company = rand() % NUMBER_OF_COMPANIES;
+        coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
+
+
+        while ((args->mem->source_agents[args->id].character.row != companies_coordinates[random_company].row)
+               ||
+               (args->mem->source_agents[args->id].character.column != companies_coordinates[random_company].column)) {
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, companies_coordinates[random_company].row,
+                                  companies_coordinates[random_company].column);
+                signal_received_spies[args->id] = 0;
+            }
+        }
+
+        // il rentre chez lui
+
+        while ((args->mem->source_agents[args->id].character.row !=
+                args->mem->source_agents[args->id].character.home_row)
+               || (args->mem->source_agents[args->id].character.column !=
+                   args->mem->source_agents[args->id].character.home_column)) {
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
+                                  args->mem->source_agents[args->id].character.home_column);
+                signal_received_spies[args->id] = 0;
+            }
         }
     }
 
@@ -157,7 +206,7 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
     agent_thread_args_t *ptr;
     agent_thread_args_t *ptr2;
 
-    if (mem->my_timer.hours == 8 && mem->my_timer.minutes == 0) {
+    if (mem->my_timer.hours >= 8 && mem->my_timer.minutes == 0 && mem->my_timer.hours <= 17) {
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
             ptr = &threads->source_agent_args[i];
             pthread_attr_init(&attr);
