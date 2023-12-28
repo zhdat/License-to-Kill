@@ -33,7 +33,7 @@ void set_signals(void) {
 
 // Fonction pour initialiser la correspondance PID -> Espion
 void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
-    log_info("Mapping PID %d to agent %d", pid, id);
+    //log_info("Mapping PID %d to agent %d", pid, id);
     agent_map[id].pid = pid;
     agent_map[id].agent = agent;
 
@@ -41,7 +41,7 @@ void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
 
 int get_agent_by_pid(int pid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        log_info("PID: %d, Agent ID: %d", pid, agent_map[i].pid);
+        //log_info("PID: %d, Agent ID: %d", pid, agent_map[i].pid);
         if (agent_map[i].pid == pid) {
             return i;
         }
@@ -57,7 +57,7 @@ void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
 
     if (index != -1) {
         // Mettre à jour la santé de l'espion
-        log_info("Index: %d, Agent ID: %d, PID: %d, Row: %d, Column: %d",index, agent->character.id, agent->character.pid,
+        //log_info("Index: %d, Agent ID: %d, PID: %d, Row: %d, Column: %d",index, agent->character.id, agent->character.pid,
                  agent->character.row, agent->character.column);
         agent->character.health -= 1;
     }
@@ -126,6 +126,7 @@ void* morning_source_agent(void* arg) {
     set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
     int pid = getpid();
+    log_info("PID: %d", pid);
     // Obtenez la référence à l'objet source_agent pour le thread courant
     source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
 
