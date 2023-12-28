@@ -31,5 +31,7 @@ void * source_agent_thread_func(void* arg);
 void * attending_officer_thread_func(void* arg);
 void create_and_run_source_agent_threads(memory_t* mem, all_threads_t* threads);
 void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* threads);
+void handle_signal(int);
+void set_signals(void);
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H
