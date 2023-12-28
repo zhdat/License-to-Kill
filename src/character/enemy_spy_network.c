@@ -121,12 +121,12 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
 
 void *morning_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    /*int pid = getpid();
+    int pid = getpid();
     // Obtenez la référence à l'objet source_agent pour le thread courant
     source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
 
     // Mappez le PID du thread à l'objet source_agent correspondant
-    map_pid_to_agent(pid, current_agent);*/
+    map_pid_to_agent(pid, current_agent);
 
     int random_activity = rand() % 100;
 
