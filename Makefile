@@ -40,8 +40,6 @@ obj/monitor.o: src/monitor/monitor.c include/monitor.h
 obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-
-
 # ----------------------------------------------------------------------------
 # COMMON OBJECTS FILES
 # ----------------------------------------------------------------------------
@@ -150,12 +148,12 @@ run: distclean all
 	./bin/main_program
 
 clean:
-	rm obj/*.o
-	rm obj/common/*.o
-	rm obj/character/*.o
-	rm obj/timer/*.o
-	rm obj/enemy_country/*.o
+	rm -rf obj/*.o
+	rm -rf obj/common/*.o
+	rm -rf obj/character/*.o
+	rm -rf obj/timer/*.o
+	rm -rf obj/enemy_country/*.o
 
 distclean: clean
-	rm bin/*
+	rm -rf bin/*
 
