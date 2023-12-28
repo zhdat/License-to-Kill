@@ -150,7 +150,7 @@ coordinate_t get_residence_near_mailbox(memory_t* mem, int max_distance) {
     residential_buildings = get_residential_buildings(mem);
     int random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
     coordinate_t residence = residential_buildings[random];
-    while ((residence.row == mem->mailbox_coordinate.row) && (residence.column == mem->mailbox_coordinate.column) &&
+    while ((residence.row == mem->mailbox_coordinate.row) || (residence.column == mem->mailbox_coordinate.column) ||
            (euclidean_distance(residence.column, residence.row, mem->mailbox_coordinate.column,
                                mem->mailbox_coordinate.row) > max_distance)) {
         random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
