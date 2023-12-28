@@ -21,6 +21,7 @@ int main(void) {
     close_semaphore(move_sem);
     destroy_semaphore(move_sem);
     end_shared_memory(mem);
+    destroy_shared_memory();
 
     exit(EXIT_SUCCESS);
 }
