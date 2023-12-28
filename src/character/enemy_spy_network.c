@@ -41,6 +41,7 @@ void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
 
 int get_agent_by_pid(int pid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        log_info("PID: %d, Agent ID: %d", pid, agent_map[i].pid);
         if (agent_map[i].pid == pid) {
             return i;
         }
