@@ -49,7 +49,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
             // Un espion est sur la même cellule, envoyez un signal SIGUSR1
             if (mem->my_timer.hours >= 8) {
                 // log_info("The pid of the spy is %d", agent->character.pid);
-                log_info("The id of the spy is %s", agent->character.id);
+                log_info("The id of the spy targeted is %s", officer->targeted_character_id);
                 if (agent->character.pid != 0){
                     //kill(agent->character.pid, SIGUSR1);
                 }
