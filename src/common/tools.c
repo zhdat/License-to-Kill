@@ -2,6 +2,7 @@
 #include "logger.h"
 #include <math.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 int euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -74,3 +75,23 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
     *new_pos_col = current_column;
 }
 
+
+coordinate_t * findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
+    coordinate_t *neighbouring_cells = (coordinate_t *) malloc(sizeof(coordinate_t) * 8);
+    int count = 0;
+
+    for (int d_row = -1; d_row <= 1; d_row++) {
+        for (int d_col = -1; d_col <= 1; d_col++) {
+            if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
+                if (!is_cell_filled(city->cells, row + d_row, col + d_col)) {
+                    neighbouring_cells[count].row = row + d_row;
+                    neighbouring_cells[count].column = col + d_col;
+                    count++;
+                }
+            }
+        }
+    }
+
+    *neighbouring_cells_count = count;
+    return neighbouring_cells;
+}
