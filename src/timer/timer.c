@@ -63,8 +63,8 @@ void my_set_timer(float interval) {
         it.it_interval.tv_sec = (int) interval;
         it.it_value.tv_sec = (int) interval;
     } else {
-        it.it_interval.tv_usec = interval * 100000;
-        it.it_value.tv_usec = interval * 100000;
+        it.it_interval.tv_usec = interval * 1000000;
+        it.it_value.tv_usec = interval * 1000000;
     }
     signal(SIGALRM, timer_handler);
     setitimer(ITIMER_REAL, &it, NULL);
