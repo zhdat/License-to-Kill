@@ -7,9 +7,6 @@ volatile int signal_received_officer = 0;
 
 sem_t *move_sem;
 
-
-void create_network_evening_thread(memory_t *mem, all_threads_t *threads);
-
 void set_semaphore(sem_t *sem) {
     move_sem = sem;
 }

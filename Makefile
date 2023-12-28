@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run
 
-all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/testing bin/enemy_spy_network bin/citizen_manager
+all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/testing bin/enemy_spy_network bin/citizen_manager bin/counterintelligence_officer
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
@@ -107,6 +107,19 @@ obj/citizen_manager/main.o: src/citizen_manager/main.c include/citizen_manager.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 bin/citizen_manager: obj/citizen_manager/main.o obj/character/citizen_manager.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/character/character.o obj/cell.o obj/simulation_signals.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+# ----------------------------------------------------------------------------
+# COUNTERINTELLIGENCE OFFICER
+# ----------------------------------------------------------------------------
+
+obj/character/counterintelligence_officer.o: src/character/counterintelligence_officer.c include/counterintelligence_officer.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+obj/counterintelligence_officer/main.o: src/counterintelligence_officer/main.c include/counterintelligence_officer.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+bin/counterintelligence_officer: obj/counterintelligence_officer/main.o obj/character/counterintelligence_officer.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/character/character.o obj/cell.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 # ----------------------------------------------------------------------------

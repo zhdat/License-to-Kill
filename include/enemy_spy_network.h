@@ -32,6 +32,7 @@ void * morning_attending_officer(void* arg);
 void * evening_source_agent(void* arg);
 void * evening_attending_officer(void* arg);
 void create_network_morning_thread(memory_t* mem, all_threads_t* threads);
+void create_network_evening_thread(memory_t *mem, all_threads_t *threads);
 void handle_signal(int);
 void set_signals(void);
 void set_semaphore(sem_t* sem);
