@@ -44,15 +44,16 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
 
     // Vérifier si un espion est sur la même cellule
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        source_agent_t *agent = &(mem->source_agents[i]);
+        source_agent_t* agent = &(mem->source_agents[i]);
         if (agent->character.row == officer->character.row && agent->character.column == officer->character.column) {
             // Un espion est sur la même cellule, envoyez un signal SIGUSR1
-            if (mem->my_timer.turns >= 10) {
+            if (mem->my_timer.hours >= 9) {
                 log_info("Counter-intelligence officer %d has caught a spy at %d:%d", officer->character.id,
                          officer->character.row, officer->character.column);
+                log_info("The pid of the spy is %d", agent->character.pid);
                 //kill(agent->character.pid, SIGUSR1);
+                break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule
             }
-            break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule
         }
     }
 
@@ -109,7 +110,7 @@ void create_counter_intelligence_officer_threads(memory_t* mem) {
         threads->counter_intelligence_officer_args[i].id = i;
         threads->counter_intelligence_officer_args[i].mem = mem;
     }
-    while (mem->simulation_has_ended == 0){
+    while (mem->simulation_has_ended == 0) {
         create_counter_intelligence_officer_thread(mem, threads);
     }
 }
