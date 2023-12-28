@@ -40,9 +40,16 @@ void end_shared_memory(memory_t* mem) {
     }
 }
 
+void destroy_shared_memory(void) {
+    if (shm_unlink(SHARED_MEMORY_NAME) == -1) {
+        perror("shm_unlink");
+        exit(EXIT_FAILURE);
+    }
+}
+
 sem_t* create_semaphore(void) {
     sem_t* sem;
-    sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_EXCL, 0644, 1);
+    sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
         exit(EXIT_FAILURE);

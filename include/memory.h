@@ -82,7 +82,7 @@ struct memory_s {
 
     int citizens_at_home; /*!< Nombre de citoyens actuellement à leur domicile.*/
     int citizens_at_work; /*!< Nombre de citoyens actuellement au travail.*/
-    int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/    
+    int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/
 
     character_t citizens[MAX_CITIZEN_COUNT]; /*!< Tableau contenant les citoyens.*/
 
@@ -105,11 +105,14 @@ struct memory_s {
     timer_type my_timer; /*!< Timer de la simulation.*/
 
     pthread_mutex_t mutex; /*!< Mutex pour la synchronisation des threads.*/
-    
+
 };
 
-memory_t * open_shared_memory(void);
-void end_shared_memory(memory_t * mem);
+memory_t* open_shared_memory(void);
+
+void end_shared_memory(memory_t* mem);
+
+void destroy_shared_memory(void);
 
 sem_t* create_semaphore(void);
 
@@ -118,7 +121,6 @@ sem_t* open_semaphore(void);
 void close_semaphore(sem_t* sem);
 
 void destroy_semaphore(sem_t* sem);
-
 
 
 #endif /* MEMORY_H */
