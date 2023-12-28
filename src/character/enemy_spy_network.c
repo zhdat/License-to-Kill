@@ -116,9 +116,11 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
 void* morning_source_agent(void* arg) {
     set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    int pid = getpid();
     pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
     source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
     map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
+    current_agent->character.pid = pid;
     int random_activity = rand() % 100;
 
     if (random_activity < 10) {
@@ -189,9 +191,10 @@ void* morning_source_agent(void* arg) {
 void* evening_source_agent(void* arg) {
     set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
-    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     int pid = getpid();
-    map_pid_to_agent(pid, current_agent, args->id);
+    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
+    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
     current_agent->character.pid = pid;
     while ((args->mem->source_agents[args->id].character.row !=
             args->mem->source_agents[args->id].character.home_row)
