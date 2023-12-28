@@ -32,6 +32,7 @@ void set_signals(void) {
 }
 
 void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
+    log_info("Mapping TID %ld to agent %d", tid, id);
     agent_map[id].tid = tid;
     agent_map[id].agent = agent;
 }
