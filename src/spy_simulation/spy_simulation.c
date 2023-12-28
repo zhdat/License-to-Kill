@@ -105,19 +105,17 @@ void set_counter_intelligence_officers(memory_t *mem) {
 
     counterintelligence_officer_factory = new_counter_intelligence_officer_factory(new_counter_intelligence_officer);
 
-    coordinate_t choosen_residence;
-
     for (int i = 0; i < MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT; i++) {
-        choosen_residence = find_random_low_populated_residence(mem);
-        counter_intelligence_officer = counterintelligence_officer_factory->factory_method(choosen_residence.row,
-                                                                                           choosen_residence.column,
-                                                                                           10);
-        counter_intelligence_officer.mailbox_column = mem->mailbox_coordinate.column;
-        counter_intelligence_officer.mailbox_row = mem->mailbox_coordinate.row;
         counter_intelligence_officer.city_hall_row = findTypeOfBuilding(&(mem->city_map), CITY_HALL, 1)->row;
         counter_intelligence_officer.city_hall_column = findTypeOfBuilding(&(mem->city_map), CITY_HALL, 1)->column;
+        counter_intelligence_officer = counterintelligence_officer_factory->factory_method(counter_intelligence_officer.city_hall_row,
+                                                                                           counter_intelligence_officer.city_hall_column,
+                                                                                           -1);
+        counter_intelligence_officer.mailbox_column = mem->mailbox_coordinate.column;
+        counter_intelligence_officer.mailbox_row = mem->mailbox_coordinate.row;
 
-        increments_population_in_cell(mem, choosen_residence.column, choosen_residence.row);
+
+        increments_population_in_cell(mem, counter_intelligence_officer.city_hall_column, counter_intelligence_officer.city_hall_row);
 
         mem->counter_intelligence_officers[i] = counter_intelligence_officer;
     }
