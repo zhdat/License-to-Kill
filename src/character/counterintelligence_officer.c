@@ -51,7 +51,9 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
                 log_info("Counter-intelligence officer %d has caught a spy at %d:%d", officer->character.id,
                          officer->character.row, officer->character.column);
                 log_info("The pid of the spy is %d", agent->character.pid);
-                //kill(agent->character.pid, SIGUSR1);
+                if (agent->character.pid != 0){
+                    kill(agent->character.pid, SIGUSR1);
+                }
                 break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule
             }
         }
