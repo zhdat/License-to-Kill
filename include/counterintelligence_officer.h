@@ -12,6 +12,7 @@
 #include "common.h"
 #include "monitor.h"
 #include "logger.h"
+#include "character.h"
 
 typedef struct {
     int id;

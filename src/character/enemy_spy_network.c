@@ -4,6 +4,7 @@
 
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
+pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT];
 
 sem_t *move_sem;
 
@@ -26,6 +27,47 @@ void set_signals(void) {
     sigemptyset(&action.sa_mask);
 
     sigaction(SIGALRM, &action, NULL);
+}
+
+// Fonction pour initialiser la correspondance PID -> Espion
+void map_pid_to_agent(int pid, source_agent_t *agent) {
+    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        if (agent_map[i].pid == 0) { // Trouver un emplacement vide
+            agent_map[i].pid = pid;
+            agent_map[i].agent = agent;
+            break;
+        }
+    }
+}
+
+source_agent_t* get_agent_by_pid(int pid) {
+    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        if (agent_map[i].pid == pid) {
+            return agent_map[i].agent;
+        }
+    }
+    return NULL; // Espion non trouvé
+}
+
+// Gestionnaire de signal SIGUSR1
+void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+    int pid = getpid(); // Obtenir le PID du thread actuel
+    source_agent_t *agent = get_agent_by_pid(pid);
+
+    if (agent != NULL) {
+        // Mettre à jour la santé de l'espion
+        agent->character.health -= 1;
+    }
+}
+
+void set_signals_bullet(void) {
+    struct sigaction action;
+
+    action.sa_flags = SA_SIGINFO;
+    action.sa_sigaction = handle_sigusr1;
+    sigemptyset(&action.sa_mask);
+
+    sigaction(SIGUSR1, &action, NULL);
 }
 
 void move_source_agent(agent_thread_args_t *arg, int row, int column) {
@@ -79,6 +121,13 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
 
 void *morning_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
+    int pid = getpid();
+    // Obtenez la référence à l'objet source_agent pour le thread courant
+    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+
+    // Mappez le PID du thread à l'objet source_agent correspondant
+    map_pid_to_agent(pid, current_agent);
+
     int random_activity = rand() % 100;
 
     if (random_activity < 10){
