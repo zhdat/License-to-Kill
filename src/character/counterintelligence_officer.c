@@ -42,7 +42,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
     next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row);
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
 
-    /*// Vérifier si un espion est sur la même cellule
+    // Vérifier si un espion est sur la même cellule
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         source_agent_t *agent = &(mem->source_agents[i]);
         if (agent->character.row == officer->character.row && agent->character.column == officer->character.column) {
@@ -52,7 +52,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
             }
             break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule
         }
-    }*/
+    }
 
     sem_post(move_sem);
 }
