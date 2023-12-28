@@ -4,11 +4,13 @@
 
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
-pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0}, {0, 0}, {0, 0}};
+pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0},
+                                                        {0, 0},
+                                                        {0, 0}};
 
-sem_t *move_sem;
+sem_t* move_sem;
 
-void set_semaphore(sem_t *sem) {
+void set_semaphore(sem_t* sem) {
     move_sem = sem;
 }
 
@@ -30,14 +32,10 @@ void set_signals(void) {
 }
 
 // Fonction pour initialiser la correspondance PID -> Espion
-void map_pid_to_agent(int pid, source_agent_t *agent) {
-    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        if (agent_map[i].pid == 0) { // Trouver un emplacement vide
-            agent_map[i].pid = pid;
-            agent_map[i].agent = agent;
-            break;
-        }
-    }
+void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
+    agent_map[id].pid = pid;
+    agent_map[id].agent = agent;
+
 }
 
 source_agent_t* get_agent_by_pid(int pid) {
@@ -50,13 +48,14 @@ source_agent_t* get_agent_by_pid(int pid) {
 }
 
 // Gestionnaire de signal SIGUSR1
-void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
     int pid = getpid(); // Obtenir le PID du thread actuel
-    source_agent_t *agent = get_agent_by_pid(pid);
+    source_agent_t* agent = get_agent_by_pid(pid);
 
     if (agent != NULL) {
         // Mettre à jour la santé de l'espion
-        log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
+        log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid,
+                 agent->character.row, agent->character.column);
         agent->character.health -= 1;
     }
 }
@@ -71,10 +70,10 @@ void set_signals_bullet(void) {
     sigaction(SIGUSR1, &action, NULL);
 }
 
-void move_source_agent(agent_thread_args_t *arg, int row, int column) {
+void move_source_agent(agent_thread_args_t* arg, int row, int column) {
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    source_agent_t *spies = &(mem->source_agents[arg->id]);
+    memory_t* mem = arg->mem;
+    source_agent_t* spies = &(mem->source_agents[arg->id]);
 
     start_row = spies->character.row;
     start_column = spies->character.column;
@@ -96,10 +95,10 @@ void move_source_agent(agent_thread_args_t *arg, int row, int column) {
 
 }
 
-void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
+void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    attending_officer_t *officer = &(mem->attending_officers[arg->id]);
+    memory_t* mem = arg->mem;
+    attending_officer_t* officer = &(mem->attending_officers[arg->id]);
 
     start_row = officer->character.row;
     start_column = officer->character.column;
@@ -120,25 +119,27 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
     sem_post(move_sem);
 }
 
-void *morning_source_agent(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* morning_source_agent(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
     int pid = getpid();
     // Obtenez la référence à l'objet source_agent pour le thread courant
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
 
     // Mappez le PID du thread à l'objet source_agent correspondant
-    map_pid_to_agent(pid, current_agent);
+    map_pid_to_agent(pid, current_agent, args->id);
     current_agent->character.pid = pid;
     int random_activity = rand() % 100;
 
-    if (random_activity < 10){
+    if (random_activity < 10) {
         // va au supermarché
         int random_supermarket = rand() % NUMBER_OF_SUPERMARKETS;
-        coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
+        coordinate_t* supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
+                                                                   NUMBER_OF_SUPERMARKETS);
 
         while ((args->mem->source_agents[args->id].character.row != supermarket_coordinates[random_supermarket].row)
                ||
-               (args->mem->source_agents[args->id].character.column != supermarket_coordinates[random_supermarket].column)) {
+               (args->mem->source_agents[args->id].character.column !=
+                supermarket_coordinates[random_supermarket].column)) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, supermarket_coordinates[random_supermarket].row,
                                   supermarket_coordinates[random_supermarket].column);
@@ -163,7 +164,7 @@ void *morning_source_agent(void *arg) {
     } else {
 
         int random_company = rand() % NUMBER_OF_COMPANIES;
-        coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
+        coordinate_t* companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
 
 
         while ((args->mem->source_agents[args->id].character.row != companies_coordinates[random_company].row)
@@ -194,11 +195,11 @@ void *morning_source_agent(void *arg) {
     pthread_exit(NULL);
 }
 
-void *evening_source_agent(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+void* evening_source_agent(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     int pid = getpid();
-    map_pid_to_agent(pid, current_agent);
+    map_pid_to_agent(pid, current_agent, args->id);
     current_agent->character.pid = pid;
     while ((args->mem->source_agents[args->id].character.row !=
             args->mem->source_agents[args->id].character.home_row)
@@ -215,8 +216,8 @@ void *evening_source_agent(void *arg) {
     pthread_exit(NULL);
 }
 
-void *evening_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* evening_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
     while ((args->mem->attending_officers[args->id].character.row !=
             args->mem->attending_officers[args->id].character.home_row)
            || (args->mem->attending_officers[args->id].character.column !=
@@ -232,8 +233,8 @@ void *evening_attending_officer(void *arg) {
     pthread_exit(NULL);
 }
 
-void *morning_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* morning_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
 
     int next_row = rand() % 7;
     int next_column = rand() % 7;
@@ -251,10 +252,10 @@ void *morning_attending_officer(void *arg) {
 }
 
 
-void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     if (mem->my_timer.hours >= 8 && mem->my_timer.minutes == 0 && mem->my_timer.hours <= 17) {
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
@@ -288,10 +289,10 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
 
 }
 
-void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
 
@@ -325,8 +326,8 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
 }
 
 
-void create_enemy_spy_thread(memory_t *mem) {
-    all_threads_t *threads;
+void create_enemy_spy_thread(memory_t* mem) {
+    all_threads_t* threads;
     threads = malloc(sizeof(all_threads_t));
     srand(time(NULL));
 
