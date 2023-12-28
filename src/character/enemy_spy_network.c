@@ -39,7 +39,7 @@ void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
 
 int get_agent_by_tid(pthread_t tid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        if (pthread_equal(agent_map[i].tid, tid)) { // Utilisez pthread_equal pour comparer les TID
+        if (agent_map[i].tid == tid) {
             return i;
         }
     }
