@@ -3,6 +3,8 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"

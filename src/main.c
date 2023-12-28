@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-#define NUMBER_OF_PROGRAMS 5
+#define NUMBER_OF_PROGRAMS 6
 #define NUMBER_OF_ARGS_TIMER (NUMBER_OF_PROGRAMS + 2 + 1)
 
 void handle_fatal_error_and_exit(const char* msg) {
@@ -84,18 +84,23 @@ int main(void) {
                     if (pids[4] == 0) {
                         execlp("./bin/testing", "testing", NULL);
                     } else {
-                        pid_timer = create_child();
-
-                        if (pid_timer == 0) {
-                            array_args_timer = args_for_timer(pids);
-                            execvp("./bin/timer", array_args_timer);
+                        pids[5] = create_child();
+                        if (pids[5] == 0) {
+                            execlp("./bin/citizen_manager", "citizen_manager", NULL);
                         } else {
-                            wait_children(NUMBER_OF_PROGRAMS + 1);
-                            if (array_args_timer != NULL) {
-                                free_args_for_timer(array_args_timer);
-                            }
+                            pid_timer = create_child();
 
-                            free(pids);
+                            if (pid_timer == 0) {
+                                array_args_timer = args_for_timer(pids);
+                                execvp("./bin/timer", array_args_timer);
+                            } else {
+                                wait_children(NUMBER_OF_PROGRAMS + 1);
+                                if (array_args_timer != NULL) {
+                                    free_args_for_timer(array_args_timer);
+                                }
+
+                                free(pids);
+                            }
                         }
                     }
                 }

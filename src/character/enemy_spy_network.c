@@ -6,7 +6,7 @@ volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0,0,0};
 volatile int signal_received_officer = 0;
 
 
-void move_source_agent(memory_t *mem, int row, int column, int id) {
+void move_source_agent(memory_t* mem, int row, int column, int id) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         if (mem->source_agents[i].character.id == id) {
             pthread_mutex_lock(&mem->mutex);
@@ -23,7 +23,7 @@ void move_source_agent(memory_t *mem, int row, int column, int id) {
     }
 }
 
-void move_attending_officer(memory_t *mem, int row, int column) {
+void move_attending_officer(memory_t* mem, int row, int column) {
     pthread_mutex_lock(&mem->mutex);
     decrements_population_in_cell(mem, mem->attending_officers[0].character.column,
                                   mem->attending_officers[0].character.row);
@@ -34,7 +34,7 @@ void move_attending_officer(memory_t *mem, int row, int column) {
     pthread_mutex_unlock(&mem->mutex);
 }
 
-int is_valid_move(int column_end, int row_end, memory_t *mem) {
+int is_valid_move(int column_end, int row_end, memory_t* mem) {
     if (column_end < 0 || column_end >= MAX_COLUMNS || row_end < 0 || row_end >= MAX_ROWS) {
         return 0;
     }
@@ -144,10 +144,9 @@ void create_and_run_source_agent_threads(memory_t *mem, all_threads_t *threads) 
         sleep(1);
 
     }
-
 }
 
-void create_and_run_attending_officer_threads(memory_t *mem, all_threads_t *threads) {
+void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
     agent_thread_args_t *ptr;
 
