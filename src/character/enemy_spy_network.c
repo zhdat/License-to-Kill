@@ -33,6 +33,7 @@ void set_signals(void) {
 
 // Fonction pour initialiser la correspondance PID -> Espion
 void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
+    log_info("Mapping PID %d to agent %d", pid, id);
     agent_map[id].pid = pid;
     agent_map[id].agent = agent;
 
