@@ -28,4 +28,15 @@ void next_move(city_t* cells, coordinate_t cell_start, coordinate_t cell_end, in
 
 coordinate_t * findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count);
 
+
+//
+
+int is_same_cell(coordinate_t cell1, coordinate_t cell2);
+
+int is_at_work(character_t character);
+
+int character_is_at(character_t character1, coordinate_t cell2);
+
+int characters_are_at_same_cell(character_t character1, character_t character2);
+
 #endif //PROJECT_TOOLS_H

@@ -77,7 +77,6 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
     sem_post(move_sem);
 }
 
-
 void *morning_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
     int random_activity = rand() % 100;
@@ -108,10 +107,10 @@ void *morning_source_agent(void *arg) {
             }
         }
 
-    }else if (random_activity >= 10 && random_activity < 40) {
+    } else if (random_activity >= 10 && random_activity < 40) {
         // reste chez lui
 
-    }else {
+    } else {
 
         int random_company = rand() % NUMBER_OF_COMPANIES;
         coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);

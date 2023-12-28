@@ -110,7 +110,7 @@ void* citizen_to_home_supermarket(void* args) {
     return NULL;
 }
 
-int work(memory_t mem, character_t citizen) {
+int work_in_supermarket(memory_t mem, character_t citizen) {
     int start_row, start_column, supermarket_column_1, supermarket_column_2, supermarket_row_1, supermarket_row_2;
     start_row = citizen.row;
     start_column = citizen.column;
@@ -141,12 +141,12 @@ void create_evening_company_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUN
                                    citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]) {
     if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
         for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
-            if (!work(*mem, mem->citizens[i])) {
+            if (!work_in_supermarket(*mem, mem->citizens[i])) {
                 pthread_create(&ids[i], NULL, citizen_to_home_supermarket, (void*) args[i]);
             }
         }
         for (int j = 0; j < MAX_CITIZEN_COUNT; j++) {
-            if (!work(*mem, mem->citizens[j])) {
+            if (!work_in_supermarket(*mem, mem->citizens[j])) {
                 pthread_join(ids[j], NULL);
             }
         }
@@ -156,12 +156,12 @@ void create_evening_company_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUN
 void create_evening_supermarket_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]) {
     if (mem->my_timer.hours == 20 && mem->my_timer.minutes == 0) {
         for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
-            if (work(*mem, mem->citizens[i])) {
+            if (work_in_supermarket(*mem, mem->citizens[i])) {
                 pthread_create(&ids[i], NULL, citizen_to_home, (void*) args[i]);
             }
         }
         for (int j = 0; j < MAX_CITIZEN_COUNT; j++) {
-            if (work(*mem, mem->citizens[j])) {
+            if (work_in_supermarket(*mem, mem->citizens[j])) {
                 pthread_join(ids[j], NULL);
             }
         }

@@ -95,3 +95,24 @@ coordinate_t * findNeighbouringCells(city_t *city, int row, int col, int *neighb
     *neighbouring_cells_count = count;
     return neighbouring_cells;
 }
+
+
+int is_same_cell(coordinate_t cell1, coordinate_t cell2) {
+    return cell1.row == cell2.row && cell1.column == cell2.column;
+}
+
+int is_at_work(character_t character) {
+    return character.row == character.work_row && character.column == character.work_column;
+}
+
+int is_at_home(character_t character) {
+    return character.row == character.home_row && character.column == character.home_column;
+}
+
+int character_is_at(character_t character1, coordinate_t cell2) {
+    return character1.row == cell2.row && character1.column == cell2.column;
+}
+
+int characters_are_at_same_cell(character_t character1, character_t character2) {
+    return character1.row == character2.row && character1.column == character2.column;
+}
