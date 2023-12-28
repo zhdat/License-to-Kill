@@ -4,7 +4,7 @@
 
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
-pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT];
+pid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0}, {0, 0}, {0, 0}};
 
 sem_t *move_sem;
 
