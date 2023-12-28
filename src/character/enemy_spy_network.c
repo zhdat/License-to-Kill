@@ -38,23 +38,24 @@ void map_pid_to_agent(int pid, source_agent_t* agent, int id) {
 
 }
 
-source_agent_t* get_agent_by_pid(int pid) {
+int get_agent_by_pid(int pid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         if (agent_map[i].pid == pid) {
-            return agent_map[i].agent;
+            return i;
         }
     }
-    return NULL; // Espion non trouvé
+    return -1; // Espion non trouvé
 }
 
 // Gestionnaire de signal SIGUSR1
 void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
     int pid = getpid(); // Obtenir le PID du thread actuel
-    source_agent_t* agent = get_agent_by_pid(pid);
+    int index = get_agent_by_pid(pid);
+    source_agent_t* agent = agent_map[index].agent;
 
-    if (agent != NULL) {
+    if (index != -1) {
         // Mettre à jour la santé de l'espion
-        log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid,
+        log_info("Index: %d, Agent ID: %d, PID: %d, Row: %d, Column: %d",index, agent->character.id, agent->character.pid,
                  agent->character.row, agent->character.column);
         agent->character.health -= 1;
     }
