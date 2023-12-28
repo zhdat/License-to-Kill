@@ -123,6 +123,7 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
 }
 
 void* morning_source_agent(void* arg) {
+    set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
     int pid = getpid();
     // Obtenez la référence à l'objet source_agent pour le thread courant
@@ -199,6 +200,7 @@ void* morning_source_agent(void* arg) {
 }
 
 void* evening_source_agent(void* arg) {
+    set_signals_bullet();
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
     source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     int pid = getpid();
