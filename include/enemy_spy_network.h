@@ -26,14 +26,15 @@ typedef struct {
 } all_threads_t;
 
 void move_source_agent(agent_thread_args_t* arg, int row, int column);
-void move_attending_officer(memory_t* mem, int row, int column);
-int is_valid_move(int column_end, int row_end, memory_t* mem);
-void * source_agent_thread_func(void* arg);
-void * attending_officer_thread_func(void* arg);
-void create_and_run_source_agent_threads(memory_t* mem, all_threads_t* threads);
-void create_and_run_attending_officer_threads(memory_t* mem, all_threads_t* threads);
+void move_attending_officer(agent_thread_args_t* arg, int row, int column);
+void * morning_source_agent(void* arg);
+void * morning_attending_officer(void* arg);
+void * evening_source_agent(void* arg);
+void * evening_attending_officer(void* arg);
+void create_network_morning_thread(memory_t* mem, all_threads_t* threads);
 void handle_signal(int);
 void set_signals(void);
 void set_semaphore(sem_t* sem);
+void create_enemy_spy_thread(memory_t* mem);
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H
