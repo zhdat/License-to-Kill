@@ -312,7 +312,11 @@ void display_spy_information(WINDOW* window, memory_t* mem, int row, int column,
     mvwprintw(window, row, column, "Spy n°%d", number);
     wattroff(window, A_BOLD);
     mvwprintw(window, row + 1, column, "  Id: %d", id);
+    mvwprintw(window, row + 2, column, "  Health:    ");
     mvwprintw(window, row + 2, column, "  Health: %d", health_points);
+    if (health_points <= 0){
+        mvwprintw(window, row + 2, column, "  Health: Died (looser)  ");
+    }
     mvwprintw(window, row + 3, column, "  Position: (%d,%d)", location_row, location_column);
     mvwprintw(window, row + 4, column, "  Home pos: (%d,%d)", home_row, home_column);
     mvwprintw(window, row + 5, column, "  Stolen companies: %d", nb_of_stolen_companies);
@@ -355,7 +359,11 @@ void display_case_officer_information(WINDOW* window, memory_t* mem, int row, in
     mvwprintw(window, row, column, "Case Officer");
     wattroff(window, A_BOLD);
     mvwprintw(window, row + 1, column, "  Id: %d", id);
+    mvwprintw(window, row + 2, column, "  Health:    ");
     mvwprintw(window, row + 2, column, "  Health: %d", health_points);
+    if (health_points <= 0){
+        mvwprintw(window, row + 2, column, "  Health: Died (looser)  ");
+    }
     mvwprintw(window, row + 3, column, "  Position: (%d,%d)", location_row, location_column);
     mvwprintw(window, row + 4, column, "  Home pos: (%d,%d)", home_row, home_column);
     mvwprintw(window, row + 5, column, "  Mailbox pos: (%d,%d)", mailbox_row, mailbox_column);
@@ -392,6 +400,7 @@ void display_counterintelligence_officer_information(WINDOW* window,
     mvwprintw(window, row, col, "Counterintelligence Officer");
     wattroff(window, A_BOLD);
     mvwprintw(window, row + 1, col, "  Id: %d", id);
+    mvwprintw(window, row + 2, col, "  Health:    ");
     mvwprintw(window, row + 2, col, "  Health: %d", health_points);
     mvwprintw(window, row + 3, col, "  Position: (%d,%d)", location_row, location_column);
     mvwprintw(window, row + 4, col, "  City Hall pos: (%d,%d)", city_hall_row, city_hall_column);

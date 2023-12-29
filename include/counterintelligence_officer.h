@@ -30,7 +30,7 @@ void handle_signal(int sig);
 
 void set_signals(void);
 
-void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column);
+void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index);
 
 void* all_day_counter_intelligence_officer(void* args);
 

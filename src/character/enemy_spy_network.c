@@ -57,9 +57,13 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
         agent->character.health = 1;
     }*/
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i].agent->is_attacked == 1) {
             source_agent_t *agent = agent_map[i].agent;
-            agent->character.health = 1;
+            sem_wait(move_sem);
+            agent->character.health--;
+            agent->is_attacked = 0;
+            sem_post(move_sem);
             break;
         }
     }
@@ -79,6 +83,10 @@ void move_source_agent(agent_thread_args_t* arg, int row, int column) {
     int start_row, start_column;
     memory_t* mem = arg->mem;
     source_agent_t* spies = &(mem->source_agents[arg->id]);
+
+    if (spies->character.health == 0) {
+        return;
+    }
 
     start_row = spies->character.row;
     start_column = spies->character.column;
@@ -151,6 +159,9 @@ void* morning_source_agent(void* arg) {
                 move_source_agent(args, supermarket_coordinates[random_supermarket].row,
                                   supermarket_coordinates[random_supermarket].column);
                 signal_received_spies[args->id] = 0;
+                if(args->mem->source_agents[args->id].character.health == 0){
+                    break;
+                }
             }
         }
         // il rentre chez lui
@@ -162,6 +173,9 @@ void* morning_source_agent(void* arg) {
                 move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                                   args->mem->source_agents[args->id].character.home_column);
                 signal_received_spies[args->id] = 0;
+                if(args->mem->source_agents[args->id].character.health == 0){
+                    break;
+                }
             }
         }
 
@@ -181,6 +195,9 @@ void* morning_source_agent(void* arg) {
                 move_source_agent(args, companies_coordinates[random_company].row,
                                   companies_coordinates[random_company].column);
                 signal_received_spies[args->id] = 0;
+                if (args->mem->source_agents[args->id].character.health == 0) {
+                    break;
+                }
             }
         }
 
@@ -194,6 +211,9 @@ void* morning_source_agent(void* arg) {
                 move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                                   args->mem->source_agents[args->id].character.home_column);
                 signal_received_spies[args->id] = 0;
+                if (args->mem->source_agents[args->id].character.health == 0) {
+                    break;
+                }
             }
         }
     }
@@ -218,6 +238,9 @@ void* evening_source_agent(void* arg) {
             move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
                               args->mem->source_agents[args->id].character.home_column);
             signal_received_spies[args->id] = 0;
+            if (args->mem->source_agents[args->id].character.health == 0) {
+                break;
+            }
         }
     }
 
@@ -235,6 +258,9 @@ void* evening_attending_officer(void* arg) {
             move_attending_officer(args, args->mem->attending_officers[args->id].character.home_row,
                                    args->mem->attending_officers[args->id].character.home_column);
             signal_received_officer = 0;
+            if(args->mem->attending_officers[args->id].character.health == 0){
+                break;
+            }
         }
     }
 
@@ -252,6 +278,9 @@ void* morning_attending_officer(void* arg) {
         if (signal_received_officer) {
             move_attending_officer(args, next_row, next_column);
             signal_received_officer = 0;
+            if(args->mem->attending_officers[args->id].character.health == 0){
+                break;
+            }
         }
 
     }
@@ -268,6 +297,9 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
 
     if (mem->my_timer.hours >= 2 && mem->my_timer.minutes == 0 && mem->my_timer.hours <= 17) {
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if(mem->source_agents[i].character.health == 0){
+                continue;
+            }
             ptr = &threads->source_agent_args[i];
             pthread_attr_init(&attr);
             if (pthread_create(&threads->source_agent_threads[i], &attr, morning_source_agent,
@@ -279,21 +311,26 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
 
         }
 
-        ptr2 = &threads->attending_officer_args[0];
-        pthread_attr_init(&attr);
-        if (pthread_create(&threads->attending_officer_threads[0], &attr, morning_attending_officer,
-                           ptr2) == 0) {
-        } else {
-            printf("thread not created\n");
+        if (mem->attending_officers[0].character.health == 0) {
+            ptr2 = &threads->attending_officer_args[0];
+            pthread_attr_init(&attr);
+            if (pthread_create(&threads->attending_officer_threads[0], &attr, morning_attending_officer,
+                               ptr2) == 0) {
+            } else {
+                printf("thread not created\n");
+            }
         }
-
         // joindre les threads
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if(mem->source_agents[i].character.health == 0){
+                continue;
+            }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
-        pthread_join(threads->attending_officer_threads[0], NULL);
-
+        if(mem->attending_officers[0].character.health == 0) {
+            pthread_join(threads->attending_officer_threads[0], NULL);
+        }
     }
 
 }
@@ -306,6 +343,9 @@ void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
     if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if(mem->source_agents[i].character.health == 0){
+                continue;
+            }
             ptr = &threads->source_agent_args[i];
             pthread_attr_init(&attr);
             if (pthread_create(&threads->source_agent_threads[i], &attr, evening_source_agent,
@@ -317,20 +357,26 @@ void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
 
         }
 
-        ptr2 = &threads->attending_officer_args[0];
-        pthread_attr_init(&attr);
-        if (pthread_create(&threads->attending_officer_threads[0], &attr, evening_attending_officer,
-                           ptr2) == 0) {
-        } else {
-            printf("thread not created\n");
+        if(mem->attending_officers[0].character.health == 0) {
+            ptr2 = &threads->attending_officer_args[0];
+            pthread_attr_init(&attr);
+            if (pthread_create(&threads->attending_officer_threads[0], &attr, evening_attending_officer,
+                               ptr2) == 0) {
+            } else {
+                printf("thread not created\n");
+            }
         }
-
         // joindre les threads
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if(mem->source_agents[i].character.health == 0){
+                continue;
+            }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
-        pthread_join(threads->attending_officer_threads[0], NULL);
+        if(mem->attending_officers[0].character.health == 0) {
+            pthread_join(threads->attending_officer_threads[0], NULL);
+        }
     }
 }
 
