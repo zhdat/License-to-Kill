@@ -47,7 +47,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
         source_agent_t* agent = &(mem->source_agents[i]);
         if (agent->character.row == officer->character.row && agent->character.column == officer->character.column) {
             // Un espion est sur la même cellule, envoyez un signal SIGUSR1
-            if (mem->my_timer.hours >= 8) {
+            if (mem->my_timer.hours >= 2) {
                 //log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
                 //log_info("id of the spy: %d", agent->character.id);
                 if (agent->character.pid != 0){
