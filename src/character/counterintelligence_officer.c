@@ -51,6 +51,9 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
                 //log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
                 //log_info("id of the spy: %d", agent->character.id);
                 if (agent->character.pid != 0){
+                    sem_wait(move_sem);
+                    agent->is_attacked = 1;
+                    sem_post(move_sem);
                     kill(agent->character.pid, SIGUSR1);
                 }
                 break; // Supposons qu'il ne peut y avoir qu'un seul espion par cellule

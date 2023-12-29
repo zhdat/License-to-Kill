@@ -32,13 +32,17 @@ void set_signals(void) {
 }
 
 void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
-    log_info("Mapping TID %ld to agent %d", tid, id);
+    if(id == 1){
+        log_info("Mapping TID %ld to agent %d\n", tid, id);
+    }
+    //log_debug("Mapping TID %ld to agent %d\n", tid, id);
     agent_map[id].tid = tid;
     agent_map[id].agent = agent;
 }
 
 int get_agent_by_tid(pthread_t tid) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        // log_info("Comparing TID %ld to TID n:%d %ld", tid,i, agent_map[i].tid );
         if (pthread_equal(agent_map[i].tid, tid)) { // Utilisez pthread_equal pour comparer les TID
             return i;
         }
@@ -47,13 +51,20 @@ int get_agent_by_tid(pthread_t tid) {
 }
 
 void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
-    pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
+    /*pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
     int index = get_agent_by_tid(tid);
     log_info("Tid %ld received SIGUSR1", tid);
-    log_info("Agent %d was shot", index);
+    //log_info("Agent %d was shot", index);
     if (index != -1) {
         source_agent_t *agent = agent_map[index].agent;
         agent->character.health = 1;
+    }*/
+    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+        if (agent_map[i].agent->is_attacked == 1) {
+            source_agent_t *agent = agent_map[i].agent;
+            agent->character.health = 1;
+            break;
+        }
     }
 }
 
@@ -117,13 +128,16 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
 }
 
 void* morning_source_agent(void* arg) {
-    set_signals_bullet();
+
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
     int pid = getpid();
+
     pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
     source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
-    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
     current_agent->character.pid = pid;
+    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
+
+
     int random_activity = rand() % 100;
 
     if (random_activity < 10) {
@@ -255,7 +269,7 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
     agent_thread_args_t* ptr;
     agent_thread_args_t* ptr2;
 
-    if (mem->my_timer.hours >= 8 && mem->my_timer.minutes == 0 && mem->my_timer.hours <= 17) {
+    if (mem->my_timer.hours >= 2 && mem->my_timer.minutes == 0 && mem->my_timer.hours <= 17) {
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
             ptr = &threads->source_agent_args[i];
             pthread_attr_init(&attr);

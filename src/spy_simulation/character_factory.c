@@ -86,6 +86,7 @@ source_agent_t new_spy_without_licence(int row, int column)
     spy.character.work_column = -1;
     spy.has_licence_to_kill = 0;
     spy.nb_of_stolen_companies = 0;
+    spy.is_attacked = 0;
 
     return spy;
 }
@@ -112,6 +113,7 @@ attending_officer_t new_case_officer(int row, int column)
     case_officer.character.home_column = column;
     case_officer.character.work_row = -1;
     case_officer.character.work_column = -1;
+    case_officer.is_attacked = 0;
 
     return case_officer;
 }
