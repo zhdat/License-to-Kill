@@ -29,6 +29,7 @@ struct source_agent_s {
 	character_t character; /*!< The character. */
 	int nb_of_stolen_companies; /*!< The number of stolen companies. */
 	int has_licence_to_kill; /*!< The licence to kill. 1 if he has it, 0 otherwise. */
+	int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
 };
 
 /* Structure of attending_officer */
@@ -36,6 +37,7 @@ struct attending_officer_s {
 	character_t character; /*!< The character. */
 	int mailbox_row; /*!< The row of the mailbox. */
 	int mailbox_column; /*!< The column of the mailbox. */
+	int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
 };
 
 /* Structure of counter_intelligence_officer */

@@ -22,7 +22,7 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
-void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column) {
+void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index) {
     int start_row, start_column;
     memory_t* mem = arg->mem;
     counter_intelligence_officer_t* officer = &(mem->counter_intelligence_officers[arg->id]);
@@ -41,6 +41,23 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
     decrements_population_in_cell(mem, start_column, start_row);
     next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row);
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
+
+    // Vérifier si un l'espion ciblé est sur la même cellule
+        source_agent_t* agent = &(mem->source_agents[index]);
+        if (agent->character.row == officer->character.row && agent->character.column == officer->character.column && agent->character.id == officer->targeted_character_id) {
+            // Un espion est sur la même cellule, envoyez un signal SIGUSR1
+            if(agent->character.row != agent->character.home_row && agent->character.column != agent->character.home_column) {
+                if (mem->my_timer.hours >= 2) {
+                    //log_info("Agent ID: %d, PID: %d, Row: %d, Column: %d", agent->character.id, agent->character.pid, agent->character.row, agent->character.column);
+                    //log_info("id of the spy: %d", agent->character.id);
+                    if (agent->character.pid != 0) {
+                        agent->is_attacked = 1;
+                        kill(agent->character.pid, SIGUSR1);
+                    }
+                }
+            }
+        }
+
     sem_post(move_sem);
 }
 
@@ -55,7 +72,7 @@ void* all_day_counter_intelligence_officer(void* args) {
             for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
                 if (officer->targeted_character_id == mem->source_agents[i].character.id) {
                     move_counter_intelligence_officer(arg, mem->source_agents[i].character.row,
-                                                      mem->source_agents[i].character.column);
+                                                      mem->source_agents[i].character.column, i);
                     break;
                 }
             }
@@ -94,7 +111,7 @@ void create_counter_intelligence_officer_threads(memory_t* mem) {
         threads->counter_intelligence_officer_args[i].id = i;
         threads->counter_intelligence_officer_args[i].mem = mem;
     }
-    while (mem->simulation_has_ended == 0){
+    while (mem->simulation_has_ended == 0) {
         create_counter_intelligence_officer_thread(mem, threads);
     }
 }
