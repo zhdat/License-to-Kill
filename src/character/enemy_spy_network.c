@@ -214,6 +214,14 @@ void* morning_source_agent(void* arg) {
 
 void *evening_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
+
+    int pid = getpid();
+    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
+    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
+    current_agent->character.pid = pid;
+
+
     while (!is_at_home(args->mem->source_agents[args->id].character)) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
