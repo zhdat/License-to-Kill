@@ -56,7 +56,7 @@ void* citizen_to_work(void* args) {
     memory_t* mem = arg->mem;
     character_t* citizen = &(mem->citizens[arg->index]);
 
-    while ((citizen->row != citizen->work_row) || (citizen->column != citizen->work_column)) {
+    while (!is_at_work(*citizen)) {
         if (timer_citizens[arg->index] == 1) {
             move_citizen(arg, citizen->work_row, citizen->work_column);
             timer_citizens[arg->index] = 0;
@@ -70,7 +70,7 @@ void* citizen_to_home(void* args) {
     memory_t* mem = arg->mem;
     character_t* citizen = &(mem->citizens[arg->index]);
 
-    while ((citizen->row != citizen->home_row) || (citizen->column != citizen->home_column)) {
+    while (!is_at_home(*citizen)) {
         if (timer_citizens[arg->index] == 1) {
             move_citizen(arg, citizen->home_row, citizen->home_column);
             timer_citizens[arg->index] = 0;
@@ -91,17 +91,15 @@ void* citizen_to_home_supermarket(void* args) {
     coordinate_t* supermarket_coordinates = findTypeOfBuilding(&mem->city_map, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
 
     if (to_supermarket == 2) {
-        int supermarket_row = supermarket_coordinates[supermarket].row;
-        int supermarket_column = supermarket_coordinates[supermarket].column;
-        while ((citizen->row != supermarket_row) || (citizen->column != supermarket_column)) {
+        while (!character_is_at(*citizen, supermarket_coordinates[supermarket])) {
             if (timer_citizens[arg->index] == 1) {
-                move_citizen(arg, supermarket_row, supermarket_column);
+                move_citizen(arg, supermarket_coordinates[supermarket].row, supermarket_coordinates[supermarket].column);
                 timer_citizens[arg->index] = 0;
             }
         }
     }
 
-    while ((citizen->row != citizen->home_row) || (citizen->column != citizen->home_column)) {
+    while (!is_at_home(*citizen)) {
         if (timer_citizens[arg->index] == 1) {
             move_citizen(arg, citizen->home_row, citizen->home_column);
             timer_citizens[arg->index] = 0;
@@ -111,19 +109,8 @@ void* citizen_to_home_supermarket(void* args) {
 }
 
 int work_in_supermarket(memory_t mem, character_t citizen) {
-    int start_row, start_column, supermarket_column_1, supermarket_column_2, supermarket_row_1, supermarket_row_2;
-    start_row = citizen.row;
-    start_column = citizen.column;
-
     coordinate_t* supermarket_coordinates = findTypeOfBuilding(&mem.city_map, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
-    supermarket_row_1 = supermarket_coordinates[0].row;
-    supermarket_column_1 = supermarket_coordinates[0].column;
-    supermarket_row_2 = supermarket_coordinates[1].row;
-    supermarket_column_2 = supermarket_coordinates[1].column;
-
-    return ((start_row == supermarket_row_1) && (start_column == supermarket_column_1)) ||
-           ((start_row == supermarket_row_2) && (start_column == supermarket_column_2));
-
+    return (character_is_at(citizen, supermarket_coordinates[0]) || character_is_at(citizen, supermarket_coordinates[1]));
 }
 
 void create_morning_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]) {
