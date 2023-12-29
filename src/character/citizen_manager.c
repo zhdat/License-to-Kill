@@ -127,7 +127,7 @@ int work_in_supermarket(memory_t mem, character_t citizen) {
 }
 
 void create_morning_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]) {
-    if (mem->my_timer.hours == 8 && mem->my_timer.minutes == 0) {
+    if (mem->my_timer.hours == 2 && mem->my_timer.minutes == 0) {
         for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
             pthread_create(&ids[i], NULL, citizen_to_work, (void *) args[i]);
         }

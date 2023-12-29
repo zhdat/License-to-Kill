@@ -32,9 +32,6 @@ void set_signals(void) {
 }
 
 void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
-    if(id == 1){
-        log_info("Mapping TID %ld to agent %d\n", tid, id);
-    }
     //log_debug("Mapping TID %ld to agent %d\n", tid, id);
     agent_map[id].tid = tid;
     agent_map[id].agent = agent;
@@ -71,7 +68,7 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
 void set_signals_bullet(void) {
     struct sigaction action;
 
-    action.sa_flags = SA_SIGINFO;
+    action.sa_flags = 0;
     action.sa_sigaction = handle_sigusr1;
     sigemptyset(&action.sa_mask);
 

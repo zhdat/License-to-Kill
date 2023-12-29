@@ -67,6 +67,7 @@ source_agent_t new_spy_with_licence(int row, int column)
     spy.character.work_column = -1;
     spy.has_licence_to_kill = 1;
     spy.nb_of_stolen_companies = 0;
+    spy.is_attacked = 0;
 
     return spy;
 
