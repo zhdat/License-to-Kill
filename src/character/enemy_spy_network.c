@@ -6,9 +6,7 @@
 
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
-tid_to_agent_map_t agent_map[MAX_SOURCE_AGENT_COUNT] = {{0, 0},
-                                                        {0, 0},
-                                                        {0, 0}};
+source_agent_t* agent_map[MAX_SOURCE_AGENT_COUNT];
 
 sem_t *move_sem;
 
@@ -37,20 +35,9 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
-void map_tid_to_agent(pthread_t tid, source_agent_t *agent, int id) {
+void agent_mapping(source_agent_t *agent, int id) {
     //log_debug("Mapping TID %ld to agent %d\n", tid, id);
-    agent_map[id].tid = tid;
-    agent_map[id].agent = agent;
-}
-
-int get_agent_by_tid(pthread_t tid) {
-    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        // log_info("Comparing TID %ld to TID n:%d %ld", tid,i, agent_map[i].tid );
-        if (pthread_equal(agent_map[i].tid, tid)) { // Utilisez pthread_equal pour comparer les TID
-            return i;
-        }
-    }
-    return -1; // Thread non trouvé
+    agent_map[id] = agent;
 }
 
 void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
@@ -64,8 +51,8 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
     }*/
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
-        if (agent_map[i].agent->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i].agent;
+        if (agent_map[i]->is_attacked == 1) {
+            source_agent_t *agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health--;
             agent->is_attacked = 0;
@@ -88,8 +75,8 @@ void set_signals_weak_bullet(void) {
 void handle_sigusr2(int sig, siginfo_t *info, void *unused) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
-        if (agent_map[i].agent->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i].agent;
+        if (agent_map[i]->is_attacked == 1) {
+            source_agent_t *agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health -= 2;
             agent->is_attacked = 0;
@@ -167,10 +154,9 @@ void *morning_source_agent(void *arg) {
 
     int pid = getpid();
 
-    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
     source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
-    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
+    //agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
 
     int random_activity = rand() % 100;
@@ -188,18 +174,18 @@ void *morning_source_agent(void *arg) {
                 move_source_agent(args, supermarket_coordinates[random_supermarket].row,
                                   supermarket_coordinates[random_supermarket].column);
                 signal_received_spies[args->id] = 0;
-                if (args->mem->source_agents[args->id].character.health <= 0) {
+                if (current_agent->character.health <= 0) {
                     break;
                 }
             }
         }
         // il rentre chez lui
-        while (!is_at_home(args->mem->source_agents[args->id].character)) {
+        while (!is_at_home(current_agent->character)) {
             if (signal_received_spies[args->id]) {
-                move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
-                                  args->mem->source_agents[args->id].character.home_column);
+                move_source_agent(args, current_agent->character.home_row,
+                                  current_agent->character.home_column);
                 signal_received_spies[args->id] = 0;
-                if (args->mem->source_agents[args->id].character.health <= 0) {
+                if (current_agent->character.health <= 0) {
                     break;
                 }
             }
@@ -219,23 +205,23 @@ void *morning_source_agent(void *arg) {
                 move_source_agent(args, companies_coordinates[random_company].row,
                                   companies_coordinates[random_company].column);
                 signal_received_spies[args->id] = 0;
-                if (args->mem->source_agents[args->id].character.health <= 0) {
+                if (current_agent->character.health <= 0) {
                     break;
                 }
             }
         }
 
-        args->mem->source_agents[args->id].targeted_companies[args->mem->source_agents[args->id].targeted_companies_count] = companies_coordinates[random_company];
-        args->mem->source_agents[args->id].targeted_companies_count++;
+        current_agent->targeted_companies[current_agent->targeted_companies_count] = companies_coordinates[random_company];
+        current_agent->targeted_companies_count++;
 
         // il rentre chez lui
 
-        while (!is_at_home(args->mem->source_agents[args->id].character)) {
+        while (!is_at_home(current_agent->character)) {
             if (signal_received_spies[args->id]) {
-                move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
-                                  args->mem->source_agents[args->id].character.home_column);
+                move_source_agent(args, current_agent->character.home_row,
+                                  current_agent->character.home_column);
                 signal_received_spies[args->id] = 0;
-                if (args->mem->source_agents[args->id].character.health <= 0) {
+                if (current_agent->character.health <= 0) {
                     break;
                 }
             }
@@ -250,18 +236,17 @@ void *evening_source_agent(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
 
     int pid = getpid();
-    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
     source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
-    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
     current_agent->character.pid = pid;
+    //agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
 
-    while (!is_at_home(args->mem->source_agents[args->id].character)) {
+    while (!is_at_home(current_agent->character)) {
         if (signal_received_spies[args->id]) {
-            move_source_agent(args, args->mem->source_agents[args->id].character.home_row,
-                              args->mem->source_agents[args->id].character.home_column);
+            move_source_agent(args, current_agent->character.home_row,
+                              current_agent->character.home_column);
             signal_received_spies[args->id] = 0;
-            if (args->mem->source_agents[args->id].character.health <= 0) {
+            if (current_agent->character.health <= 0) {
                 break;
             }
         }
@@ -310,27 +295,31 @@ void *morning_attending_officer(void *arg) {
 
 void *attempt_information_theft(void *arg) {
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    source_agent_t current_spy = args->mem->source_agents[args->id];
-    int random_company = rand() % current_spy.targeted_companies_count;
-    coordinate_t company = current_spy.targeted_companies[random_company];
+
+    int pid = getpid();
+    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    current_agent->character.pid = pid;
+    // agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
+
+
+    // go near a company
+    int random_company = rand() % current_agent->targeted_companies_count;
+    coordinate_t company = current_agent->targeted_companies[random_company];
     int * neighbour_cells_count = malloc(sizeof(int));
     coordinate_t* neighbour_cells = findNeighbouringCells(&args->mem->city_map, company.row, company.column, neighbour_cells_count);
     int random_neighbour_cell = rand() % *neighbour_cells_count;
+
     int turns = 0;
-    int priority;
+    int priority = -1;
 
-    int pid = getpid();
-    pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
-    map_tid_to_agent(tid, current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
-    current_agent->character.pid = pid;
 
-    while (!character_is_at(args->mem->source_agents[args->id].character, neighbour_cells[random_neighbour_cell])) {
+
+    while (!character_is_at(current_agent->character, neighbour_cells[random_neighbour_cell])) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
                               neighbour_cells[random_neighbour_cell].column);
             signal_received_spies[args->id] = 0;
-            if (args->mem->source_agents[args->id].character.health <= 0) {
+            if (current_agent->character.health <= 0) {
                 break;
             }
         }
@@ -343,7 +332,7 @@ void *attempt_information_theft(void *arg) {
             move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
                               neighbour_cells[random_neighbour_cell].column);
             signal_received_spies[args->id] = 0;
-            if (args->mem->source_agents[args->id].character.health <= 0) {
+            if (current_agent->character.health <= 0) {
                 break;
             }
             turns++;
@@ -358,7 +347,7 @@ void *attempt_information_theft(void *arg) {
         while (turns < 18) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, company.row, company.column);
-                if (args->mem->source_agents[args->id].character.health <= 0) {
+                if (current_agent->character.health <= 0) {
                     break;
                 }
                 turns++;
@@ -369,7 +358,7 @@ void *attempt_information_theft(void *arg) {
             priority = accomplish_mission(args->mem, company);
 
             sem_wait(move_sem);
-            current_spy.nb_of_stolen_companies++;
+            current_agent->nb_of_stolen_companies++;
             sem_post(move_sem);
             // @TODO : envoyer un message de type REAL(P4)
         }
@@ -383,10 +372,10 @@ void *attempt_information_theft(void *arg) {
         // @TODO : envoyer un message de type FAKE (common.h)(P4)
     }
 
-    while (!character_is_at(args->mem->source_agents[args->id].character, args->mem->mailbox_coordinate)) {
+    while (!character_is_at(current_agent->character, args->mem->mailbox_coordinate)) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
-            if (args->mem->source_agents[args->id].character.health <= 0) {
+            if (current_agent->character.health <= 0) {
                 break;
             }
         }
@@ -396,9 +385,11 @@ void *attempt_information_theft(void *arg) {
     // @TODO: crypter le message (fonction de tools.c) (P0)
     //post_message(priority);
     sem_wait(move_sem);
-    current_spy.targeted_companies_count = 0;
+    current_agent->targeted_companies_count = 0;
+    current_agent->has_stolen_a_company_tonight = 1;
     sem_post(move_sem);
 
+    pthread_exit(NULL);
 }
 
 
@@ -563,12 +554,13 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
     agent_thread_args_t *ptr2;
 
     // @TODO : créer les threads avec une probabilité en fonction de l'heure qu'il est (P3)
-
-    // @TODO : faire en sorte que les agents sources ne volent une entreprise qu'une fois dans la nuit (modification de character.h je pense) (P5)
     if (mem->my_timer.hours >= 18 && mem->my_timer.minutes == 0) {
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
             if (mem->source_agents[i].character.health <= 0) {
+                continue;
+            }
+            if (mem->source_agents[i].has_stolen_a_company_tonight == 1) {
                 continue;
             }
             ptr = &threads->source_agent_args[i];
@@ -615,6 +607,8 @@ void create_enemy_spy_thread(memory_t *mem) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         threads->source_agent_args[i].id = i;
         threads->source_agent_args[i].mem = mem;
+
+        agent_mapping(&(mem->source_agents[i]), i);
 
     }
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; i++) {
