@@ -163,8 +163,8 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
 }
 
 void *morning_source_agent(void *arg) {
-
     agent_thread_args_t *args = (agent_thread_args_t *) arg;
+
     int pid = getpid();
 
     pthread_t tid = pthread_self(); // Obtenez le TID du thread actuel
@@ -182,7 +182,7 @@ void *morning_source_agent(void *arg) {
                                                                    NUMBER_OF_SUPERMARKETS);
 
 
-        while (!character_is_at(args->mem->source_agents[args->id].character,
+        while (!character_is_at(current_agent->character,
                                 supermarket_coordinates[random_supermarket])) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, supermarket_coordinates[random_supermarket].row,
@@ -214,7 +214,7 @@ void *morning_source_agent(void *arg) {
         coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
 
 
-        while (!character_is_at(args->mem->source_agents[args->id].character, companies_coordinates[random_company])) {
+        while (!character_is_at(current_agent->character, companies_coordinates[random_company])) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, companies_coordinates[random_company].row,
                                   companies_coordinates[random_company].column);
