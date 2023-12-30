@@ -30,6 +30,9 @@ struct source_agent_s {
 	int nb_of_stolen_companies; /*!< The number of stolen companies. */
 	int has_licence_to_kill; /*!< The licence to kill. 1 if he has it, 0 otherwise. */
 	int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
+	coordinate_t targeted_companies[NUMBER_OF_COMPANIES]; /*!< The targeted companies. */
+	int targeted_companies_count; /*!< The number of targeted companies. */
+
 };
 
 /* Structure of attending_officer */

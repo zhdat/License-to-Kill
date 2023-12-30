@@ -116,3 +116,24 @@ int character_is_at(character_t character1, coordinate_t cell2) {
 int characters_are_at_same_cell(character_t character1, character_t character2) {
     return character1.row == character2.row && character1.column == character2.column;
 }
+
+// Fonction pour appliquer le chiffrement César
+void caesarCipher(char *message, int shift) {
+    for (int i = 0; message[i] != '\0'; ++i) {
+        char ch = message[i];
+
+        if (ch >= 'a' && ch <= 'z') {
+            ch = ch + shift;
+            if (ch > 'z') {
+                ch = ch - 'z' + 'a' - 1;
+            }
+            message[i] = ch;
+        } else if (ch >= 'A' && ch <= 'Z') {
+            ch = ch + shift;
+            if (ch > 'Z') {
+                ch = ch - 'Z' + 'A' - 1;
+            }
+            message[i] = ch;
+        }
+    }
+}

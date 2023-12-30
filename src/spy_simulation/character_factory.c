@@ -68,6 +68,7 @@ source_agent_t new_spy_with_licence(int row, int column)
     spy.has_licence_to_kill = 1;
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
+    spy.targeted_companies_count = 0;
 
     return spy;
 
@@ -88,6 +89,7 @@ source_agent_t new_spy_without_licence(int row, int column)
     spy.has_licence_to_kill = 0;
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
+    spy.targeted_companies_count = 0;
 
     return spy;
 }

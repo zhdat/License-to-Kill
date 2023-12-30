@@ -52,7 +52,12 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
                     //log_info("id of the spy: %d", agent->character.id);
                     if (agent->character.pid != 0) {
                         agent->is_attacked = 1;
-                        kill(agent->character.pid, SIGUSR1);
+                        int injury_type = rand() % 2;
+                        if (injury_type == 0) {
+                            kill(agent->character.pid, SIGUSR1);
+                        } else {
+                            kill(agent->character.pid, SIGUSR2);
+                        }
                     }
                 }
             }

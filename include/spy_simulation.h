@@ -18,6 +18,8 @@ void increments_population_in_cell(memory_t* mem, int col, int row);
 coordinate_t find_random_low_populated_residence(memory_t* mem);
 int* print_where_citizens_work(memory_t* mem);
 void set_mailbox_messages(memory_t * mem);
+void set_company_employees(memory_t* mem);
+InformationDistribution getInformationDistribution(int numberOfEmployees);
 
 
 
