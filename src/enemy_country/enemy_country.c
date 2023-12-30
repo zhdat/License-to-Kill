@@ -1,25 +1,4 @@
 #include "enemy_country.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
-#include <string.h>
-
-#include "memory.h"
-
-
-
-
-// e programme “enemy_country” reçoit les messages chiffrés en provenance du réseau
-//d’espionnage, puis les affichent en continu sur un téléscripteur ﴾exception faite des mes‐
-//sages “trompeurs” qu’il aura aussi reçu﴿. La communication entre le réseau d’espions ﴾pro‐
-//gramme “enemy_spy_network”﴿ et “enemy_country” est réalisée à l’aide d’un canal de
-//transmission unique implémenté avec une file de messages.
-#include <stdio.h>
-
-// Définir une structure pour les messages
-
-#include "memory.h"  // Assurez-vous d'inclure le fichier d'en-tête pour la mémoire partagée
 
 sem_t *move_sem;
 
@@ -27,37 +6,36 @@ void set_semaphore(sem_t *sem) {
     move_sem = sem;
 }
 
-void writeToSharedMemory(char* message, int valid_message) {
-    memory_t* mem;
-    char decrpyted_message[MAX_LENGTH_OF_MESSAGE]; // Use a fixed-size buffer instead of malloc
-    strcpy(decrpyted_message, message);
+void writeToSharedMemory(memory_t* mem) {
+    int num_message = 1;
+    char buffer[MAX_LENGTH_OF_MESSAGE];
+    ssize_t msg_size;
+    mqd_t mq;
+    char *position, *pos, *endptr;
+    int priority;
+    message_t new_message;
 
-    log_info("message bien reçu");
-    // Ouvrir la mémoire partagée
-    mem = open_shared_memory();
+    mq = create_message_queue();
 
-    // Écrire le message dans la mémoire partagée
-    snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
-    mem->mailbox_size++;
-    mem->memory_has_changed = 1;
-    sem_post(move_sem);
-
-
-
-
-    if (valid_message) {
-        decrpyt_message(decrpyted_message);
-        snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
-        mem->decrypted_mailbox_size++;
-        mem->memory_has_changed = 1;
-        sem_post(move_sem);
+    struct mq_attr attr;
+    if (mq_getattr(mq, &attr) == -1) {
+        perror("mq_getattr");
+        exit(EXIT_FAILURE);
     }
 
+    while(mem->simulation_has_ended == 0) {
+        msg_size = mq_receive(mq, buffer, sizeof(buffer), NULL);
+        if (msg_size == -1) {
+            perror("mq_receive");
+            exit(EXIT_FAILURE);
+        }
 
-    // Vous pouvez ajouter ici des mécanismes de synchronisation si nécessaire
+        strcpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, buffer);
+        mem->mailbox_size++;
 
-    // Fermer la mémoire partagée si nécessaire
-    // (par exemple, dé-mapper la mémoire)
+    }
+
+    mq_close(mq);
 }
 
 void decrpyt_message(char* message) {

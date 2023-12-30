@@ -12,7 +12,7 @@ memory_t* open_shared_memory(void) {
     int fd;
     memory_t* mem;
 
-    fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0660);
+    fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
     if (fd == -1) {
         perror("shm_open");
         exit(EXIT_FAILURE);
@@ -60,7 +60,7 @@ sem_t* create_semaphore(void) {
 
 sem_t* open_semaphore(void) {
     sem_t* sem;
-    sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_RDWR, 0644, 1);
+    sem = sem_open(SEMAPHORE_NAME, O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
         exit(EXIT_FAILURE);
@@ -78,4 +78,33 @@ void close_semaphore(sem_t* sem) {
 
 void destroy_semaphore(sem_t* sem){
     sem_destroy(sem);
+}
+
+mqd_t create_message_queue() {
+    //mq_unlink(QUEUE_NAME);
+
+    // Attributs de la file de messages
+    struct mq_attr attr;
+    attr.mq_flags = 0;        // Flags (utiliser 0 pour aucune option spéciale)
+    attr.mq_maxmsg = 10;      // Nombre maximal de messages dans la file
+    attr.mq_msgsize = MAX_LENGTH_OF_MESSAGE;   // Taille maximale d'un message
+    attr.mq_curmsgs = 0;      // Nombre actuel de messages dans la file
+
+    // Ouvrir ou créer une file de messages avec les attributs spécifiés
+    mqd_t mq = mq_open(QUEUE_NAME, O_CREAT | O_RDWR, 0666, &attr);
+    if (mq == (mqd_t)-1) {
+        perror("mq_create");
+        exit(EXIT_FAILURE);
+    }
+
+    return mq;
+}
+
+
+mqd_t open_message_queue() {
+    mqd_t mq = mq_open(QUEUE_NAME, O_RDWR);
+    if (mq == (mqd_t)-1) {
+        perror("mq_open");
+        exit(EXIT_FAILURE);
+    }
 }

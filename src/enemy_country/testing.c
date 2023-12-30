@@ -46,17 +46,27 @@ int main(void) {
     }
 
 
-    strcpy(msg.sentence, "Hello world");
     //ceasarCipher(msg.sentence, 3);
 
 
 
-    msg.priority = 0;
 
-    /* Send the message to the queue */
-    if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
-        perror("mq_send");
-        return EXIT_FAILURE;
+
+    for(int i = 0; i < 1; i++) {
+        strcpy(msg.sentence, "Hello world");
+
+
+        if (strcmp(msg.sentence, "exit\n") == 0) {
+            break;
+        }
+
+        msg.priority = 0;
+
+        /* Send the message to the queue */
+        if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
+            perror("mq_send");
+            return EXIT_FAILURE;
+        }
     }
 
 

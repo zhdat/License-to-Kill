@@ -18,6 +18,18 @@ void set_semaphore(sem_t *sem) {
     move_sem = sem;
 }
 
+sem_t * open_semaphore_message(){
+    sem_t * semaphore;
+    semaphore = sem_open("/sem_spy_simulation_message", O_RDWR, 0644, 0);
+
+    if (semaphore == SEM_FAILED) {
+        printf("Error cannot create semaphore");
+        exit(EXIT_FAILURE);
+    }
+
+    return semaphore;
+}
+
 void handle_signal(int sig) {
     sig = sig;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
@@ -402,35 +414,64 @@ void *attempt_information_theft(void *arg) {
 
 
 void post_message(InformationCruciality priority, int type) {
-    message_t msg; // structure de base dans la file de message, pas un type personnalisé
-    int msgid;
-    key_t key;
-    key = ftok("somefile", 65);
-    if(key == -1){
-        log_error("ftok failed");
-    }
-    msgid = msgget(key, 0666 | IPC_CREAT);
-    if(msgid == -1){
-        log_error("msgget failed");
-    }
-    // @TODO : envoyer un message avec son type (ne pas toucher à msg.type car c'est dans la file de message de base)(P3)
+    /*mqd_t mq;
+    struct mq_attr attr;
+    Message msg;
 
-    int priority_value = getMessagePriority(priority);
+    mq_unlink(QUEUE_NAME);
+
+    memset(&attr, '\0', sizeof(attr));
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = 10;
+    attr.mq_msgsize = sizeof(Message);
+    attr.mq_curmsgs = 0;
+
+    mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0600, &attr);
+    if (mq == (mqd_t) -1) {
+        perror("mq_open");
+        exit(EXIT_FAILURE);
+    }
+
     if (type == 1) {
         MessageBank messageBank = setMessageBank();
         char *mess = generateSpyMessage(&(messageBank), priority);
-        strcpy(msg.msg_text, mess);
+        strcpy(msg.sentence, mess);
         //log_info("priority : %d", priority_value);
         //log_info("Message envoyé : %s", mess);
     } else {
-        strcpy(msg.msg_text, FAKE_MESSAGE);
+        strcpy(msg.sentence, FAKE_MESSAGE);
     }
 
-    msg.type = 1;
-    if(msgsnd(msgid, &msg, sizeof(msg), 0) == -1){
-        log_error("msgsnd failed");
+    msg.priority = 0;
+
+
+    if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
+        perror("mq_send");
     }
-    //msgsnd(msgid, &msg, sizeof(msg), 0);
+
+    mq_close(mq);
+    mq_unlink(QUEUE_NAME);*/
+
+    mqd_t mq = open_message_queue();
+    sem_t* semaphore_message = open_semaphore_message();
+
+    sem_wait(semaphore_message);
+    char *mess;
+
+    if (type == 1) {
+        MessageBank messageBank = setMessageBank();
+        mess = generateSpyMessage(&(messageBank), priority);
+        //log_info("priority : %d", priority_value);
+        //log_info("Message envoyé : %s", mess);
+    } else {
+        strcpy(mess, FAKE_MESSAGE);
+    }
+
+    if (mq_send(mq, mess, strlen(mess) + 1, 10) == -1) {
+        perror("mq_send");
+        exit(EXIT_FAILURE);
+    }
+
 }
 
 InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company) {

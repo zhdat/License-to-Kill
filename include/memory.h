@@ -20,10 +20,10 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+#include <mqueue.h>
 #include "cell.h"
 #include "common.h"
 #include "character.h"
-#include "enemy_country.h"
 
 #define MAX_CITIZEN_COUNT 127
 #define MAX_SOURCE_AGENT_COUNT 3
@@ -32,6 +32,7 @@
 #define MAX_MAILBOX_SIZE 100
 #define SHARED_MEMORY_NAME "/nothinghere"
 #define SEMAPHORE_NAME "/my_semaphore"
+#define QUEUE_NAME "/myqueue"
 
 
 /**
@@ -67,6 +68,13 @@ typedef struct {
     int nb_of_employees;
     InformationDistribution cruciality;
 }company_t;
+
+
+typedef struct{
+    long type;
+    char msg_text[MAX_LENGTH_OF_MESSAGE];
+    int is_false_message; /*!< 0 if the message is true, 1 if the message is false */
+} message_t;
 
 /**
  * \brief Shared mem used by all processes.
@@ -130,6 +138,10 @@ sem_t* open_semaphore(void);
 void close_semaphore(sem_t* sem);
 
 void destroy_semaphore(sem_t* sem);
+
+mqd_t create_message_queue();
+
+mqd_t open_message_queue();
 
 
 #endif /* MEMORY_H */
