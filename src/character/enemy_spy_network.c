@@ -317,8 +317,8 @@ void *attempt_information_theft(void *arg) {
     int random_neighbour_cell = rand() % *neighbour_cells_count;
 
     int turns = 0;
-    int priority = -1;
-    priority = priority;
+    int type = 0; // 0 = fake, 1 = real
+    InformationCruciality priority;
 
 
 
@@ -364,7 +364,7 @@ void *attempt_information_theft(void *arg) {
         thief_is_possible = rand() % 100;
         if(thief_is_possible < 90){
             priority = accomplish_mission(args->mem, company);
-
+            type = 1;
             sem_wait(move_sem);
             current_agent->nb_of_stolen_companies++;
             sem_post(move_sem);
@@ -376,7 +376,7 @@ void *attempt_information_theft(void *arg) {
     } else {
         // ne vole pas l'information
         // envoie un faux message dans la mailbox
-        priority = rand() % 10;
+        priority = rand() % CRUCIALITY_LEVELS;
         // @TODO : envoyer un message de type FAKE (common.h)(P4)
     }
 
@@ -391,7 +391,7 @@ void *attempt_information_theft(void *arg) {
     // @TODO : peut-être trouver quoi dire dans le message(P2)
     // @TODO : faire passer le type de message en paramètre(P4)
     // @TODO: crypter le message (fonction de tools.c) (P0)
-    //post_message(priority);
+    post_message(priority, type);
     sem_wait(move_sem);
     current_agent->targeted_companies_count = 0;
     current_agent->has_stolen_a_company_tonight = 1;
@@ -401,20 +401,39 @@ void *attempt_information_theft(void *arg) {
 }
 
 
-void post_message(int priority) {
+void post_message(InformationCruciality priority, int type) {
     message_t msg; // structure de base dans la file de message, pas un type personnalisé
     int msgid;
     key_t key;
     key = ftok("somefile", 65);
+    if(key == -1){
+        log_error("ftok failed");
+    }
     msgid = msgget(key, 0666 | IPC_CREAT);
-    msg.type = 1;
-    priority = priority;
+    if(msgid == -1){
+        log_error("msgget failed");
+    }
     // @TODO : envoyer un message avec son type (ne pas toucher à msg.type car c'est dans la file de message de base)(P3)
 
-    msgsnd(msgid, &msg, sizeof(msg), 0);
+    int priority_value = getMessagePriority(priority);
+    if (type == 1) {
+        MessageBank messageBank = setMessageBank();
+        char *mess = generateSpyMessage(&(messageBank), priority);
+        strcpy(msg.msg_text, mess);
+        //log_info("priority : %d", priority_value);
+        //log_info("Message envoyé : %s", mess);
+    } else {
+        strcpy(msg.msg_text, FAKE_MESSAGE);
+    }
+
+    msg.type = 1;
+    if(msgsnd(msgid, &msg, sizeof(msg), 0) == -1){
+        log_error("msgsnd failed");
+    }
+    //msgsnd(msgid, &msg, sizeof(msg), 0);
 }
 
-int accomplish_mission(memory_t *mem, coordinate_t company) {
+InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company) {
     InformationCruciality cruciality = select_crucial_information();
     for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
         if (mem->companies_priority[i].row == company.row && mem->companies_priority[i].column == company.column) {
@@ -426,7 +445,7 @@ int accomplish_mission(memory_t *mem, coordinate_t company) {
             sem_post(move_sem);
         }
     }
-    return getMessagePriority(cruciality);
+    return cruciality;
 
 }
 

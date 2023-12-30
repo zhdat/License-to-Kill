@@ -9,6 +9,7 @@
 
 
 
+
 // e programme “enemy_country” reçoit les messages chiffrés en provenance du réseau
 //d’espionnage, puis les affichent en continu sur un téléscripteur ﴾exception faite des mes‐
 //sages “trompeurs” qu’il aura aussi reçu﴿. La communication entre le réseau d’espions ﴾pro‐
@@ -20,24 +21,36 @@
 
 #include "memory.h"  // Assurez-vous d'inclure le fichier d'en-tête pour la mémoire partagée
 
+sem_t *move_sem;
+
+void set_semaphore(sem_t *sem) {
+    move_sem = sem;
+}
+
 void writeToSharedMemory(char* message, int valid_message) {
     memory_t* mem;
     char decrpyted_message[MAX_LENGTH_OF_MESSAGE]; // Use a fixed-size buffer instead of malloc
     strcpy(decrpyted_message, message);
 
-
+    log_info("message bien reçu");
     // Ouvrir la mémoire partagée
     mem = open_shared_memory();
 
     // Écrire le message dans la mémoire partagée
     snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
     mem->mailbox_size++;
+    mem->memory_has_changed = 1;
+    sem_post(move_sem);
+
+
 
 
     if (valid_message) {
         decrpyt_message(decrpyted_message);
         snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
         mem->decrypted_mailbox_size++;
+        mem->memory_has_changed = 1;
+        sem_post(move_sem);
     }
 
 

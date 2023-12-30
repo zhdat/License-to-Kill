@@ -12,7 +12,7 @@ void increments_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)++;
 }
 
-void decrements_population_in_cell(memory_t *mem, int col, int row){
+void decrements_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
@@ -36,7 +36,7 @@ int is_cell_filled(cell_t cells[MAX_ROWS][MAX_COLUMNS], int row, int col) {
 }
 
 
-void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row) {
+void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row) {
     int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
@@ -76,7 +76,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
 }
 
 
-coordinate_t * findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
+coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
     coordinate_t *neighbouring_cells = (coordinate_t *) malloc(sizeof(coordinate_t) * 8);
     int count = 0;
 
@@ -135,5 +135,54 @@ void caesarCipher(char *message, int shift) {
             }
             message[i] = ch;
         }
+    }
+}
+
+MessageBank setMessageBank(void) {
+    MessageBank bank = {
+            .messages = {
+                    [Crucial] = {"Plans secrets de tech. avancée obtenus. Urgence extrême.",
+                                 "Fusion majeure détectée entre géants tech. Impact énorme.",
+                                 "Échantillon matériel militaire révolutionnaire acquis.",
+                                 "Accès serveurs financiers clés. Données critiques en main.",
+                                 "Partenariat secret gouvernemental découvert. Très sensible."},
+                    [Strong] = {"Failles financières de la cible exposées. Grande valeur.",
+                                "Plans d'expansion globale de la cible révélés. Important.",
+                                "Stratégie de contournement de brevet découverte. Utile.",
+                                "Liste de chercheurs influençables compilée. Opportunité.",
+                                "Faiblesses de sécurité IT trouvées. Potentiel d'exploitation."},
+                    [Medium] = {"Tendances de marché et prévisions pour l'année reçues.",
+                                "Nouvelles politiques RH et effets notés. À surveiller.",
+                                "Mises à niveau de production planifiées découvertes.",
+                                "Changements de gestion internes observés. À étudier.",
+                                "Stratégies à moyen terme de la direction saisies."},
+                    [Low] = {"Procédures opérationnelles standards collectées. Basique.",
+                             "Contrats mineurs et partenariats établis. Peu critique.",
+                             "Moral des employés analysé. Potentiel d'influence mineur.",
+                             "Gestion énergie et déchets étudiée. Peu pertinent.",
+                             "Performances mensuelles standard saisies. Info générale."},
+                    [VeryLow] = {"Activités quotidiennes régulières notées. Rien d'urgent.",
+                                 "Programmes de formation et bien-être relevés. Basique.",
+                                 "Détails sur événements sociaux de l'entreprise. Standard.",
+                                 "Routines et horaires de travail observés. Rien de spécial.",
+                                 "Activités de réseautage saisies. Valeur faible."}
+            }
+    };
+    return bank;
+}
+
+char *generateSpyMessage(MessageBank *bank, InformationCruciality importance) {
+    int messageCount = 0;
+    while (bank->messages[importance][messageCount] != NULL && messageCount < MAX_MESSAGES) {
+        messageCount++;
+    }
+
+    if (messageCount > 0) {
+        int randomIndex = rand() % messageCount;
+        //log_info("tentative de génération de message avec importance %d", importance);
+        //log_info("Message généré: %s", bank->messages[importance][randomIndex]);
+        return bank->messages[importance][randomIndex];
+    } else {
+        return "Aucun message disponible pour ce niveau de crucialité.";
     }
 }

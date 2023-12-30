@@ -45,4 +45,8 @@ int characters_are_at_same_cell(character_t character1, character_t character2);
 
 void caesarCipher(char *message, int shift);
 
+MessageBank setMessageBank(void);
+
+char* generateSpyMessage(MessageBank *bank, InformationCruciality importance);
+
 #endif //PROJECT_TOOLS_H

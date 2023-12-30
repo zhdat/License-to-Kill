@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
 #include "enemy_country.h"
 
 // Structure pour les messages IPC
+
 
 // Fonction pour appliquer le chiffrement César
 void caesarCipher(char *message, int shift) {
@@ -27,30 +24,45 @@ void caesarCipher(char *message, int shift) {
     }
 }
 
-int main() {
-    message_t msg;
-    int msgid;
-    key_t key;
-    int shift = 3;
 
-    // Créer une clé unique pour la file de messages
-    key = ftok("somefile", 65);
+int main(void) {
+    mqd_t mq;
+    struct mq_attr attr;
+    Message msg;
 
-    // Connecter à la file de messages
-    msgid = msgget(key, 0666 | IPC_CREAT);
+    mq_unlink(QUEUE_NAME); /* Evaluate if this is necessary */
 
-    // Messages exemples
-    char *messages[] = {"Hello World", "Enemy Spotted", "Mission Accomplished", NULL};
+    /* Open the message queue */
+    memset(&attr, '\0', sizeof(attr));
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = 10; /* Maximum number of messages in the queue */
+    attr.mq_msgsize = sizeof(Message); /* Maximum message size */
+    attr.mq_curmsgs = 0;
 
-    for (int i = 0; messages[i] != NULL; i++) {
-        strcpy(msg.msg_text, messages[i]);
-        caesarCipher(msg.msg_text, shift);  // Chiffrer le message
-
-
-        msg.type = 1;
-
-        msgsnd(msgid, &msg, sizeof(msg), 0);
+    mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0600, &attr);
+    if (mq == (mqd_t) -1) {
+        perror("mq_open");
+        exit(EXIT_FAILURE);
     }
 
-    return 0;
+
+    strcpy(msg.sentence, "Hello world");
+    //ceasarCipher(msg.sentence, 3);
+
+
+
+    msg.priority = 0;
+
+    /* Send the message to the queue */
+    if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
+        perror("mq_send");
+        return EXIT_FAILURE;
+    }
+
+
+    /* Close and unlink the message queue */
+    mq_close(mq);
+    mq_unlink(QUEUE_NAME);
+
+    return EXIT_SUCCESS;
 }
