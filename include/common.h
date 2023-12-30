@@ -46,4 +46,20 @@
 #define STOLEN        "STOLEN"
 #define NOT_FOUND     "NOT_FOUND"
 
+#define CRUCIALITY_LEVELS 5
+
+typedef enum {
+    VeryLow,  // très bas
+    Low,      // bas
+    Medium,   // moyen
+    Strong,   // fort
+    Crucial   // crucial
+} InformationCruciality;
+
+// Structure pour renvoyer le niveau de crucialité et le nombre d'informations
+typedef struct {
+    int crucialityLevel; // Niveau de crucialité
+    int infoCount[CRUCIALITY_LEVELS]; // Tableau pour stocker le nombre d'informations pour chaque niveau
+} InformationDistribution;
+
 #endif /* COMMON_H */

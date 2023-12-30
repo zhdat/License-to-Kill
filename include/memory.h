@@ -61,6 +61,13 @@ struct map_s {
     cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells that constitute the city map. */
 };
 
+typedef struct {
+    int row;
+    int column;
+    int nb_of_employees;
+    InformationDistribution cruciality;
+}company_t;
+
 /**
  * \brief Shared mem used by all processes.
  */
@@ -99,6 +106,8 @@ struct memory_s {
     int decrypted_mailbox_size; /*!< Taille de la boîte aux lettres contenant les messages déchiffrés.*/
 
     city_t city_map; /*!< Carte de la ville.*/
+
+    company_t companies_priority[NUMBER_OF_COMPANIES]; /*!< Tableau contenant le nombre d'employés des entreprises.*/
 
     coordinate_t mailbox_coordinate; /*!< Coordonnées de la boîte aux lettres.*/
 

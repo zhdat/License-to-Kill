@@ -209,7 +209,7 @@ void affect_work_to_citizens(memory_t* mem) {
 
     printf("Affectation des citoyens...\n");
     for (int j = 0; j < 10; j++) {
-        while (mem->citizens[random2].work_row != -1 && mem->citizens[random2].work_column != -1) {
+        while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
             random2 = rand() % MAX_CITIZEN_COUNT;
 
         }
@@ -221,7 +221,7 @@ void affect_work_to_citizens(memory_t* mem) {
         for (int j = 0; j < 3; ++j) {
             random = rand() % NUMBER_OF_SUPERMARKETS;
             coordinate_t supermarket = supermarkets[random];
-            while (mem->citizens[random2].work_row != -1 && mem->citizens[random2].work_column != -1) {
+            while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
                 random2 = rand() % MAX_CITIZEN_COUNT;
             }
             mem->citizens[random2].work_row = supermarket.row;
@@ -233,7 +233,7 @@ void affect_work_to_citizens(memory_t* mem) {
         for (int j = 0; j < 5; ++j) {
             random = rand() % NUMBER_OF_COMPANIES;
             coordinate_t company = companies[random];
-            while (mem->citizens[random2].work_row != -1 && mem->citizens[random2].work_column != -1) {
+            while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
                 random2 = rand() % MAX_CITIZEN_COUNT;
             }
             mem->citizens[random2].work_row = company.row;
@@ -243,7 +243,7 @@ void affect_work_to_citizens(memory_t* mem) {
 
     // affectations de tous les citoyens restants dans des companies random (max MAX_NUMBER_OF_CHARACTERS_ON_COMPANY)
     for (int i = 0; i < MAX_CITIZEN_COUNT; ++i) {
-        if (mem->citizens[i].work_row == -1 && mem->citizens[i].work_column == -1) {
+        if (mem->citizens[i].work_row == -1 || mem->citizens[i].work_column == -1) {
             random = rand() % NUMBER_OF_COMPANIES;
             coordinate_t company = companies[random];
             while (mem->city_map.cells[company.column][company.row].nb_of_characters >=
@@ -313,6 +313,57 @@ int* print_where_citizens_work(memory_t* mem) {
     return 0;
 }
 
+void set_company_employees(memory_t* mem) {
+    coordinate_t *companies = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
+    for(int i = 0; i < NUMBER_OF_COMPANIES; i++) {
+        mem->companies_priority[i].column = companies[i].column;
+        mem->companies_priority[i].row = companies[i].row;
+        for (int j = 0; j < MAX_CITIZEN_COUNT; j++) {
+            if (mem->citizens[j].work_column == companies[i].column && mem->citizens[j].work_row == companies[i].row) {
+                mem->companies_priority[i].nb_of_employees++;
+            }
+        }
+        mem->companies_priority[i].cruciality = getInformationDistribution(mem->companies_priority[i].nb_of_employees);
+    }
+}
+
+InformationDistribution getInformationDistribution(int numberOfEmployees) {
+    InformationDistribution distribution = {0}; // Initialisation de tous les éléments à 0
+
+    // Logique pour déterminer la distribution des informations
+    // Remarque : Cette logique doit être ajustée en fonction de vos spécifications exactes
+    if (numberOfEmployees > 30) {
+        distribution.infoCount[Crucial] = 2;
+        distribution.infoCount[Strong] = 5;
+        distribution.infoCount[Medium] = 12;
+        distribution.infoCount[Low] = 20;
+        distribution.infoCount[VeryLow] = 30;
+    } else if (numberOfEmployees > 20) {
+        // Ajustez ces valeurs selon vos besoins
+        distribution.infoCount[Crucial] = 0;
+        distribution.infoCount[Strong] = 1;
+        distribution.infoCount[Medium] = 12;
+        distribution.infoCount[Low] = 20;
+        distribution.infoCount[VeryLow] = 30;
+    } else if (numberOfEmployees > 10) {
+        // Ajustez ces valeurs selon vos besoins
+        distribution.infoCount[Crucial] = 0;
+        distribution.infoCount[Strong] = 1;
+        distribution.infoCount[Medium] = 7;
+        distribution.infoCount[Low] = 20;
+        distribution.infoCount[VeryLow] = 30;
+    } else {
+        // Ajustez ces valeurs selon vos besoins
+        distribution.infoCount[Crucial] = 0;
+        distribution.infoCount[Strong] = 1;
+        distribution.infoCount[Medium] = 7;
+        distribution.infoCount[Low] = 11;
+        distribution.infoCount[VeryLow] = 17;
+    }
+
+    return distribution;
+}
+
 void set_city_map(memory_t* mem) {
     clear_city(&(mem->city_map));
     init_city(&(mem->city_map));
@@ -325,6 +376,7 @@ void set_characters(memory_t* mem) {
     set_attending_officers(mem);
     set_counter_intelligence_officers(mem);
     affect_work_to_citizens(mem);
+    set_company_employees(mem);
 }
 
 void set_mailbox_messages(memory_t* mem) {
