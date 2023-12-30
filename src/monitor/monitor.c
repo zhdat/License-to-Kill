@@ -147,11 +147,11 @@ void display_city(WINDOW* window, city_t map, int rows, int columns) {
     /*                 Get information from map to display city              */
     int map_columns;
     int map_rows;
-    int type;
+    // int type;
 
     map_columns = 7;
     map_rows = 7;
-    type = 0;
+    // type = 0;
 
     /* ---------------------------------------------------------------------- */
 

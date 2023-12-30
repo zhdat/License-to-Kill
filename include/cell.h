@@ -85,8 +85,8 @@ typedef struct {
 
 /* Function to create a city */
 city_t* create_city(int width, int height);
-city_t* delete_city(city_t* city);
-city_t* print_city(city_t* city);
+void delete_city(city_t* city);
+void print_city(city_t* city);
 cell_t* get_cell(city_t* city, int x, int y);
 void define_monitoring(city_t* city, int x, int y, int nb_of_characters);
 void clear_city(city_t* city);

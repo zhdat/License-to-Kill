@@ -2,22 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-city_t *delete_city(city_t *city) {
+void delete_city(city_t *city) {
     int i;
     if (city != NULL) {
         for (i = 0; i < city->height; i++) {
             free(city->cells[i]);
         }
-        free(city->cells);
+        //free(city->cells);
         free(city);
     }
 }
 
-city_t *print_city(city_t *city) {
+void print_city(city_t *city) {
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
-        return NULL;
+        return;
     }
     for (i = 0; i < city->height; i++) {
         for (j = 0; j < city->width; j++) {
