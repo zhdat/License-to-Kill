@@ -12,7 +12,7 @@ memory_t* open_shared_memory(void) {
     int fd;
     memory_t* mem;
 
-    fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
+    fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0660);
     if (fd == -1) {
         perror("shm_open");
         exit(EXIT_FAILURE);
@@ -60,7 +60,7 @@ sem_t* create_semaphore(void) {
 
 sem_t* open_semaphore(void) {
     sem_t* sem;
-    sem = sem_open(SEMAPHORE_NAME, O_RDWR, 0644, 1);
+    sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
         exit(EXIT_FAILURE);

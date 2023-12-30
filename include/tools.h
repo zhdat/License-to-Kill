@@ -10,7 +10,7 @@ struct thread_s {
     int id_character;
 };
 
-int euclidean_distance(int x1, int y1, int x2, int y2);
+double euclidean_distance(int x1, int y1, int x2, int y2);
 
 int calculate_minutes(int turn);
 

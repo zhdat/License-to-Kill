@@ -12,10 +12,6 @@
 
 static int _fd = -1;
 
-int euclidean_distance(int x1, int y1, int x2, int y2) {
-    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-}
-
 memory_t* create_shared_memory(void) {
     memory_t* mem;
 
@@ -158,10 +154,6 @@ coordinate_t get_residence_near_mailbox(memory_t* mem, int max_distance) {
     }
     return residence;
 
-}
-
-void increments_population_in_cell(memory_t* mem, int col, int row) {
-    (mem->city_map.cells[row][col].nb_of_characters)++;
 }
 
 // il ne faut pas que la résidence soit la même que la boite aux lettres
