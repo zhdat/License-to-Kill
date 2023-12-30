@@ -19,6 +19,7 @@ void set_semaphore(sem_t *sem) {
 }
 
 void handle_signal(int sig) {
+    sig = sig;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
         signal_received_spies[i] = 1;
     }
@@ -41,6 +42,9 @@ void agent_mapping(source_agent_t *agent, int id) {
 }
 
 void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+    sig = sig;
+    info = info;
+    unused = unused;
     /*pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
     int index = get_agent_by_tid(tid);
     log_info("Tid %ld received SIGUSR1", tid);
@@ -73,6 +77,9 @@ void set_signals_weak_bullet(void) {
 }
 
 void handle_sigusr2(int sig, siginfo_t *info, void *unused) {
+    sig = sig;
+    info = info;
+    unused = unused;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {

@@ -9,6 +9,7 @@ void set_semaphore(sem_t* sem) {
 }
 
 void handle_signal(int sig) {
+    sig = sig;
     signal_received_officer = 1;
 }
 
@@ -87,7 +88,7 @@ void* all_day_counter_intelligence_officer(void* args) {
     pthread_exit(NULL);
 }
 
-void create_counter_intelligence_officer_thread(memory_t* mem, all_threads_t* args) {
+void create_counter_intelligence_officer_thread(all_threads_t* args) {
     pthread_attr_t attr;
     officer_thread_args_t* ptr;
 
@@ -117,6 +118,6 @@ void create_counter_intelligence_officer_threads(memory_t* mem) {
         threads->counter_intelligence_officer_args[i].mem = mem;
     }
     while (mem->simulation_has_ended == 0) {
-        create_counter_intelligence_officer_thread(mem, threads);
+        create_counter_intelligence_officer_thread(threads);
     }
 }

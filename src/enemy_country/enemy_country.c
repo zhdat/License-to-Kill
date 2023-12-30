@@ -37,9 +37,7 @@ void writeToSharedMemory(char* message, int valid_message) {
     mem = open_shared_memory();
 
     // Écrire le message dans la mémoire partagée
-    sem_wait(move_sem);
-    strncpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, message, MAX_LENGTH_OF_MESSAGE - 1);
-    mem->encrpyted_messages[mem->mailbox_size].msg_text[MAX_LENGTH_OF_MESSAGE - 1] = '\0';
+    snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
     mem->mailbox_size++;
     mem->memory_has_changed = 1;
     sem_post(move_sem);
@@ -49,10 +47,7 @@ void writeToSharedMemory(char* message, int valid_message) {
 
     if (valid_message) {
         decrpyt_message(decrpyted_message);
-        sem_wait(move_sem);
-        strncpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, decrpyted_message,
-                MAX_LENGTH_OF_MESSAGE - 1);
-        mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text[MAX_LENGTH_OF_MESSAGE - 1] = '\0';
+        snprintf(mem->encrpyted_messages[mem->mailbox_size].msg_text, MAX_LENGTH_OF_MESSAGE, "%s", message);
         mem->decrypted_mailbox_size++;
         mem->memory_has_changed = 1;
         sem_post(move_sem);
@@ -85,6 +80,7 @@ void decrpyt_message(char* message) {
 }
 
 int isValidMessage(char* message) {
+    message = message;
     // Implémentez votre logique de filtrage ici
 
     // Retournez 1 si le message est valide, 0 sinon
