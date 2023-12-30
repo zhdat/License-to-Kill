@@ -34,7 +34,7 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
 
 void* all_day_counter_intelligence_officer(void* args);
 
-void create_counter_intelligence_officer_thread(memory_t* mem, all_threads_t* args);
+void create_counter_intelligence_officer_thread(all_threads_t* args);
 
 void create_counter_intelligence_officer_threads(memory_t* mem);
 

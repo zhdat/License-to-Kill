@@ -98,7 +98,7 @@ int main(void) {
     init_monitor_elements(main_window, memory, rows, cols);
 
     /* Simulation configuration */
-    int number_of_turns = 2016;
+    // int number_of_turns = 2016;
     // int turn_duration = calculate_turn_duration();
 
     /* Start my_timer */
@@ -111,9 +111,11 @@ int main(void) {
             case 'q':
                 memory->simulation_has_ended = 1;
                 quit_nicely(NO_PARTICULAR_REASON);
+                break;
             case 27:
                 memory->simulation_has_ended = 1;
                 quit_nicely(NO_PARTICULAR_REASON);
+                break;
             default:
                 break;
         }

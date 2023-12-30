@@ -38,6 +38,7 @@ int simulationFinished(memory_t* memory) {
 }
 
 void timer_handler(int signum) {
+    signum = signum;
     mem->my_timer.turns++;
     mem->my_timer.minutes += 10;
     if (mem->my_timer.minutes >= 60) {

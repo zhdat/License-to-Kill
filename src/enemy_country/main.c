@@ -7,7 +7,7 @@
 
 #include "memory.h"
 
-int main(int argc, char* argv[]) {
+int main(void) {
     key_t key;
     int msgid;
     message_t msg;
