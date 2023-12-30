@@ -53,9 +53,9 @@ void set_signals_weak_bullet(void);
 void handle_sigusr2(int sig, siginfo_t *info, void *unused);
 void set_signals_strong_bullet(void);
 InformationCruciality select_crucial_information(void);
-int accomplish_mission(memory_t *mem, coordinate_t company);
+InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company);
 int getMessagePriority(InformationCruciality cruciality);
-void post_message(int priority);
+void post_message(InformationCruciality priority, int type);
 
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H

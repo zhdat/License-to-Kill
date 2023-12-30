@@ -62,4 +62,11 @@ typedef struct {
     int infoCount[CRUCIALITY_LEVELS]; // Tableau pour stocker le nombre d'informations pour chaque niveau
 } InformationDistribution;
 
+#define MAX_MESSAGES 5
+
+typedef struct {
+    InformationCruciality importance;
+    char *messages[CRUCIALITY_LEVELS][MAX_MESSAGES]; // Messages pour chaque niveau d'importance
+} MessageBank;
+
 #endif /* COMMON_H */

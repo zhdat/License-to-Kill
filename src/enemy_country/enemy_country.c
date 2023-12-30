@@ -20,6 +20,12 @@
 
 #include "memory.h"  // Assurez-vous d'inclure le fichier d'en-tête pour la mémoire partagée
 
+sem_t *move_sem;
+
+void set_semaphore(sem_t *sem) {
+    move_sem = sem;
+}
+
 void writeToSharedMemory(char* message, int valid_message) {
     memory_t* mem;
     char decrpyted_message[MAX_LENGTH_OF_MESSAGE]; // Use a fixed-size buffer instead of malloc
@@ -30,17 +36,23 @@ void writeToSharedMemory(char* message, int valid_message) {
     mem = open_shared_memory();
 
     // Écrire le message dans la mémoire partagée
+    sem_wait(move_sem);
     strncpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, message, MAX_LENGTH_OF_MESSAGE - 1);
     mem->encrpyted_messages[mem->mailbox_size].msg_text[MAX_LENGTH_OF_MESSAGE - 1] = '\0';
     mem->mailbox_size++;
+    mem->memory_has_changed = 1;
+    sem_post(move_sem);
 
 
     if (valid_message) {
         decrpyt_message(decrpyted_message);
+        sem_wait(move_sem);
         strncpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, decrpyted_message,
                 MAX_LENGTH_OF_MESSAGE - 1);
         mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text[MAX_LENGTH_OF_MESSAGE - 1] = '\0';
         mem->decrypted_mailbox_size++;
+        mem->memory_has_changed = 1;
+        sem_post(move_sem);
     }
 
 
