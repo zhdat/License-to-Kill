@@ -32,7 +32,7 @@ struct source_agent_s {
 	int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
 	coordinate_t targeted_companies[NUMBER_OF_COMPANIES]; /*!< The targeted companies. */
 	int targeted_companies_count; /*!< The number of targeted companies. */
-
+    int has_stolen_a_company_tonight; /*!< 1 if he has stolen a company tonight, 0 otherwise. */
 };
 
 /* Structure of attending_officer */
