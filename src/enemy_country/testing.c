@@ -40,27 +40,25 @@ int main(void) {
     attr.mq_curmsgs = 0;
 
     mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0600, &attr);
-    if (mq == (mqd_t)-1) {
+    if (mq == (mqd_t) -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
     }
 
-    while (1) {
-        strcpy(msg.sentence, "Hello world");
-        //ceasarCipher(msg.sentence, 3);
 
-        if (strcmp(msg.sentence, "exit\n") == 0) {
-            break;
-        }
+    strcpy(msg.sentence, "Hello world");
+    //ceasarCipher(msg.sentence, 3);
 
-        msg.priority = 0;
 
-        /* Send the message to the queue */
-        if (mq_send(mq, (const char *)&msg, sizeof(Message), msg.priority) == -1) {
-            perror("mq_send");
-            continue;
-        }
+
+    msg.priority = 0;
+
+    /* Send the message to the queue */
+    if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
+        perror("mq_send");
+        return EXIT_FAILURE;
     }
+
 
     /* Close and unlink the message queue */
     mq_close(mq);

@@ -5,7 +5,7 @@
 
 #include "common.h"
 #include <semaphore.h>
-
+#include "logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

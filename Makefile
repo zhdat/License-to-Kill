@@ -139,10 +139,10 @@ obj/timer/main.o: src/timer/main.c include/timer.h
 # ENEMY COUNTRY
 # ----------------------------------------------------------------------------
 
-bin/enemy_country: obj/enemy_country/enemy_country.o obj/common/memory.o obj/enemy_country/main.o
+bin/enemy_country: obj/enemy_country/enemy_country.o obj/common/memory.o obj/enemy_country/main.o obj/common/logger.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/enemy_country/enemy_country.o: src/enemy_country/enemy_country.c include/enemy_country.h include/memory.h include/common.h
+obj/enemy_country/enemy_country.o: src/enemy_country/enemy_country.c include/enemy_country.h include/memory.h include/common.h include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/enemy_country/main.o: src/enemy_country/main.c include/enemy_country.h include/common.h

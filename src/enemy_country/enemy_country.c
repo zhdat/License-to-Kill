@@ -9,6 +9,7 @@
 
 
 
+
 // e programme “enemy_country” reçoit les messages chiffrés en provenance du réseau
 //d’espionnage, puis les affichent en continu sur un téléscripteur ﴾exception faite des mes‐
 //sages “trompeurs” qu’il aura aussi reçu﴿. La communication entre le réseau d’espions ﴾pro‐
@@ -31,7 +32,7 @@ void writeToSharedMemory(char* message, int valid_message) {
     char decrpyted_message[MAX_LENGTH_OF_MESSAGE]; // Use a fixed-size buffer instead of malloc
     strcpy(decrpyted_message, message);
 
-
+    log_info("message bien reçu");
     // Ouvrir la mémoire partagée
     mem = open_shared_memory();
 
@@ -42,6 +43,8 @@ void writeToSharedMemory(char* message, int valid_message) {
     mem->mailbox_size++;
     mem->memory_has_changed = 1;
     sem_post(move_sem);
+
+
 
 
     if (valid_message) {
