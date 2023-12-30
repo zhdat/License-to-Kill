@@ -57,7 +57,7 @@ obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h include/
 # ----------------------------------------------------------------------------
 # SPY SIMULATION
 # ----------------------------------------------------------------------------
-bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character/character.o obj/cell.o obj/common/logger.o obj/spy_simulation.o obj/common/memory.o obj/simulation_signals.o
+bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character/character.o obj/cell.o obj/common/logger.o obj/spy_simulation.o obj/common/memory.o obj/simulation_signals.o obj/common/tools.o
 	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@ -lm
 
 obj/character_factory_main.o: src/spy_simulation/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
