@@ -464,7 +464,7 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     mvwprintw(window, nb_lines, title_column, "%s", title);
     wattroff(window, A_BOLD | A_UNDERLINE);
 
-    nb_lines = 3;
+    nb_lines = 1;
     for(i = 0; i < mailbox_nb_of_msgs; i++) {
         clear_line(window, nb_lines);
         strcpy(content, mem->encrpyted_messages[i].msg_text);

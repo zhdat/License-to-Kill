@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
+#include "memory.h"
 
 #ifdef __APPLE__
 #include "macosx/mqueue.h"
@@ -17,7 +19,7 @@
 #include <mqueue.h>
 #endif
 
-#define QUEUE_NAME "/myqueue"
+
 #define MAX_MSG_SIZE 1024
 
 typedef struct {
@@ -25,17 +27,11 @@ typedef struct {
     int priority;
 } Message;
 
-struct message_s {
-    long type;
-    char msg_text[MAX_LENGTH_OF_MESSAGE];
-    int is_false_message; /*!< 0 if the message is true, 1 if the message is false */
-};
+
 
 void set_semaphore(sem_t *sem);
 
-typedef struct message_s message_t;
-
-void writeToSharedMemory(char* message, int valid_message);
+void writeToSharedMemory(memory_t* mem);
 
 void decrpyt_message(char* message);
 

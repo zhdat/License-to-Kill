@@ -39,7 +39,7 @@ char** args_for_timer(pid_t* array_pid) {
     }
 
     array_args[0] = "timer";
-    array_args[1] = "0.5";
+    array_args[1] = "0.3";
     array_args[NUMBER_OF_ARGS_TIMER - 1] = NULL;
     i = 2;
     for (count_program = 0; count_program < NUMBER_OF_PROGRAMS; count_program++) {
