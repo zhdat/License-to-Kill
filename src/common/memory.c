@@ -80,6 +80,30 @@ void destroy_semaphore(sem_t* sem){
     sem_destroy(sem);
 }
 
+sem_t * create_semaphore_message(){
+    sem_t * semaphore;
+    semaphore = sem_open("/sem_spy_simulation_message", O_CREAT, 0644, 0);
+
+    if (semaphore == SEM_FAILED) {
+        printf("Error cannot create semaphore");
+        exit(EXIT_FAILURE);
+    }
+
+    return semaphore;
+}
+
+sem_t * open_semaphore_message(){
+    sem_t * semaphore;
+    semaphore = sem_open("/sem_spy_simulation_message", O_RDWR, 0644, 0);
+
+    if (semaphore == SEM_FAILED) {
+        printf("Error cannot open semaphore");
+        exit(EXIT_FAILURE);
+    }
+
+    return semaphore;
+}
+
 mqd_t create_message_queue() {
     //mq_unlink(QUEUE_NAME);
 

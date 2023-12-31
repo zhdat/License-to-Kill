@@ -56,6 +56,7 @@ InformationCruciality select_crucial_information(void);
 InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company);
 int getMessagePriority(InformationCruciality cruciality);
 void post_message(InformationCruciality priority, int type);
+void pickup_messages(memory_t *mem);
 
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H

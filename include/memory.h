@@ -74,6 +74,7 @@ typedef struct{
     long type;
     char msg_text[MAX_LENGTH_OF_MESSAGE];
     int is_false_message; /*!< 0 if the message is true, 1 if the message is false */
+    int is_encrypted; /*!< 0 if the message is not encrypted, 1 if the message is encrypted */
 } message_t;
 
 /**
@@ -138,6 +139,10 @@ sem_t* open_semaphore(void);
 void close_semaphore(sem_t* sem);
 
 void destroy_semaphore(sem_t* sem);
+
+sem_t * create_semaphore_message();
+
+sem_t * open_semaphore_message();
 
 mqd_t create_message_queue();
 

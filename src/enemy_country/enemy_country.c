@@ -31,6 +31,7 @@ void writeToSharedMemory(memory_t* mem) {
         }
 
         strcpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, buffer);
+        mem->encrpyted_messages[mem->mailbox_size].is_encrypted = 0;
         mem->mailbox_size++;
 
     }
@@ -38,33 +39,7 @@ void writeToSharedMemory(memory_t* mem) {
     mq_close(mq);
 }
 
-void decrpyt_message(char* message) {
-    // Logique de déchiffrement
-    int i = 0;
-    while (message[i] != '\0') {
-        if (message[i] >= 'a' && message[i] <= 'z') {
-            message[i] = message[i] - DECALAGE;
-            if (message[i] < 'a') {
-                message[i] = message[i] + 'z' - 'a' + 1;
-            }
-        } else if (message[i] >= 'A' && message[i] <= 'Z') {
-            message[i] = message[i] - DECALAGE;
-            if (message[i] < 'A') {
-                message[i] = message[i] + 'Z' - 'A' + 1;
-            }
-        }
-        i++;
-    }
-}
 
-int isValidMessage(char* message) {
-    message = message;
-    // Implémentez votre logique de filtrage ici
-
-    // Retournez 1 si le message est valide, 0 sinon
-
-    return 1; // Exemple : ici, tous les messages sont considérés comme valides
-}
 
 
 

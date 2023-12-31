@@ -138,6 +138,25 @@ void caesarCipher(char *message, int shift) {
     }
 }
 
+void decrpyt_message(char* message, int shift) {
+    // Logique de déchiffrement
+    int i = 0;
+    while (message[i] != '\0') {
+        if (message[i] >= 'a' && message[i] <= 'z') {
+            message[i] = message[i] - shift;
+            if (message[i] < 'a') {
+                message[i] = message[i] + 'z' - 'a' + 1;
+            }
+        } else if (message[i] >= 'A' && message[i] <= 'Z') {
+            message[i] = message[i] - shift;
+            if (message[i] < 'A') {
+                message[i] = message[i] + 'Z' - 'A' + 1;
+            }
+        }
+        i++;
+    }
+}
+
 MessageBank setMessageBank(void) {
     MessageBank bank = {
             .messages = {

@@ -26,17 +26,17 @@ void caesarCipher(char *message, int shift) {
 
 
 int main(void) {
+    /*
     mqd_t mq;
     struct mq_attr attr;
     Message msg;
 
-    mq_unlink(QUEUE_NAME); /* Evaluate if this is necessary */
+    mq_unlink(QUEUE_NAME); 
 
-    /* Open the message queue */
     memset(&attr, '\0', sizeof(attr));
     attr.mq_flags = 0;
-    attr.mq_maxmsg = 10; /* Maximum number of messages in the queue */
-    attr.mq_msgsize = sizeof(Message); /* Maximum message size */
+    attr.mq_maxmsg = 10;
+    attr.mq_msgsize = sizeof(Message);
     attr.mq_curmsgs = 0;
 
     mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0600, &attr);
@@ -62,7 +62,6 @@ int main(void) {
 
         msg.priority = 0;
 
-        /* Send the message to the queue */
         if (mq_send(mq, (const char *) &msg, sizeof(Message), msg.priority) == -1) {
             perror("mq_send");
             return EXIT_FAILURE;
@@ -70,9 +69,8 @@ int main(void) {
     }
 
 
-    /* Close and unlink the message queue */
     mq_close(mq);
-    mq_unlink(QUEUE_NAME);
+    mq_unlink(QUEUE_NAME);*/
 
     return EXIT_SUCCESS;
 }
