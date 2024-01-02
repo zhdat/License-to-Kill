@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/wait.h>
+#include <sys/mman.h>
+#include "logger.h"
 
-#define NUMBER_OF_PROGRAMS 7
+
+#define NUMBER_OF_PROGRAMS 6
 #define NUMBER_OF_ARGS_TIMER (NUMBER_OF_PROGRAMS + 2 + 1)
 
-void handle_fatal_error_and_exit(const char* msg) {
+void handle_fatal_error_and_exit(const char *msg) {
     perror(msg);
     exit(EXIT_FAILURE);
 }
@@ -30,12 +33,12 @@ void wait_children(int nb_children) {
     }
 }
 
-char** args_for_timer(pid_t* array_pid) {
+char **args_for_timer(pid_t *array_pid) {
     int i, count_program;
-    char** array_args = (char**) malloc((NUMBER_OF_ARGS_TIMER) * sizeof(char*));
+    char **array_args = (char **) malloc((NUMBER_OF_ARGS_TIMER) * sizeof(char *));
 
     for (i = 0; i < NUMBER_OF_ARGS_TIMER; i++) {
-        array_args[i] = (char*) malloc(15 * sizeof(char));
+        array_args[i] = (char *) malloc(15 * sizeof(char));
     }
 
     array_args[0] = "timer";
@@ -50,7 +53,7 @@ char** args_for_timer(pid_t* array_pid) {
     return array_args;
 }
 
-void free_args_for_timer(char** array_args) {
+void free_args_for_timer(char **array_args) {
     for (int i = 0; i < NUMBER_OF_PROGRAMS; i++) {
         free(array_args[i]);
     }
@@ -58,14 +61,15 @@ void free_args_for_timer(char** array_args) {
 }
 
 int main(void) {
-    pid_t* pids = (pid_t*) malloc(sizeof(pid_t) * (NUMBER_OF_PROGRAMS));
+    pid_t *pids = (pid_t *) malloc(sizeof(pid_t) * (NUMBER_OF_PROGRAMS));
     pid_t pid_timer;
     pids[1] = create_child();
-    char** array_args_timer = NULL;
+    char **array_args_timer = NULL;
 
     if (pids[1] == 0) {
         execlp("./bin/spy_simulation", "spy_simulation", NULL);
     } else {
+        sleep(1);
         pids[0] = create_child();
 
         if (pids[0] == 0) {
@@ -82,31 +86,27 @@ int main(void) {
                 } else {
                     pids[4] = create_child();
                     if (pids[4] == 0) {
-                        execlp("./bin/testing", "testing", NULL);
+                        execlp("./bin/citizen_manager", "citizen_manager", NULL);
                     } else {
                         pids[5] = create_child();
                         if (pids[5] == 0) {
-                            execlp("./bin/citizen_manager", "citizen_manager", NULL);
+                            execlp("./bin/counterintelligence_officer", "counterintelligence_officer", NULL);
                         } else {
-                            pids[6] = create_child();
-                            if (pids[6] == 0) {
-                                execlp("./bin/counterintelligence_officer", "counterintelligence_officer", NULL);
+                            pid_timer = create_child();
+
+                            if (pid_timer == 0) {
+                                array_args_timer = args_for_timer(pids);
+                                execvp("./bin/timer", array_args_timer);
                             } else {
-                                pid_timer = create_child();
-
-                                if (pid_timer == 0) {
-                                    array_args_timer = args_for_timer(pids);
-                                    execvp("./bin/timer", array_args_timer);
-                                } else {
-                                    wait_children(NUMBER_OF_PROGRAMS + 1);
-                                    if (array_args_timer != NULL) {
-                                        free_args_for_timer(array_args_timer);
-                                    }
-
-                                    free(pids);
+                                wait_children(NUMBER_OF_PROGRAMS + 1);
+                                if (array_args_timer != NULL) {
+                                    free_args_for_timer(array_args_timer);
                                 }
+
+                                free(pids);
                             }
                         }
+
                     }
                 }
             }

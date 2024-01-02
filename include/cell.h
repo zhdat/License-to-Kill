@@ -19,6 +19,9 @@
 #define CELL_H
 
 #include "common.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /**
  * \file cell.h

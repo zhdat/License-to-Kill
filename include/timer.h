@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/fcntl.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "memory.h"
 

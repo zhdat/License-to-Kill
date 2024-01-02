@@ -1,6 +1,7 @@
 #include "enemy_spy_network.h"
 
 int main(void) {
+    //log_info("Starting enemy_spy_network");
     memory_t* mem = open_shared_memory();
     sem_t* move_sem = open_semaphore();
     sem_t* semaphore_message = create_semaphore_message();

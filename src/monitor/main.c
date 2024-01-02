@@ -33,6 +33,7 @@
 
 #include "spy_simulation.h"
 #include "simulation_signals.h"
+#include "logger.h"
 
 #define MAP_WRITE 0x0002
 
@@ -65,6 +66,7 @@ int main(void) {
 
     //mem = (memory_t*)malloc(sizeof(memory_t));
 
+    //log_info("Starting monitor");
     memory_t* memory = open_shared_memory();
     set_memory(memory);
 

@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"

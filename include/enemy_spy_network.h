@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <mqueue.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"

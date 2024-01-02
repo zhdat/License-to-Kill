@@ -8,6 +8,7 @@
 
 
 int main(void) {
+    //log_info("Starting spy_simulation");
     memory_t* mem = create_shared_memory();
     sem_t* move_sem = create_semaphore();
     set_content_memory(mem);

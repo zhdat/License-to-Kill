@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/time.h>
+#include "logger.h"
 
 #include "timer.h"
 
@@ -11,6 +12,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     float interval = strtof(argv[1], NULL);
+    //log_info("Starting timer");
     memory_t* sharedMemory = open_shared_memory();
     set_memory(sharedMemory);
     set_pids(argc, argv);

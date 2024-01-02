@@ -11,6 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "memory.h"
 
 #ifdef __APPLE__
