@@ -48,7 +48,7 @@ obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h
 obj/common/logger.o: src/common/logger.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/common/memory.o: src/common/memory.c include/memory.h
+obj/common/memory.o: src/common/memory.c include/memory.h include/macosx.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h include/logger.h

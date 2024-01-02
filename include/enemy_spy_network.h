@@ -6,6 +6,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <time.h>
+#ifdef __APPLE__
+#include "macosx.h"
+#elif __linux__
+#include <mqueue.h>
+#endif
 #include "memory.h"
 #include "tools.h"
 #include "common.h"

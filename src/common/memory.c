@@ -132,4 +132,5 @@ mqd_t open_message_queue() {
         perror("mq_open");
         exit(EXIT_FAILURE);
     }
+    return mq;
 }

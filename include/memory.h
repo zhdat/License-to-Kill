@@ -20,7 +20,11 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+#ifdef __APPLE__
+#include "macosx.h"
+#elif __linux__
 #include <mqueue.h>
+#endif
 #include "cell.h"
 #include "common.h"
 #include "character.h"
