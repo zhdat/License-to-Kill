@@ -18,17 +18,18 @@ memory_t* open_shared_memory(void) {
         exit(EXIT_FAILURE);
     }
 
-    mem = mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    mem = (memory_t *) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (mem == MAP_FAILED) {
         perror("mmap");
         exit(EXIT_FAILURE);
     }
 
+    /*
     // Initialize the mutex
     if (pthread_mutex_init(&mem->mutex, NULL) != 0) {
         perror("pthread_mutex_init");
         exit(EXIT_FAILURE);
-    }
+    }*/
 
     return mem;
 }
