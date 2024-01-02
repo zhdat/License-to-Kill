@@ -7,15 +7,15 @@
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
 source_agent_t* agent_map[MAX_SOURCE_AGENT_COUNT];
-int attending_officer_routine[8] = {0, 0, 0, 0, 0, 0, 0, 0 }; // position pair : heures, impair : minutes
+int attending_officer_routine[4] = {0, 0, 0, 0};
 
-sem_t *move_sem;
+sem_t* move_sem;
 
 // @TODO: faire une map de chaques entreprise volée, par quel agent, et quand (P3)
 
 
 
-void set_semaphore(sem_t *sem) {
+void set_semaphore(sem_t* sem) {
     move_sem = sem;
 }
 
@@ -38,12 +38,12 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
-void agent_mapping(source_agent_t *agent, int id) {
+void agent_mapping(source_agent_t* agent, int id) {
     //log_debug("Mapping TID %ld to agent %d\n", tid, id);
     agent_map[id] = agent;
 }
 
-void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
     sig = sig;
     info = info;
     unused = unused;
@@ -58,7 +58,7 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i];
+            source_agent_t* agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health--;
             agent->is_attacked = 0;
@@ -78,14 +78,14 @@ void set_signals_weak_bullet(void) {
     sigaction(SIGUSR1, &action, NULL);
 }
 
-void handle_sigusr2(int sig, siginfo_t *info, void *unused) {
+void handle_sigusr2(int sig, siginfo_t* info, void* unused) {
     sig = sig;
     info = info;
     unused = unused;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i];
+            source_agent_t* agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health -= 2;
             agent->is_attacked = 0;
@@ -105,10 +105,10 @@ void set_signals_strong_bullet(void) {
     sigaction(SIGUSR2, &action, NULL);
 }
 
-void move_source_agent(agent_thread_args_t *arg, int row, int column) {
+void move_source_agent(agent_thread_args_t* arg, int row, int column) {
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    source_agent_t *spies = &(mem->source_agents[arg->id]);
+    memory_t* mem = arg->mem;
+    source_agent_t* spies = &(mem->source_agents[arg->id]);
 
     if (spies->character.health <= 0) {
         return;
@@ -134,10 +134,10 @@ void move_source_agent(agent_thread_args_t *arg, int row, int column) {
 
 }
 
-void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
+void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    attending_officer_t *officer = &(mem->attending_officers[arg->id]);
+    memory_t* mem = arg->mem;
+    attending_officer_t* officer = &(mem->attending_officers[arg->id]);
 
     if (officer->character.health <= 0) {
         return;
@@ -161,12 +161,12 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
     sem_post(move_sem);
 }
 
-void *morning_source_agent(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* morning_source_agent(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
 
     int pid = getpid();
 
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
     //agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
@@ -176,7 +176,7 @@ void *morning_source_agent(void *arg) {
     if (random_activity < 10) {
         // va au supermarché
         int random_supermarket = rand() % NUMBER_OF_SUPERMARKETS;
-        coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
+        coordinate_t* supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
                                                                    NUMBER_OF_SUPERMARKETS);
 
 
@@ -209,7 +209,7 @@ void *morning_source_agent(void *arg) {
     } else {
 
         int random_company = rand() % NUMBER_OF_COMPANIES;
-        coordinate_t *companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
+        coordinate_t* companies_coordinates = findTypeOfBuilding(&args->mem->city_map, COMPANY, NUMBER_OF_COMPANIES);
 
 
         while (!character_is_at(current_agent->character, companies_coordinates[random_company])) {
@@ -244,11 +244,11 @@ void *morning_source_agent(void *arg) {
     pthread_exit(NULL);
 }
 
-void *evening_source_agent(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* evening_source_agent(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
 
     int pid = getpid();
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
     //agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
@@ -268,12 +268,12 @@ void *evening_source_agent(void *arg) {
     pthread_exit(NULL);
 }
 
-void *evening_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    attending_officer_t *attendingOfficer = &(args->mem->attending_officers[args->id]);
+void* evening_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
     // va à un supermarché
     int random_supermarket = rand() % NUMBER_OF_SUPERMARKETS;
-    coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
+    coordinate_t* supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
                                                                NUMBER_OF_SUPERMARKETS);
 
 
@@ -288,7 +288,6 @@ void *evening_attending_officer(void *arg) {
             }
         }
     }
-
 
 
     while (!is_at_home(attendingOfficer->character)) {
@@ -306,9 +305,9 @@ void *evening_attending_officer(void *arg) {
     pthread_exit(NULL);
 }
 
-void *morning_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    attending_officer_t *attendingOfficer = &(args->mem->attending_officers[args->id]);
+void* morning_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
 
 
     // va à la mailbox
@@ -343,11 +342,11 @@ void *morning_attending_officer(void *arg) {
 }
 
 
-void pickup_messages(memory_t *mem) {
+void pickup_messages(memory_t* mem) {
     // parcourir la mailobx, et s'il y a des nouveaux messages les décrypter et les stocker dans decrypted_messages
     for (int i = 0; i < mem->mailbox_size; ++i) {
         if (mem->encrpyted_messages[i].is_encrypted == 0) {
-            char *message = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
+            char* message = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
             strcpy(message, mem->encrpyted_messages[i].msg_text);
             decrpyt_message(message, 3);
             strcpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, message);
@@ -357,11 +356,11 @@ void pickup_messages(memory_t *mem) {
     }
 }
 
-void *attempt_information_theft(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* attempt_information_theft(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
 
     int pid = getpid();
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
     // agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
@@ -369,14 +368,14 @@ void *attempt_information_theft(void *arg) {
     // go near a company
     int random_company = rand() % current_agent->targeted_companies_count;
     coordinate_t company = current_agent->targeted_companies[random_company];
-    int * neighbour_cells_count = malloc(sizeof(int));
-    coordinate_t* neighbour_cells = findNeighbouringCells(&args->mem->city_map, company.row, company.column, neighbour_cells_count);
+    int* neighbour_cells_count = malloc(sizeof(int));
+    coordinate_t* neighbour_cells = findNeighbouringCells(&args->mem->city_map, company.row, company.column,
+                                                          neighbour_cells_count);
     int random_neighbour_cell = rand() % *neighbour_cells_count;
 
     int turns = 0;
     int type = 0; // 0 = fake, 1 = real
     InformationCruciality priority = rand() % CRUCIALITY_LEVELS;
-
 
 
     while (!character_is_at(current_agent->character, neighbour_cells[random_neighbour_cell])) {
@@ -419,14 +418,13 @@ void *attempt_information_theft(void *arg) {
             }
         }
         thief_is_possible = rand() % 100;
-        if(thief_is_possible < 90){
+        if (thief_is_possible < 90) {
             priority = accomplish_mission(args->mem, company);
             type = 1;
             sem_wait(move_sem);
             current_agent->nb_of_stolen_companies++;
             sem_post(move_sem);
         }
-
 
 
     } else {
@@ -470,7 +468,7 @@ void post_message(InformationCruciality priority, int type) {
 
     sem_t* semaphore_message = open_semaphore_message();
 
-    char *mess = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
+    char* mess = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
 
     if (type == 1) {
         MessageBank messageBank = setMessageBank();
@@ -491,11 +489,11 @@ void post_message(InformationCruciality priority, int type) {
 
 }
 
-InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company) {
+InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company) {
     InformationCruciality cruciality = select_crucial_information();
     for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
         if (mem->companies_priority[i].row == company.row && mem->companies_priority[i].column == company.column) {
-            while(mem->companies_priority[i].cruciality.infoCount[cruciality] <= 0){
+            while (mem->companies_priority[i].cruciality.infoCount[cruciality] <= 0) {
                 cruciality = select_crucial_information();
             }
             mem->companies_priority[i].cruciality.infoCount[cruciality]--;
@@ -538,62 +536,52 @@ InformationCruciality select_crucial_information(void) {
 }
 
 
-
 void initialize_attending_officer_routine(void) {
     int random_hour = rand() % 8;
     int random_minute = rand() % 60;
-    for (int i = 0; i < 8; ++i) {
-        if (i % 2 == 1) {
-            int random_minute = rand() % 60;
-            attending_officer_routine[i] = random_minute;
-        }
-        random_hour = rand() % 9;
-        attending_officer_routine[0] = random_hour + 8;
-        random_hour = rand() % 9;
-        attending_officer_routine[2] = random_hour + 8;
-        random_hour = rand() % 2;
-        attending_officer_routine[4] = random_hour + 17;
-        random_hour = rand() % 2;
-        attending_officer_routine[6] = random_hour + 22;
-    }
-    for(int i = 0; i < 8; i++){
+    random_hour = rand() % 9;
+    attending_officer_routine[0] = random_hour + 8;
+    random_hour = rand() % 9;
+    attending_officer_routine[1] = random_hour + 8;
+    random_hour = rand() % 2;
+    attending_officer_routine[2] = random_hour + 17;
+    random_hour = rand() % 2;
+    attending_officer_routine[3] = random_hour + 22;
+    for (int i = 0; i < 8; i++) {
         printf("%d ", attending_officer_routine[i]);
     }
 
 }
 
 
-
-void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
 
-
-    if (mem->my_timer.hours >= 8 && mem->my_timer.hours <= 17) {
-        if(mem->my_timer.hours == 8 && mem->my_timer.minutes == 0){
+    if (mem->my_timer.hours >= 8 && mem->my_timer.hours <= 17 && mem->my_timer.minutes == 0) {
+        if (mem->my_timer.hours == 8) {
             initialize_attending_officer_routine();
         }
-        if(mem->my_timer.minutes == 0) {
-            for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-                if (mem->source_agents[i].character.health <= 0) {
-                    continue;
-                }
-                ptr = &threads->source_agent_args[i];
-                pthread_attr_init(&attr);
-                if (pthread_create(&threads->source_agent_threads[i], &attr, morning_source_agent,
-                                   ptr) == 0) {
-                } else {
-                    printf("thread not created\n");
-                }
-                sleep(1);
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if (mem->source_agents[i].character.health <= 0) {
+                continue;
             }
+            ptr = &threads->source_agent_args[i];
+            pthread_attr_init(&attr);
+            if (pthread_create(&threads->source_agent_threads[i], &attr, morning_source_agent,
+                               ptr) == 0) {
+            } else {
+                printf("thread not created\n");
+            }
+            sleep(1);
         }
 
         // @TODO : fix le problème que l'officier va tt le temps à la mailbox et pas uniquement 2 fois par jour (P4)
-        if((mem->my_timer.hours == attending_officer_routine[0] && mem->my_timer.minutes == attending_officer_routine[1]) || (mem->my_timer.hours == attending_officer_routine[2] && mem->my_timer.minutes == attending_officer_routine[3])) {
-            if (mem->attending_officers[0].character.health <= 0) {
+        if ((mem->my_timer.hours == attending_officer_routine[0])||
+            (mem->my_timer.hours == attending_officer_routine[1])){
+            if (mem->attending_officers[0].character.health > 0) {
                 ptr2 = &threads->attending_officer_args[0];
                 pthread_attr_init(&attr);
                 if (pthread_create(&threads->attending_officer_threads[0], &attr, morning_attending_officer,
@@ -614,15 +602,14 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
         }
         // joindre les threads
 
-        if (mem->my_timer.minutes == 0) {
-            for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
-                if (mem->source_agents[i].character.health <= 0) {
-                    continue;
-                }
-                pthread_join(threads->source_agent_threads[i], NULL);
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+            if (mem->source_agents[i].character.health <= 0) {
+                continue;
             }
+            pthread_join(threads->source_agent_threads[i], NULL);
         }
-        if((mem->my_timer.hours == attending_officer_routine[0] && mem->my_timer.minutes == attending_officer_routine[1]) || (mem->my_timer.hours == attending_officer_routine[2] && mem->my_timer.minutes == attending_officer_routine[3])) {
+        if ((mem->my_timer.hours == attending_officer_routine[0])||
+            (mem->my_timer.hours == attending_officer_routine[1])){
             if (mem->attending_officers[0].character.health > 0) {
                 pthread_join(threads->attending_officer_threads[0], NULL);
             }
@@ -631,10 +618,10 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
 
 }
 
-void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
 
@@ -653,8 +640,8 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
 
         }
 
-        if(mem->my_timer.hours == attending_officer_routine[4] && mem->my_timer.minutes == attending_officer_routine[5]) {
-            if (mem->attending_officers[0].character.health <= 0) {
+        if (mem->my_timer.hours == attending_officer_routine[2]) {
+            if (mem->attending_officers[0].character.health > 0) {
                 ptr2 = &threads->attending_officer_args[0];
                 pthread_attr_init(&attr);
                 if (pthread_create(&threads->attending_officer_threads[0], &attr, evening_attending_officer,
@@ -672,7 +659,7 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
             }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
-        if(mem->my_timer.hours == attending_officer_routine[4] && mem->my_timer.minutes == attending_officer_routine[5]) {
+        if (mem->my_timer.hours == attending_officer_routine[2]) {
             if (mem->attending_officers[0].character.health > 0) {
                 pthread_join(threads->attending_officer_threads[0], NULL);
             }
@@ -681,13 +668,13 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
 }
 
 
-void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_night_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     // @TODO : créer les threads avec une probabilité en fonction de l'heure qu'il est (P2)
-    if ((mem->my_timer.hours >= 18 || mem->my_timer.hours <= 8) && mem->my_timer.minutes == 0 ) {
+    if ((mem->my_timer.hours >= 18 || mem->my_timer.hours <= 8) && mem->my_timer.minutes == 0) {
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
             if (mem->source_agents[i].character.health <= 0) {
@@ -707,8 +694,8 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
 
         }
 
-        if(mem->my_timer.hours == attending_officer_routine[6] && mem->my_timer.minutes == attending_officer_routine[7]) {
-            if (mem->attending_officers[0].character.health <= 0) {
+        if (mem->my_timer.hours == attending_officer_routine[3]) {
+            if (mem->attending_officers[0].character.health > 0) {
                 ptr2 = &threads->attending_officer_args[0];
                 pthread_attr_init(&attr);
                 if (pthread_create(&threads->attending_officer_threads[0], &attr, evening_attending_officer,
@@ -726,7 +713,7 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
             }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
-        if(mem->my_timer.hours == attending_officer_routine[6] && mem->my_timer.minutes == attending_officer_routine[7]) {
+        if (mem->my_timer.hours == attending_officer_routine[3]) {
             if (mem->attending_officers[0].character.health > 0) {
                 pthread_join(threads->attending_officer_threads[0], NULL);
             }
@@ -735,8 +722,8 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
 }
 
 
-void create_enemy_spy_thread(memory_t *mem) {
-    all_threads_t *threads;
+void create_enemy_spy_thread(memory_t* mem) {
+    all_threads_t* threads;
     threads = malloc(sizeof(all_threads_t));
     srand(time(NULL));
 
