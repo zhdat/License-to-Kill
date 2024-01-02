@@ -30,8 +30,16 @@ void writeToSharedMemory(memory_t* mem) {
             exit(EXIT_FAILURE);
         }
 
+        pos = strchr(buffer, '-');
+        *pos = '\0';
+        pos++;
+        priority = strtol(pos, &endptr, 10);
+
+
+
         strcpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, buffer);
         mem->encrpyted_messages[mem->mailbox_size].is_encrypted = 0;
+        mem->encrpyted_messages[mem->mailbox_size].priority = priority;
         mem->mailbox_size++;
 
     }

@@ -468,6 +468,7 @@ void display_mailbox_content(WINDOW* window, memory_t* mem) {
     for(i = 0; i < mailbox_nb_of_msgs; i++) {
         clear_line(window, nb_lines);
         strcpy(content, mem->encrpyted_messages[i].msg_text);
+        priority = mem->encrpyted_messages[i].priority;
         if(strcmp(content, FAKE_MESSAGE) == 0) {
             mvwprintw(window, nb_lines, 2, ">> [%d] %s (P%d)", (i + 1), "FAKE MESSAGE", priority);
         } else {

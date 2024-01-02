@@ -364,6 +364,9 @@ void* attempt_information_theft(void* arg) {
     current_agent->character.pid = pid;
     // agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
+    if(current_agent->targeted_companies_count == 0){
+        pthread_exit(NULL);
+    }
 
     // go near a company
     int random_company = rand() % current_agent->targeted_companies_count;
@@ -442,6 +445,9 @@ void* attempt_information_theft(void* arg) {
         }
     }
     // @TODO: crypter le message (fonction de tools.c) (P0)
+    if(current_agent->character.health <= 0){
+        pthread_exit(NULL);
+    }
     post_message(priority, type);
     current_agent->targeted_companies_count = 0;
     current_agent->has_stolen_a_company_tonight = 1;
@@ -468,15 +474,20 @@ void post_message(InformationCruciality priority, int type) {
 
     sem_t* semaphore_message = open_semaphore_message();
 
-    char* mess = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
+    char mess[MAX_LENGTH_OF_MESSAGE];
 
     if (type == 1) {
         MessageBank messageBank = setMessageBank();
-        mess = generateSpyMessage(&(messageBank), priority);
+        strcpy(mess, generateSpyMessage(&(messageBank), priority));
     } else {
 
         strcpy(mess, FAKE_MESSAGE);
     }
+
+    // concatener la priorité à mess
+    char priority_char[10];
+    sprintf(priority_char, " - %d", getMessagePriority(priority));
+    strcat(mess, priority_char);
 
     sem_wait(semaphore_message);
     if (mq_send(mq, mess, strlen(mess) + 1, 1) == -1) {
@@ -485,7 +496,6 @@ void post_message(InformationCruciality priority, int type) {
     }
     sem_post(semaphore_message);
 
-    free(mess);
 
 }
 
@@ -537,8 +547,7 @@ InformationCruciality select_crucial_information(void) {
 
 
 void initialize_attending_officer_routine(void) {
-    int random_hour = rand() % 8;
-    int random_minute = rand() % 60;
+    int random_hour;
     random_hour = rand() % 9;
     attending_officer_routine[0] = random_hour + 8;
     random_hour = rand() % 9;
@@ -547,7 +556,7 @@ void initialize_attending_officer_routine(void) {
     attending_officer_routine[2] = random_hour + 17;
     random_hour = rand() % 2;
     attending_officer_routine[3] = random_hour + 22;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 4; i++) {
         printf("%d ", attending_officer_routine[i]);
     }
 
@@ -564,7 +573,7 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
         if (mem->my_timer.hours == 8) {
             initialize_attending_officer_routine();
         }
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
                 continue;
             }
@@ -591,23 +600,15 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
                 }
             }
         }
-        if (mem->attending_officers[0].character.health > 0) {
-            ptr2 = &threads->attending_officer_args[0];
-            pthread_attr_init(&attr);
-            if (pthread_create(&threads->attending_officer_threads[0], &attr, morning_attending_officer,
-                               ptr2) == 0) {
-            } else {
-                printf("thread not created\n");
-            }
-        }
         // joindre les threads
 
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
                 continue;
             }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
+
         if ((mem->my_timer.hours == attending_officer_routine[0])||
             (mem->my_timer.hours == attending_officer_routine[1])){
             if (mem->attending_officers[0].character.health > 0) {
@@ -625,7 +626,7 @@ void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
 
     if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
 
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
                 continue;
             }
@@ -653,12 +654,13 @@ void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
         }
         // joindre les threads
 
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
                 continue;
             }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
+
         if (mem->my_timer.hours == attending_officer_routine[2]) {
             if (mem->attending_officers[0].character.health > 0) {
                 pthread_join(threads->attending_officer_threads[0], NULL);
@@ -675,14 +677,20 @@ void create_network_night_thread(memory_t* mem, all_threads_t* threads) {
 
     // @TODO : créer les threads avec une probabilité en fonction de l'heure qu'il est (P2)
     if ((mem->my_timer.hours >= 18 || mem->my_timer.hours <= 8) && mem->my_timer.minutes == 0) {
+        if(mem->my_timer.turns <= 20){
+            return;
+        }
 
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
+            //log_info("creation des threads...");
             if (mem->source_agents[i].character.health <= 0) {
                 continue;
             }
             if (mem->source_agents[i].targeted_companies_count == 0) {
+                //log_info("pas de cible");
                 continue;
             }
+            //log_info("creation du thread %d...", i);
             ptr = &threads->source_agent_args[i];
             pthread_attr_init(&attr);
             if (pthread_create(&threads->source_agent_threads[i], &attr, attempt_information_theft,
@@ -707,12 +715,16 @@ void create_network_night_thread(memory_t* mem, all_threads_t* threads) {
         }
         // joindre les threads
 
-        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
+                continue;
+            }
+            if (mem->source_agents[i].targeted_companies_count == 0) {
                 continue;
             }
             pthread_join(threads->source_agent_threads[i], NULL);
         }
+
         if (mem->my_timer.hours == attending_officer_routine[3]) {
             if (mem->attending_officers[0].character.health > 0) {
                 pthread_join(threads->attending_officer_threads[0], NULL);

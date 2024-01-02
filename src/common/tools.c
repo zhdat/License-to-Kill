@@ -70,7 +70,7 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
         }
     }
 
-    // Mettre à jour les nouvelles positions
+    // Mettre a jour les nouvelles positions
     *new_pos_row = current_row;
     *new_pos_col = current_column;
 }
@@ -160,31 +160,31 @@ void decrpyt_message(char* message, int shift) {
 MessageBank setMessageBank(void) {
     MessageBank bank = {
             .messages = {
-                    [Crucial] = {"Plans secrets de tech. avancée obtenus. Urgence extrême.",
-                                 "Fusion majeure détectée entre géants tech. Impact énorme.",
-                                 "Échantillon matériel militaire révolutionnaire acquis.",
-                                 "Accès serveurs financiers clés. Données critiques en main.",
-                                 "Partenariat secret gouvernemental découvert. Très sensible."},
-                    [Strong] = {"Failles financières de la cible exposées. Grande valeur.",
-                                "Plans d'expansion globale de la cible révélés. Important.",
-                                "Stratégie de contournement de brevet découverte. Utile.",
-                                "Liste de chercheurs influençables compilée. Opportunité.",
-                                "Faiblesses de sécurité IT trouvées. Potentiel d'exploitation."},
-                    [Medium] = {"Tendances de marché et prévisions pour l'année reçues.",
-                                "Nouvelles politiques RH et effets notés. À surveiller.",
-                                "Mises à niveau de production planifiées découvertes.",
-                                "Changements de gestion internes observés. À étudier.",
-                                "Stratégies à moyen terme de la direction saisies."},
-                    [Low] = {"Procédures opérationnelles standards collectées. Basique.",
-                             "Contrats mineurs et partenariats établis. Peu critique.",
-                             "Moral des employés analysé. Potentiel d'influence mineur.",
-                             "Gestion énergie et déchets étudiée. Peu pertinent.",
-                             "Performances mensuelles standard saisies. Info générale."},
-                    [VeryLow] = {"Activités quotidiennes régulières notées. Rien d'urgent.",
-                                 "Programmes de formation et bien-être relevés. Basique.",
-                                 "Détails sur événements sociaux de l'entreprise. Standard.",
-                                 "Routines et horaires de travail observés. Rien de spécial.",
-                                 "Activités de réseautage saisies. Valeur faible."}
+                    [Crucial] = {"Plans secrets de tech. avancee obtenus. Urgence extreme.",
+                                 "Fusion majeure detectee entre geants tech. Impact enorme.",
+                                 "Echantillon materiel militaire revolutionnaire acquis.",
+                                 "Acces serveurs financiers cles. Donnees critiques en main.",
+                                 "Partenariat secret gouvernemental decouvert. Tres sensible."},
+                    [Strong] = {"Failles financieres de la cible exposees. Grande valeur.",
+                                "Plans d'expansion globale de la cible reveles. Important.",
+                                "Strategie de contournement de brevet decouverte. Utile.",
+                                "Liste de chercheurs influençables compilee. Opportunite.",
+                                "Faiblesses de securite IT trouvees. Potentiel d'exploitation."},
+                    [Medium] = {"Tendances de marche et previsions pour l'annee reçues.",
+                                "Nouvelles politiques RH et effets notes. À surveiller.",
+                                "Mises a niveau de production planifiees decouvertes.",
+                                "Changements de gestion internes observes. À etudier.",
+                                "Strategies a moyen terme de la direction saisies."},
+                    [Low] = {"Procedures operationnelles standards collectees. Basique.",
+                             "Contrats mineurs et partenariats etablis. Peu critique.",
+                             "Moral des employes analyse. Potentiel d'influence mineur.",
+                             "Gestion energie et dechets etudiee. Peu pertinent.",
+                             "Performances mensuelles standard saisies. Info generale."},
+                    [VeryLow] = {"Activites quotidiennes regulieres notees. Rien d'urgent.",
+                                 "Programmes de formation et bien-etre releves. Basique.",
+                                 "Details sur evenements sociaux de l'entreprise. Standard.",
+                                 "Routines et horaires de travail observes. Rien de special.",
+                                 "Activites de reseautage saisies. Valeur faible."}
             }
     };
     return bank;
@@ -198,7 +198,7 @@ char *generateSpyMessage(MessageBank *bank, InformationCruciality importance) {
 
     if (messageCount > 0) {
         int randomIndex = rand() % messageCount;
-        //log_info("tentative de génération de message avec importance %d", importance);
+        //log_info("tentative de genération de message avec importance %d", importance);
         //log_info("Message généré: %s", bank->messages[importance][randomIndex]);
         return bank->messages[importance][randomIndex];
     } else {
