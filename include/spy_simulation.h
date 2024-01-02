@@ -1,8 +1,12 @@
 #ifndef TP_SYS_SPY_SIMULATION_H
 #define TP_SYS_SPY_SIMULATION_H
 
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "memory.h"
 #include "tools.h"
+#include "logger.h"
 
 memory_t* create_shared_memory(void);
 void set_content_memory(memory_t* mem);

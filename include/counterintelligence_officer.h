@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "memory.h"
 #include "tools.h"
 #include "common.h"

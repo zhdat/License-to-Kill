@@ -2,6 +2,9 @@
 #define PROJECT_TOOLS_H
 
 #include "memory.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 typedef struct thread_s thread_t;
 

@@ -19,11 +19,11 @@ all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
 # ----------------------------------------------------------------------------
-bin/main_program: obj/main.o
+bin/main_program: obj/main.o obj/common/logger.o
 	rm -rf /dev/shm/nothinghere /dev/shm/sem.*
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/main.o: src/main.c
+obj/main.o: src/main.c include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h include/
 # SPY SIMULATION
 # ----------------------------------------------------------------------------
 bin/spy_simulation: obj/character_factory_main.o obj/character_factory.o obj/character/character.o obj/cell.o obj/common/logger.o obj/spy_simulation.o obj/common/memory.o obj/simulation_signals.o obj/common/tools.o
-	$(CC) $(CPPFLAGS2) $(CFLAGS) $^ -o $@ -lm
+	$(CC) $^ -o $@ $(LDFLAGS)
 
 obj/character_factory_main.o: src/spy_simulation/main.c include/character_factory.h include/logger.h include/memory.h include/spy_simulation.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
@@ -125,13 +125,13 @@ bin/counterintelligence_officer: obj/counterintelligence_officer/main.o obj/char
 # TIMER OBJECTS FILES
 # ----------------------------------------------------------------------------
 
-bin/timer: obj/timer/timer.o obj/timer/main.o obj/common/memory.o
+bin/timer: obj/timer/timer.o obj/timer/main.o obj/common/memory.o obj/common/logger.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 obj/timer/timer.o: src/timer/timer.c include/timer.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/timer/main.o: src/timer/main.c include/timer.h
+obj/timer/main.o: src/timer/main.c include/timer.h include/logger.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 

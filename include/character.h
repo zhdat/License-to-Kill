@@ -2,6 +2,10 @@
 #define CHARACTER_H
 
 #include "cell.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 typedef struct character_s character_t;
 typedef struct source_agent_s source_agent_t;

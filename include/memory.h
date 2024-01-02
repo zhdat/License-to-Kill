@@ -21,6 +21,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <mqueue.h>
+#include <sys/mman.h>
+#include <sys/stat.h> /* Pour les constantes « mode » */
+#include <fcntl.h>
 #include "cell.h"
 #include "common.h"
 #include "character.h"
