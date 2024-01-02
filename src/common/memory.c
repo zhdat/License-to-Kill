@@ -23,13 +23,6 @@ memory_t* open_shared_memory(void) {
         perror("mmap");
         exit(EXIT_FAILURE);
     }
-
-    // Initialize the mutex
-    if (pthread_mutex_init(&mem->mutex, NULL) != 0) {
-        perror("pthread_mutex_init");
-        exit(EXIT_FAILURE);
-    }
-
     return mem;
 }
 
@@ -76,12 +69,15 @@ void close_semaphore(sem_t* sem) {
     }
 }
 
-void destroy_semaphore(sem_t* sem){
-    sem_destroy(sem);
+void destroy_semaphore(sem_t* sem) {
+    if (sem_unlink(SEMAPHORE_NAME) == -1) {
+        perror("sem_unlink");
+        exit(EXIT_FAILURE);
+    }
 }
 
-sem_t * create_semaphore_message(){
-    sem_t * semaphore;
+sem_t* create_semaphore_message() {
+    sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_CREAT, 0644, 0);
 
     if (semaphore == SEM_FAILED) {
@@ -92,8 +88,8 @@ sem_t * create_semaphore_message(){
     return semaphore;
 }
 
-sem_t * open_semaphore_message(){
-    sem_t * semaphore;
+sem_t* open_semaphore_message() {
+    sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_RDWR, 0644, 0);
 
     if (semaphore == SEM_FAILED) {
@@ -116,7 +112,7 @@ mqd_t create_message_queue() {
 
     // Ouvrir ou créer une file de messages avec les attributs spécifiés
     mqd_t mq = mq_open(QUEUE_NAME, O_CREAT | O_RDWR, 0666, &attr);
-    if (mq == (mqd_t)-1) {
+    if (mq == (mqd_t) -1) {
         perror("mq_create");
         exit(EXIT_FAILURE);
     }
@@ -127,8 +123,9 @@ mqd_t create_message_queue() {
 
 mqd_t open_message_queue() {
     mqd_t mq = mq_open(QUEUE_NAME, O_RDWR);
-    if (mq == (mqd_t)-1) {
+    if (mq == (mqd_t) -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
     }
+    return mq;
 }

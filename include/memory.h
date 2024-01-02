@@ -20,7 +20,11 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+#ifdef __APPLE__
+#include "macosx.h"
+#elif __linux__
 #include <mqueue.h>
+#endif
 #include <sys/mman.h>
 #include <sys/stat.h> /* Pour les constantes « mode » */
 #include <fcntl.h>
@@ -76,6 +80,7 @@ typedef struct {
 typedef struct{
     long type;
     char msg_text[MAX_LENGTH_OF_MESSAGE];
+    int priority;
     int is_false_message; /*!< 0 if the message is true, 1 if the message is false */
     int is_encrypted; /*!< 0 if the message is not encrypted, 1 if the message is encrypted */
 } message_t;
