@@ -362,11 +362,7 @@ void* attempt_information_theft(void* arg) {
     int pid = getpid();
     source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
-    // agent_mapping(current_agent, args->id); // Modifiez cette fonction pour utiliser le TID
 
-    if(current_agent->targeted_companies_count == 0){
-        pthread_exit(NULL);
-    }
 
     // go near a company
     int random_company = rand() % current_agent->targeted_companies_count;
@@ -414,6 +410,7 @@ void* attempt_information_theft(void* arg) {
         while (turns < 18) {
             if (signal_received_spies[args->id]) {
                 move_source_agent(args, company.row, company.column);
+                signal_received_spies[args->id] = 0;
                 if (current_agent->character.health <= 0) {
                     break;
                 }
@@ -423,10 +420,8 @@ void* attempt_information_theft(void* arg) {
         thief_is_possible = rand() % 100;
         if (thief_is_possible < 90) {
             priority = accomplish_mission(args->mem, company);
-            type = 1;
-            sem_wait(move_sem);
+            type = 1; // Real message
             current_agent->nb_of_stolen_companies++;
-            sem_post(move_sem);
         }
 
 
@@ -439,6 +434,7 @@ void* attempt_information_theft(void* arg) {
     while (!character_is_at(current_agent->character, args->mem->mailbox_coordinate)) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
+            signal_received_spies[args->id] = 0;
             if (current_agent->character.health <= 0) {
                 break;
             }
@@ -465,6 +461,7 @@ void* attempt_information_theft(void* arg) {
         }
     }
 
+    free(neighbour_cells_count);
     pthread_exit(NULL);
 }
 
