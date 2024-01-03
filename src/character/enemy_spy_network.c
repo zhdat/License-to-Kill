@@ -203,8 +203,18 @@ void* morning_source_agent(void* arg) {
             }
         }
 
-    } else if (random_activity >= 10 && random_activity < 40) {
+    } else if ( random_activity < 40) {
         // reste chez lui
+        while(!is_at_home(current_agent->character)){
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, current_agent->character.home_row,
+                                  current_agent->character.home_column);
+                signal_received_spies[args->id] = 0;
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
+            }
+        }
 
     } else {
 
@@ -377,6 +387,7 @@ void* attempt_information_theft(void* arg) {
     InformationCruciality priority = rand() % CRUCIALITY_LEVELS;
 
 
+    //log_info("Agent %d is going to company at row %d and column %d", args->id, company.row, company.column);
     while (!character_is_at(current_agent->character, neighbour_cells[random_neighbour_cell])) {
         if (signal_received_spies[args->id]) {
             move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
@@ -388,6 +399,7 @@ void* attempt_information_theft(void* arg) {
         }
     }
 
+    //log_info("Démmarage du vol d'information");
     // 12 tours de repérage pour le vol
     while (turns < 12) {
         if (signal_received_spies[args->id]) {
@@ -404,6 +416,7 @@ void* attempt_information_theft(void* arg) {
     }
 
     int thief_is_possible = rand() % 100;
+
 
     if (thief_is_possible < 85) {
         // vole l'information
@@ -431,15 +444,61 @@ void* attempt_information_theft(void* arg) {
     }
 
     // @TODO: s'il y a déjà quelqu'un à la mailbox attendre qu'il parte, sinon revenir le lendemain (P1)
-    while (!character_is_at(current_agent->character, args->mem->mailbox_coordinate)) {
+    // coordonnées voisines de la mailbox
+    coordinate_t* mailbox_neighbour_cells = findNeighbouringCells(&args->mem->city_map, args->mem->mailbox_coordinate.row,
+                                            args->mem->mailbox_coordinate.column,
+                                            neighbour_cells_count);
+    random_neighbour_cell = rand() % *neighbour_cells_count;
+
+    while (!character_is_at(current_agent->character, mailbox_neighbour_cells[random_neighbour_cell])) {
         if (signal_received_spies[args->id]) {
-            move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
+            move_source_agent(args, mailbox_neighbour_cells[random_neighbour_cell].row, mailbox_neighbour_cells[random_neighbour_cell].column);
             signal_received_spies[args->id] = 0;
             if (current_agent->character.health <= 0) {
                 break;
             }
         }
     }
+
+
+    // regarder si un espion est déjà à la mailbox
+    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+        if (args->mem->source_agents[i].character.row == args->mem->mailbox_coordinate.row &&
+            args->mem->source_agents[i].character.column == args->mem->mailbox_coordinate.column) {
+            if (args->mem->source_agents[i].character.id != current_agent->character.id) {
+                // attendre que l'espion parte
+                while (args->mem->source_agents[i].character.row == args->mem->mailbox_coordinate.row &&
+                       args->mem->source_agents[i].character.column == args->mem->mailbox_coordinate.column) {
+                    if (signal_received_spies[args->id]) {
+                        move_source_agent(args, mailbox_neighbour_cells[random_neighbour_cell].row, mailbox_neighbour_cells[random_neighbour_cell].column);
+                        signal_received_spies[args->id] = 0;
+                        if (current_agent->character.health <= 0) {
+                            break;
+                        }
+                    }
+                    if (args->mem->my_timer.hours >= 7 && args->mem->my_timer.hours <= 22) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // aller à la mailobx s'il est moins de 7h
+    if (args->mem->my_timer.hours < 7 || args->mem->my_timer.hours >= 22) {
+        while (!character_is_at(current_agent->character, args->mem->mailbox_coordinate)) {
+            if (signal_received_spies[args->id]) {
+                move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
+                signal_received_spies[args->id] = 0;
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
+            }
+
+        }
+    }
+
+
     // @TODO: crypter le message (fonction de tools.c) (P0)
     if(current_agent->character.health <= 0){
         pthread_exit(NULL);
@@ -449,6 +508,7 @@ void* attempt_information_theft(void* arg) {
     current_agent->has_stolen_a_company_tonight = 1;
 
 
+    log_info("l'espion %d rentre chez lui", args->id);
     // rentre chez lui
     while (!is_at_home(current_agent->character)) {
         if (signal_received_spies[args->id]) {
