@@ -82,7 +82,6 @@ struct cell_s {
 	int row;			  /*!< Row of the cell. */
 	cell_type_t type;	  /*!< Type of the cell (@see \enum e_cell_type). */
 	int nb_of_characters; /*!< Number of characters on the cell. */
-	int ids[4]; /*!< Ids of the characters on the cell. */
 	int is_under_surveillance; /*!< Is the cell under surveillance? */
 	sensor_data_t sensor_data; /*!< Sensor data. */
 };

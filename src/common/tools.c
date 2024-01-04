@@ -39,15 +39,6 @@ enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
 
 void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row,
                character_t* character) {
-    // Supprimer l'id du personnage de la cellule actuelle
-    /*int i;
-    for (i = 0; i < city->cells[cell_start.row][cell_start.column].nb_of_characters; i++) {
-        if (city->cells[cell_start.row][cell_start.column].ids[i] == character->id) {
-            city->cells[cell_start.row][cell_start.column].ids[i] = -1;
-            break;
-        }
-    }*/
-
     int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
@@ -84,11 +75,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
     // Mettre a jour les nouvelles positions
     *new_pos_row = current_row;
     *new_pos_col = current_column;
-
-    // Stocker l'id du personnage dans la nouvelle cellule
-    if (character != NULL) {
-        city->cells[*new_pos_row][*new_pos_col].ids[city->cells[*new_pos_row][*new_pos_col].nb_of_characters] = character->id;
-    }
+    
 }
 
 
