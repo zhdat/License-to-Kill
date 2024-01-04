@@ -266,8 +266,8 @@ void initialize_cameras(city_t* city) {
     for (int i = 0; i < city->height; i++) {
         for (int j = 0; j < city->width; j++) {
             cell_t* cell = &city->cells[j][i];
-            log_info("Cell type: %d", cell->type);
-            log_info("Should be monitored: %d", should_be_monitored(cell->type));
+            log_info("Cell type: %d\n", cell->type);
+            log_info("Should be monitored: %d\n", should_be_monitored(cell->type));
             if (should_be_monitored(cell->type)) {
                 activate_camera(city, j, i);
                 log_info("Camera activated at (%d, %d)", j, i);
