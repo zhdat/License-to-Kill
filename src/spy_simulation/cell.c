@@ -242,6 +242,7 @@ void detect_movement(city_t* city, int x, int y) {
         return;
     }
 
+    log_info("Detecting movement at (%d, %d)\n", x, y);
     // Conditions pour déterminer un mouvement suspect
     // Exemple: Un personnage reste trop longtemps dans une entreprise ou l'hôtel de ville
     if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0) {
