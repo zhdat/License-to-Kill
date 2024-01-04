@@ -19,6 +19,7 @@
 #define CELL_H
 
 #include "common.h"
+#include "logger.h"
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -59,9 +60,19 @@ enum cell_type_e {
 #define NUMBER_OF_SUPERMARKETS 2
 #define NUMBER_OF_CITY_HALLS 1
 
+#define SOME_SUSPICIOUS_TIME_THRESHOLD 5
+
 typedef enum cell_type_e cell_type_t;
 typedef struct cell_s cell_t;
 typedef struct city_s city_t;
+typedef struct sensor_data_s sensor_data_t;
+
+struct sensor_data_s {
+    int has_motion; // 1 si un mouvement est détecté, 0 sinon
+    int camera_active; // 1 si la caméra est active, 0 sinon
+    int lidar_active; // 1 si le lidar est actif, 0 sinon
+    int detected_time;
+};
 
 /**
  * \brief A cell within the map of the city.
@@ -71,6 +82,8 @@ struct cell_s {
 	int row;			  /*!< Row of the cell. */
 	cell_type_t type;	  /*!< Type of the cell (@see \enum e_cell_type). */
 	int nb_of_characters; /*!< Number of characters on the cell. */
+	int is_under_surveillance; /*!< Is the cell under surveillance? */
+	sensor_data_t sensor_data; /*!< Sensor data. */
 };
 
 /**
@@ -98,8 +111,10 @@ void define_monitoring(city_t* city, int x, int y, int nb_of_characters);
 void clear_city(city_t* city);
 void init_city(city_t* city);
 int should_be_monitored(cell_type_t cell_type);
-void initialize_surveillance_system(city_t* city);
 coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count);
 void print_city_with_characters(city_t * city);
-
+void activate_camera(city_t* city, int x, int y);
+void activate_lidar(city_t* city, int x, int y);
+void detect_movement(city_t* city, int x, int y);
+void initialize_cameras(city_t *city);
 #endif /* CELL_H */

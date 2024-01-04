@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "debug.h"
 
-void delete_city(city_t *city) {
+void delete_city(city_t* city) {
     int i;
     if (city != NULL) {
         for (i = 0; i < city->height; i++) {
@@ -14,7 +14,7 @@ void delete_city(city_t *city) {
     }
 }
 
-void print_city(city_t *city) {
+void print_city(city_t* city) {
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
@@ -47,7 +47,7 @@ void print_city(city_t *city) {
     }
 }
 
-void print_city_with_characters(city_t *city) {
+void print_city_with_characters(city_t* city) {
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
@@ -86,7 +86,7 @@ void print_city_with_characters(city_t *city) {
 }
 
 
-cell_t *get_cell(city_t *city, int x, int y) {
+cell_t* get_cell(city_t* city, int x, int y) {
     if (city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
 #if DEBUG
         printf("Error: invalid parameters in get_cell\n");
@@ -96,15 +96,15 @@ cell_t *get_cell(city_t *city, int x, int y) {
     return &city->cells[x][y];
 }
 
-void define_monitoring(city_t *city, int x, int y, int nb_of_characters) {
-    cell_t *cell;
+void define_monitoring(city_t* city, int x, int y, int nb_of_characters) {
+    cell_t* cell;
     cell = get_cell(city, x, y);
     if (cell != NULL) {
         cell->nb_of_characters = nb_of_characters;
     }
 }
 
-void clear_city(city_t *city) {
+void clear_city(city_t* city) {
     for (int i = 0; i < city->height; i++) {
         for (int j = 0; j < city->width; j++) {
             city->cells[j][i].type = WASTELAND;
@@ -113,7 +113,7 @@ void clear_city(city_t *city) {
     }
 }
 
-void init_city(city_t *city) {
+void init_city(city_t* city) {
     city->width = 7;
     city->height = 7;
 
@@ -176,6 +176,9 @@ void init_city(city_t *city) {
     city->cells[6][4].type = RESIDENTIAL_BUILDING;
     city->cells[6][5].type = COMPANY;
     city->cells[6][6].type = RESIDENTIAL_BUILDING;
+
+    // Initialize camera and lidar
+    initialize_cameras(city);
 }
 
 int should_be_monitored(cell_type_t cell_type) {
@@ -188,35 +191,14 @@ int should_be_monitored(cell_type_t cell_type) {
     }
 }
 
-void initialize_surveillance_system(city_t *city) {
-    if (city == NULL) {
-#if DEBUG
-        printf("Error: city is NULL in initialize_surveillance_system\n");
-#endif
-        return;
-    }
-
-    for (int i = 0; i < city->height; i++) {
-        for (int j = 0; j < city->width; j++) {
-            cell_t *cell = &city->cells[j][i];
-            if (should_be_monitored(cell->type)) {
-                // Configurez ici la surveillance pour la cellule
-                // Par exemple, augmenter un niveau de surveillance ou assigner des ressources de surveillance
-                // Pour l'exemple, on va simplement marquer la cellule comme surveillée
-                cell->nb_of_characters = 1;
-            }
-        }
-    }
-}
-
 
 // Function to find cells of a specific type and return their coordinates
-coordinate_t *findTypeOfBuilding(city_t *city, cell_type_t building_type, int count) {
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count) {
     if (city == NULL || count <= 0) {
         return NULL; // Null check for city and check for non-positive count
     }
 
-    coordinate_t *coordinates = malloc(count * sizeof(coordinate_t));
+    coordinate_t* coordinates = malloc(count * sizeof(coordinate_t));
     if (coordinates == NULL) {
         return NULL; // Memory allocation check
     }
@@ -238,4 +220,56 @@ coordinate_t *findTypeOfBuilding(city_t *city, cell_type_t building_type, int co
 
     return coordinates; // Return the found coordinates (may be fewer than count if not all are found)
 }
+
+void activate_camera(city_t* city, int x, int y) {
+    cell_t* cell = get_cell(city, x, y);
+    if (cell != NULL) {
+        cell->sensor_data.camera_active = 1;
+    }
+}
+
+void activate_lidar(city_t* city, int x, int y) {
+    cell_t* cell = get_cell(city, x, y);
+    if (cell != NULL) {
+        cell->sensor_data.lidar_active = 1;
+    }
+}
+
+void detect_movement(city_t* city, int x, int y) {
+    cell_t* cell = get_cell(city, x, y);
+    if (cell == NULL || !cell->sensor_data.camera_active) {
+        return;
+    }
+
+    // Conditions pour déterminer un mouvement suspect
+    // Exemple: Un personnage reste trop longtemps dans une entreprise ou l'hôtel de ville
+    if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0) {
+        // Supposons que chaque appel à cette fonction représente une unité de temps
+        cell->sensor_data.detected_time++;
+
+        if (cell->sensor_data.detected_time > SOME_SUSPICIOUS_TIME_THRESHOLD) {
+            cell->sensor_data.has_motion = 1;
+        }
+    } else {
+        // Réinitialiser le compteur de temps si les conditions ne sont pas remplies
+        cell->sensor_data.detected_time = 0;
+        cell->sensor_data.has_motion = 0;
+    }
+}
+
+void initialize_cameras(city_t* city) {
+    if (city == NULL) {
+        return;
+    }
+    for (int i = 0; i < city->height; i++) {
+        for (int j = 0; j < city->width; j++) {
+            cell_t* cell = &city->cells[j][i];
+            if (should_be_monitored(cell->type)) {
+                activate_camera(city, j, i);
+                log_info("Camera activated at (%d, %d)", j, i);
+            }
+        }
+    }
+}
+
 
