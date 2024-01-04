@@ -91,7 +91,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
     }*/
 
     // mettre à jour les caméras
-    detect_movement(city, *new_pos_row, *new_pos_col);
+    //detect_movement(city, *new_pos_row, *new_pos_col);
 }
 
 
