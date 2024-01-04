@@ -85,7 +85,7 @@ void* all_day_counter_intelligence_officer(void* args) {
             }
         }
     }
-
+    log_info("target id: %d", target_id[0]);
     officer->targeted_character_id = target_id[0];
 
     while (officer->targeted_character_id != -1) {
@@ -154,17 +154,14 @@ void detect_movement(city_t* city, int x, int y, memory_t* mem) {
         return;
     }
 
-    // log_info("Detecting movement at (%d, %d)\n", x, y);
     // Conditions pour déterminer un mouvement suspect
     // Exemple: Un personnage reste trop longtemps dans une entreprise ou l'hôtel de ville
-    if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0 && (mem->timer.hours >= 19 || mem->timer.hours < 8)){
+    if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0 && (mem->timer.hours >= 20 || mem->timer.hours < 8)){
         // Supposons que chaque appel à cette fonction représente une unité de temps
         cell->sensor_data.detected_time++;
-        // log_info("Detected time: %d\n", cell->sensor_data.detected_time);
 
         if (cell->sensor_data.detected_time > SOME_SUSPICIOUS_TIME_THRESHOLD) {
             cell->sensor_data.has_motion = 1;
-            log_info("Suspicious movement detected at (%d, %d)\n", x, y);
         }
     } else {
         // Réinitialiser le compteur de temps si les conditions ne sont pas remplies
