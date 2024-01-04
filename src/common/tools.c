@@ -40,13 +40,13 @@ enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
 void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row,
                character_t* character) {
     // Supprimer l'id du personnage de la cellule actuelle
-    int i;
+    /*int i;
     for (i = 0; i < city->cells[cell_start.row][cell_start.column].nb_of_characters; i++) {
         if (city->cells[cell_start.row][cell_start.column].ids[i] == character->id) {
             city->cells[cell_start.row][cell_start.column].ids[i] = -1;
             break;
         }
-    }
+    }*/
 
     int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
