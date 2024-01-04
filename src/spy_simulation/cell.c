@@ -178,8 +178,7 @@ void init_city(city_t* city) {
     city->cells[6][6].type = RESIDENTIAL_BUILDING;
 
     // Initialize camera and lidar
-    log_info("Initializing cameras...");
-    printf("Initializing cameras...\n");
+    log_info("\nInitializing cameras...\n");
     initialize_cameras(city);
 }
 
@@ -260,6 +259,7 @@ void detect_movement(city_t* city, int x, int y) {
 }
 
 void initialize_cameras(city_t* city) {
+    log_info("Initializing cameras...\n");
     if (city == NULL) {
         return;
     }
