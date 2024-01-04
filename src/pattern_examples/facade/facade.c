@@ -22,5 +22,7 @@ void facade_get_and_display(facade_t *facade, int index)
     int result;
 
     result = facade->memory->get_int_value(facade->memory, index);
-    printf(">> %d\n", result);
+    #if DEBUG
+	printf(">> %d\n", result);
+	#endif
 }

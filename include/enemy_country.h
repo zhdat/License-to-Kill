@@ -19,7 +19,9 @@
 #ifdef __APPLE__
 #include "macosx/mqueue.h"
 #elif __linux__
+
 #include <mqueue.h>
+
 #endif
 
 
@@ -31,13 +33,12 @@ typedef struct {
 } Message;
 
 
-
 void set_semaphore(sem_t *sem);
 
-void writeToSharedMemory(memory_t* mem);
+void writeToSharedMemory(memory_t *mem);
 
-void decrpyt_message(char* message);
+void decrpyt_message(char *message);
 
-int isValidMessage(char* message);
+int isValidMessage(char *message);
 
 #endif //TP_SYS2_ENEMY_COUNTRY_H

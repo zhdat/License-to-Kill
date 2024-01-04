@@ -1,4 +1,5 @@
 #include "citizen_manager.h"
+#include "debug.h"
 
 volatile int timer_citizens[MAX_CITIZEN_COUNT];
 
@@ -108,8 +109,8 @@ void *citizen_to_home(void *args) {
 }
 
 void *citizen_to_home_supermarket(void *args) {
-    int to_supermarket;
-    int supermarket;
+    int have_to_go_to_supermarket;
+    int supermarket_id;
     int index;
     int row;
     int column;
@@ -127,16 +128,16 @@ void *citizen_to_home_supermarket(void *args) {
     row = citizen->home_row;
     column = citizen->home_column;
 
-    supermarket = rand() % 2;
-    to_supermarket = rand() % 4;
+    supermarket_id = selectRandomNumberUnder(2);
+    have_to_go_to_supermarket = (selectRandomNumberUnder(4)) == 2;
 
     supermarket_coordinates = findTypeOfBuilding(&city, SUPERMARKET, NUMBER_OF_SUPERMARKETS);
 
-    if (to_supermarket == 2) {
-        while (!character_is_at(*citizen, supermarket_coordinates[supermarket])) {
+    if (have_to_go_to_supermarket) {
+        while (!character_is_at(*citizen, supermarket_coordinates[supermarket_id])) {
             if (timer_citizens[index] == 1) {
-                move_citizen(arg, supermarket_coordinates[supermarket].row,
-                             supermarket_coordinates[supermarket].column);
+                move_citizen(arg, supermarket_coordinates[supermarket_id].row,
+                             supermarket_coordinates[supermarket_id].column);
                 timer_citizens[index] = 0;
             }
         }
@@ -162,7 +163,7 @@ void create_morning_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT],
                            citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]) {
     int i;
     int j;
-    if (mem->my_timer.hours == 8 && mem->my_timer.minutes == 0) {
+    if (mem->timer.hours == 8 && mem->timer.minutes == 0) {
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             pthread_create(&ids[i], NULL, citizen_to_work, (void *) args[i]);
         }
@@ -176,7 +177,7 @@ void create_evening_company_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUN
                                    citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]) {
     int i;
     int j;
-    if (mem->my_timer.hours == 17 && mem->my_timer.minutes == 0) {
+    if (mem->timer.hours == 17 && mem->timer.minutes == 0) {
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             if (!work_in_supermarket(*mem, mem->citizens[i])) {
                 pthread_create(&ids[i], NULL, citizen_to_home_supermarket, (void *) args[i]);
@@ -194,7 +195,7 @@ void create_evening_supermarket_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_
                                        citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]) {
     int i;
     int j;
-    if (mem->my_timer.hours == 20 && mem->my_timer.minutes == 0) {
+    if (mem->timer.hours == 20 && mem->timer.minutes == 0) {
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             if (work_in_supermarket(*mem, mem->citizens[i])) {
                 pthread_create(&ids[i], NULL, citizen_to_home, (void *) args[i]);
@@ -215,7 +216,7 @@ void create_citizens_thread(memory_t *mem) {
     srand(time(NULL));
 
     for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
-        args[i] = malloc(sizeof(citizen_monitor_args_t));
+        args[i] = (citizen_monitor_args_t *) malloc(sizeof(citizen_monitor_args_t));
         args[i]->index = i;
         args[i]->mem = mem;
     }

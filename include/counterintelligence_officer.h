@@ -19,7 +19,7 @@
 
 typedef struct {
     int id;
-    memory_t* mem;
+    memory_t *mem;
 } officer_thread_args_t;
 
 typedef struct {
@@ -27,18 +27,18 @@ typedef struct {
     officer_thread_args_t counter_intelligence_officer_args[MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT];
 } all_threads_t;
 
-void set_semaphore(sem_t* sem);
+void set_semaphore(sem_t *sem);
 
 void handle_signal(int sig);
 
 void set_signals(void);
 
-void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index);
+void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int column, int index);
 
-void* all_day_counter_intelligence_officer(void* args);
+void *all_day_counter_intelligence_officer(void *args);
 
-void create_counter_intelligence_officer_thread(all_threads_t* args);
+void create_counter_intelligence_officer_thread(all_threads_t *args);
 
-void create_counter_intelligence_officer_threads(memory_t* mem);
+void create_counter_intelligence_officer_threads(memory_t *mem);
 
 #endif //PROJECT_COUNTERINTELLIGENCE_OFFICER_H

@@ -2,6 +2,7 @@
 
 #include "../logger.h"
 #include "character.h"
+#include "tools.h"
 
 state_t *new_state(int id, state_t *(*action)(character_t *))
 {
@@ -34,7 +35,7 @@ state_t *work(character_t *c)
 
     log_info("Working :-( --- [state %d]", c->current_state->id);
 
-    choice = rand() % 101;
+    choice = selectRandomPercentage();
     if (choice < 25) {
         return c->going_to_supermarket;
     }

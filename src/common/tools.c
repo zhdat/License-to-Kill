@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "debug.h"
 
 double euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -16,9 +17,9 @@ void decrements_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
-int is_cell_filled(cell_t cells[MAX_ROWS][MAX_COLUMNS], int row, int col) {
+enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
     if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLUMNS) {
-        return 1; // Retourner vrai si en dehors des limites, pour éviter le déplacement
+        return 1;
     }
 
     switch (cells[row][col].type) {
@@ -31,7 +32,7 @@ int is_cell_filled(cell_t cells[MAX_ROWS][MAX_COLUMNS], int row, int col) {
         case SUPERMARKET:
             return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_SUPERMARKET;
         default:
-            return 0; // Si aucun type n'est spécifié, considérer comme non rempli
+            return 0;
     }
 }
 
@@ -43,14 +44,14 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
     int current_row = cell_start.row, current_column = cell_start.column;
 
     // Essayez de bouger dans la direction principale
-    if (!is_cell_filled(city->cells, current_row + step_row, current_column + step_col)) {
+    if (!is_cell_full(city->cells, current_row + step_row, current_column + step_col)) {
         current_row += step_row;
         current_column += step_col;
     } else {
         // Essayez de bouger verticalement ou horizontalement si directement bloqué
-        if (step_row != 0 && !is_cell_filled(city->cells, current_row + step_row, current_column)) {
+        if (step_row != 0 && !is_cell_full(city->cells, current_row + step_row, current_column)) {
             current_row += step_row;
-        } else if (step_col != 0 && !is_cell_filled(city->cells, current_row, current_column + step_col)) {
+        } else if (step_col != 0 && !is_cell_full(city->cells, current_row, current_column + step_col)) {
             current_column += step_col;
         } else {
             // Prendre un détour
@@ -58,7 +59,7 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
             for (int d_row = -1; d_row <= 1 && !detour_taken; d_row++) {
                 for (int d_col = -1; d_col <= 1; d_col++) {
                     if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
-                        if (!is_cell_filled(city->cells, current_row + d_row, current_column + d_col)) {
+                        if (!is_cell_full(city->cells, current_row + d_row, current_column + d_col)) {
                             current_row += d_row;
                             current_column += d_col;
                             detour_taken = true;
@@ -83,7 +84,7 @@ coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbo
     for (int d_row = -1; d_row <= 1; d_row++) {
         for (int d_col = -1; d_col <= 1; d_col++) {
             if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
-                if (!is_cell_filled(city->cells, row + d_row, col + d_col)) {
+                if (!is_cell_full(city->cells, row + d_row, col + d_col)) {
                     neighbouring_cells[count].row = row + d_row;
                     neighbouring_cells[count].column = col + d_col;
                     count++;
@@ -138,7 +139,7 @@ void caesarCipher(char *message, int shift) {
     }
 }
 
-void decrpyt_message(char* message, int shift) {
+void decrpyt_message(char *message, int shift) {
     // Logique de déchiffrement
     int i = 0;
     while (message[i] != '\0') {
@@ -197,11 +198,19 @@ char *generateSpyMessage(MessageBank *bank, InformationCruciality importance) {
     }
 
     if (messageCount > 0) {
-        int randomIndex = rand() % messageCount;
+        int randomIndex = selectRandomNumberUnder(messageCount);
         //log_info("tentative de genération de message avec importance %d", importance);
         //log_info("Message généré: %s", bank->messages[importance][randomIndex]);
         return bank->messages[importance][randomIndex];
     } else {
         return "Aucun message disponible pour ce niveau de crucialité.";
     }
+}
+
+int selectRandomNumberUnder(int max) {
+    return rand() % max;
+}
+
+int selectRandomPercentage(void) {
+    return rand() % 101;
 }

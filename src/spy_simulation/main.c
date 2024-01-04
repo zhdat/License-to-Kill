@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include "debug.h"
 
 #include "character_factory.h"
 #include "spy_simulation.h"
@@ -9,8 +10,8 @@
 
 int main(void) {
     //log_info("Starting spy_simulation");
-    memory_t* mem = create_shared_memory();
-    sem_t* move_sem = create_semaphore();
+    memory_t *mem = create_shared_memory();
+    sem_t *move_sem = create_semaphore();
     set_content_memory(mem);
     set_memory(mem);
     while (1) {

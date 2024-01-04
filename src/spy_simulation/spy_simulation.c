@@ -7,33 +7,38 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include "debug.h"
 #include <math.h>
 
 
 static int _fd = -1;
 
-memory_t* create_shared_memory(void) {
-    memory_t* mem;
+memory_t *create_shared_memory(void) {
+    memory_t *mem;
 
     _fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
 
     if (_fd == -1) {
+#if DEBUG
         printf("Error cannot open shared memory \n");
+#endif
         exit(EXIT_FAILURE);
     }
 
     if (ftruncate(_fd, sizeof(memory_t)) == -1) {
+#if DEBUG
         printf("Error ftruncate \n");
+#endif
         exit(EXIT_FAILURE);
     }
 
-    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
+    mem = (memory_t *) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
 
     return mem;
 }
 
-void set_spies(memory_t* mem) {
-    source_agent_factory_t* spy_factory_has_license, * spy_factory_has_not_license;
+void set_spies(memory_t *mem) {
+    source_agent_factory_t *spy_factory_has_license, *spy_factory_has_not_license;
     source_agent_t spy;
 
     spy_factory_has_license = new_source_agent_factory(new_spy_with_licence);
@@ -57,8 +62,8 @@ void set_spies(memory_t* mem) {
 
 }
 
-void set_citizens(memory_t* mem) {
-    character_factory_t* citizen_factory;
+void set_citizens(memory_t *mem) {
+    character_factory_t *citizen_factory;
     character_t citizen;
 
     citizen_factory = new_character_factory(new_citizen);
@@ -74,8 +79,8 @@ void set_citizens(memory_t* mem) {
     }
 }
 
-void set_attending_officers(memory_t* mem) {
-    attending_officer_factory_t* attending_officer_factory;
+void set_attending_officers(memory_t *mem) {
+    attending_officer_factory_t *attending_officer_factory;
     attending_officer_t attending_officer;
 
     attending_officer_factory = new_attending_officer_factory(new_case_officer);
@@ -95,8 +100,8 @@ void set_attending_officers(memory_t* mem) {
     }
 }
 
-void set_counter_intelligence_officers(memory_t* mem) {
-    counter_intelligence_officer_factory_t* counterintelligence_officer_factory;
+void set_counter_intelligence_officers(memory_t *mem) {
+    counter_intelligence_officer_factory_t *counterintelligence_officer_factory;
     counter_intelligence_officer_t counter_intelligence_officer;
 
     counterintelligence_officer_factory = new_counter_intelligence_officer_factory(new_counter_intelligence_officer);
@@ -121,44 +126,44 @@ void set_counter_intelligence_officers(memory_t* mem) {
 }
 
 
-coordinate_t* get_residential_buildings(memory_t* mem) {
+coordinate_t *get_residential_buildings(memory_t *mem) {
 
-    coordinate_t* residential_buildings;
+    coordinate_t *residential_buildings;
     residential_buildings = findTypeOfBuilding(&(mem->city_map), RESIDENTIAL_BUILDING, NUMBER_OF_RESIDENTIAL_BUILDINGS);
     return residential_buildings;
 }
 
-void set_mailbox(memory_t* mem) {
-    coordinate_t* residential_buildings;
+void set_mailbox(memory_t *mem) {
+    coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
-    int random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
-    mem->mailbox_coordinate.row = residential_buildings[random].row;
-    mem->mailbox_coordinate.column = residential_buildings[random].column;
+    int randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
+    mem->mailbox_coordinate.row = residential_buildings[randomResidentialBuilding].row;
+    mem->mailbox_coordinate.column = residential_buildings[randomResidentialBuilding].column;
 }
 
-coordinate_t get_mailbox(memory_t* mem) {
+coordinate_t get_mailbox(memory_t *mem) {
     return mem->mailbox_coordinate;
 }
 
-coordinate_t get_residence_near_mailbox(memory_t* mem, int max_distance) {
+coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
     // il ne faut pas que la résidence soit la même que la boite aux lettres
-    coordinate_t* residential_buildings;
+    coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
-    int random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
-    coordinate_t residence = residential_buildings[random];
+    int randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
+    coordinate_t residence = residential_buildings[randomResidentialBuilding];
     while ((residence.row == mem->mailbox_coordinate.row) || (residence.column == mem->mailbox_coordinate.column) ||
            (euclidean_distance(residence.column, residence.row, mem->mailbox_coordinate.column,
                                mem->mailbox_coordinate.row) > max_distance)) {
-        random = rand() % NUMBER_OF_RESIDENTIAL_BUILDINGS;
-        residence = residential_buildings[random];
+        randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
+        residence = residential_buildings[randomResidentialBuilding];
     }
     return residence;
 
 }
 
 // il ne faut pas que la résidence soit la même que la boite aux lettres
-coordinate_t find_random_low_populated_residence(memory_t* mem) {
-    coordinate_t* residential_buildings;
+coordinate_t find_random_low_populated_residence(memory_t *mem) {
+    coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     coordinate_t mailbox = get_mailbox(mem);
     coordinate_t residence = residential_buildings[0];
@@ -167,8 +172,8 @@ coordinate_t find_random_low_populated_residence(memory_t* mem) {
     int selected_index = -1;
 
     for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; ++i) {
-        if ((residential_buildings[i].row == mailbox.row) && (residential_buildings[i].column == mailbox.column)) {
-            continue; // Skip mailbox residence
+        if (is_same_cell(residential_buildings[i], mailbox)) {
+            continue;
         }
 
         int current_population = mem->city_map.cells[residential_buildings[i].row][residential_buildings[i].column].nb_of_characters;
@@ -187,73 +192,75 @@ coordinate_t find_random_low_populated_residence(memory_t* mem) {
 }
 
 
-void affect_work_to_citizens(memory_t* mem) {
-    coordinate_t* companies;
+void affect_work_to_citizens(memory_t *mem) {
+    coordinate_t *companies;
     companies = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
-    coordinate_t* supermarkets;
+    coordinate_t *supermarkets;
     supermarkets = findTypeOfBuilding(&(mem->city_map), SUPERMARKET, NUMBER_OF_SUPERMARKETS);
-    coordinate_t* city_halls;
+    coordinate_t *city_halls;
     city_halls = findTypeOfBuilding(&(mem->city_map), CITY_HALL, NUMBER_OF_CITY_HALLS);
 
-    int random;
-    int random2 = rand() % MAX_CITIZEN_COUNT;
+    int randomSupermarketID;
+    int randomCompanyID;
+    int randomCitizen = selectRandomNumberUnder(MAX_CITIZEN_COUNT);
     coordinate_t city_hall = city_halls[0];
 
+#if DEBUG
     printf("Affectation des citoyens...\n");
+#endif
     for (int j = 0; j < 10; j++) {
-        while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
-            random2 = rand() % MAX_CITIZEN_COUNT;
-
+        while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
+            randomCitizen = selectRandomNumberUnder(MAX_CITIZEN_COUNT);
         }
-        mem->citizens[random2].work_row = city_hall.row;
-        mem->citizens[random2].work_column = city_hall.column;
+        mem->citizens[randomCitizen].work_row = city_hall.row;
+        mem->citizens[randomCitizen].work_column = city_hall.column;
     }
 
     for (int i = 0; i < NUMBER_OF_SUPERMARKETS; ++i) {
         for (int j = 0; j < 3; ++j) {
-            random = rand() % NUMBER_OF_SUPERMARKETS;
-            coordinate_t supermarket = supermarkets[random];
-            while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
-                random2 = rand() % MAX_CITIZEN_COUNT;
+            randomSupermarketID = selectRandomNumberUnder(NUMBER_OF_SUPERMARKETS);
+            coordinate_t supermarket = supermarkets[randomSupermarketID];
+            while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
+                randomCitizen = selectRandomNumberUnder(MAX_CITIZEN_COUNT);
             }
-            mem->citizens[random2].work_row = supermarket.row;
-            mem->citizens[random2].work_column = supermarket.column;
+            mem->citizens[randomCitizen].work_row = supermarket.row;
+            mem->citizens[randomCitizen].work_column = supermarket.column;
         }
     }
 
     for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
         for (int j = 0; j < 5; ++j) {
-            random = rand() % NUMBER_OF_COMPANIES;
-            coordinate_t company = companies[random];
-            while (mem->citizens[random2].work_row != -1 || mem->citizens[random2].work_column != -1) {
-                random2 = rand() % MAX_CITIZEN_COUNT;
+            randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
+            coordinate_t company = companies[randomCompanyID];
+            while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
+                randomCitizen = selectRandomNumberUnder(MAX_CITIZEN_COUNT);
             }
-            mem->citizens[random2].work_row = company.row;
-            mem->citizens[random2].work_column = company.column;
+            mem->citizens[randomCitizen].work_row = company.row;
+            mem->citizens[randomCitizen].work_column = company.column;
         }
     }
 
-    // affectations de tous les citoyens restants dans des companies random (max MAX_NUMBER_OF_CHARACTERS_ON_COMPANY)
+    // affectations de tous les citoyens restants dans des companies randomSupermarketId (max MAX_NUMBER_OF_CHARACTERS_ON_COMPANY)
     for (int i = 0; i < MAX_CITIZEN_COUNT; ++i) {
         if (mem->citizens[i].work_row == -1 || mem->citizens[i].work_column == -1) {
-            random = rand() % NUMBER_OF_COMPANIES;
-            coordinate_t company = companies[random];
+            randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
+            coordinate_t company = companies[randomCompanyID];
             while (mem->city_map.cells[company.column][company.row].nb_of_characters >=
                    MAX_NUMBER_OF_CHARACTERS_ON_COMPANY) {
-                random = rand() % NUMBER_OF_COMPANIES;
-                company = companies[random];
+                randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
+                company = companies[randomCompanyID];
             }
             mem->citizens[i].work_row = company.row;
             mem->citizens[i].work_column = company.column;
         }
     }
+#if DEBUG
     printf("Affectation des citoyens terminée\n");
-
-
+#endif
 }
 
 
-int* print_where_citizens_work(memory_t* mem) {
+int *print_where_citizens_work(memory_t *mem) {
     int i, j;
     int count = 0;
     int total = 0;
@@ -299,19 +306,20 @@ int* print_where_citizens_work(memory_t* mem) {
 
         }
         printf("\n");
-
     }
     printf("Total : %d\n", total);
     return 0;
 }
 
-void set_company_employees(memory_t* mem) {
-    coordinate_t *companies = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
-    for(int i = 0; i < NUMBER_OF_COMPANIES; i++) {
-        mem->companies_priority[i].column = companies[i].column;
-        mem->companies_priority[i].row = companies[i].row;
+void set_company_employees(memory_t *mem) {
+    coordinate_t *companies_coordinates = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
+    for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
+        coordinate_t current_company = companies_coordinates[i];
+        mem->companies_priority[i].column = current_company.column;
+        mem->companies_priority[i].row = current_company.row;
         for (int j = 0; j < MAX_CITIZEN_COUNT; j++) {
-            if (mem->citizens[j].work_column == companies[i].column && mem->citizens[j].work_row == companies[i].row) {
+            coordinate_t current_citizen_coordinates = {mem->citizens[j].work_column, mem->citizens[j].work_row};
+            if (is_same_cell(current_citizen_coordinates, current_company)) {
                 mem->companies_priority[i].nb_of_employees++;
             }
         }
@@ -320,10 +328,8 @@ void set_company_employees(memory_t* mem) {
 }
 
 InformationDistribution getInformationDistribution(int numberOfEmployees) {
-    InformationDistribution distribution = {0}; // Initialisation de tous les éléments à 0
+    InformationDistribution distribution = {0};
 
-    // Logique pour déterminer la distribution des informations
-    // Remarque : Cette logique doit être ajustée en fonction de vos spécifications exactes
     if (numberOfEmployees > 30) {
         distribution.infoCount[Crucial] = 2;
         distribution.infoCount[Strong] = 5;
@@ -331,21 +337,18 @@ InformationDistribution getInformationDistribution(int numberOfEmployees) {
         distribution.infoCount[Low] = 20;
         distribution.infoCount[VeryLow] = 30;
     } else if (numberOfEmployees > 20) {
-        // Ajustez ces valeurs selon vos besoins
         distribution.infoCount[Crucial] = 0;
         distribution.infoCount[Strong] = 1;
         distribution.infoCount[Medium] = 12;
         distribution.infoCount[Low] = 20;
         distribution.infoCount[VeryLow] = 30;
     } else if (numberOfEmployees > 10) {
-        // Ajustez ces valeurs selon vos besoins
         distribution.infoCount[Crucial] = 0;
         distribution.infoCount[Strong] = 1;
         distribution.infoCount[Medium] = 7;
         distribution.infoCount[Low] = 20;
         distribution.infoCount[VeryLow] = 30;
     } else {
-        // Ajustez ces valeurs selon vos besoins
         distribution.infoCount[Crucial] = 0;
         distribution.infoCount[Strong] = 1;
         distribution.infoCount[Medium] = 7;
@@ -356,13 +359,13 @@ InformationDistribution getInformationDistribution(int numberOfEmployees) {
     return distribution;
 }
 
-void set_city_map(memory_t* mem) {
+void set_city_map(memory_t *mem) {
     clear_city(&(mem->city_map));
     init_city(&(mem->city_map));
     set_mailbox(mem);
 }
 
-void set_characters(memory_t* mem) {
+void set_characters(memory_t *mem) {
     set_spies(mem);
     set_citizens(mem);
     set_attending_officers(mem);
@@ -371,12 +374,12 @@ void set_characters(memory_t* mem) {
     set_company_employees(mem);
 }
 
-void set_mailbox_messages(memory_t* mem) {
+void set_mailbox_messages(memory_t *mem) {
     mem->mailbox_size = 0;
     mem->decrypted_mailbox_size = 0;
 }
 
-void set_content_memory(memory_t* mem) {
+void set_content_memory(memory_t *mem) {
     srand(time(NULL));
     mem->memory_has_changed = 1;
     mem->simulation_has_ended = 0;

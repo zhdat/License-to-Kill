@@ -30,7 +30,7 @@ struct character_factory_s {
 };
 
 struct source_agent_factory_s {
-    source_agent_t (*factory_method)(int,int);
+    source_agent_t (*factory_method)(int, int);
 };
 
 struct attending_officer_factory_s {
@@ -42,14 +42,24 @@ struct counter_intelligence_officer_factory_s {
 };
 
 character_factory_t *new_character_factory(character_t (*factory_method)(int, int));
-source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int,int));
+
+source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int, int));
+
 attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (*factory_method)(int, int));
-counter_intelligence_officer_factory_t *new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int));
+
+counter_intelligence_officer_factory_t *
+new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int));
+
 character_t new_citizen(int, int);
-source_agent_t new_spy_without_licence(int,int);
-source_agent_t new_spy_with_licence(int,int);
+
+source_agent_t new_spy_without_licence(int, int);
+
+source_agent_t new_spy_with_licence(int, int);
+
 attending_officer_t new_case_officer(int, int);
+
 counter_intelligence_officer_t new_counter_intelligence_officer(int, int, int);
+
 int generate_unique_id(void);
 
 

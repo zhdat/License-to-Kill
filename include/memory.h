@@ -20,11 +20,15 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+
 #ifdef __APPLE__
 #include "macosx.h"
 #elif __linux__
+
 #include <mqueue.h>
+
 #endif
+
 #include <sys/mman.h>
 #include <sys/stat.h> /* Pour les constantes « mode » */
 #include <fcntl.h>
@@ -74,10 +78,10 @@ typedef struct {
     int column;
     int nb_of_employees;
     InformationDistribution cruciality;
-}company_t;
+} company_t;
 
 
-typedef struct{
+typedef struct {
     long type;
     char msg_text[MAX_LENGTH_OF_MESSAGE];
     int priority;
@@ -128,29 +132,29 @@ struct memory_s {
 
     coordinate_t mailbox_coordinate; /*!< Coordonnées de la boîte aux lettres.*/
 
-    timer_type my_timer; /*!< Timer de la simulation.*/
+    timer_type timer; /*!< Timer de la simulation.*/
 
     pthread_mutex_t mutex; /*!< Mutex pour la synchronisation des threads.*/
 
 };
 
-memory_t* open_shared_memory(void);
+memory_t *open_shared_memory(void);
 
-void end_shared_memory(memory_t* mem);
+void end_shared_memory(memory_t *mem);
 
 void destroy_shared_memory(void);
 
-sem_t* create_semaphore(void);
+sem_t *create_semaphore(void);
 
-sem_t* open_semaphore(void);
+sem_t *open_semaphore(void);
 
-void close_semaphore(sem_t* sem);
+void close_semaphore(sem_t *sem);
 
-void destroy_semaphore(sem_t* sem);
+void destroy_semaphore(sem_t *sem);
 
-sem_t * create_semaphore_message();
+sem_t *create_semaphore_message();
 
-sem_t * open_semaphore_message();
+sem_t *open_semaphore_message();
 
 mqd_t create_message_queue();
 

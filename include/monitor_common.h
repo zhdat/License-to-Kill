@@ -68,7 +68,7 @@ void get_terminal_size(int *rows, int *cols);
 int is_terminal_size_larger_enough(int *rows, int *cols);
 
 /**
- * \brief Sets up the my_timer using the TIME_STEP value.
+ * \brief Sets up the timer using the TIME_STEP value.
  */
 void set_timer(void);
 

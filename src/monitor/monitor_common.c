@@ -21,6 +21,7 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <ncurses.h>
+#include "debug.h"
 
 #include "monitor_common.h"
 #include "memory.h"
@@ -34,8 +35,7 @@ extern WINDOW *enemy_country_monitor;
 extern int old_cursor;
 memory_t *mem;
 
-void quit_after_error(const char *msg)
-{
+void quit_after_error(const char *msg) {
     delwin(city_window);
     delwin(character_window);
     delwin(mailbox_content_window);
@@ -46,15 +46,14 @@ void quit_after_error(const char *msg)
     refresh();
 
     /* Do not forget to clean shared mem calling a function*/
-	/* cleanup_memory(mem); */
+    /* cleanup_memory(mem); */
 
     perror(msg);
 
     exit(EXIT_FAILURE);
 }
 
-void quit_nicely(int reason)
-{
+void quit_nicely(int reason) {
     delwin(city_window);
     delwin(character_window);
     delwin(mailbox_content_window);
@@ -65,31 +64,31 @@ void quit_nicely(int reason)
     refresh();
 
     /* Do not forget to clean shared mem calling a function*/
-	/* cleanup_memory(mem); */
+    /* cleanup_memory(mem); */
 
     switch (reason) {
         default:
+#if DEBUG
             printf("\nGoodbye!\n");
+#endif
             break;
     }
 
     exit(EXIT_SUCCESS);
 }
 
-void clear_line(WINDOW *window, int row)
-{
-	/* Have an idea for something smarter? */
+void clear_line(WINDOW *window, int row) {
+    /* Have an idea for something smarter? */
     wmove(window, row, 1);
     wclrtoeol(window);
-	box(window, 0, 0);
-	wrefresh(window);
+    box(window, 0, 0);
+    wrefresh(window);
 }
 
 /*
  * A call to: "getmaxyx(stdscr, rows, cols);" should be as efficient.
  */
-void get_terminal_size(int *rows, int *cols)
-{
+void get_terminal_size(int *rows, int *cols) {
     struct winsize ws;
 
     if (ioctl(0, TIOCGWINSZ, &ws) < 0) {
@@ -97,22 +96,21 @@ void get_terminal_size(int *rows, int *cols)
         exit(EXIT_FAILURE);
     }
 
-    *rows = ( int )ws.ws_row;
-    *cols = ( int )ws.ws_col;
+    *rows = (int) ws.ws_row;
+    *cols = (int) ws.ws_col;
 }
 
 int is_terminal_size_larger_enough(int *rows, int *cols) {
-	int is_larger = 0;
+    int is_larger = 0;
 
-	get_terminal_size(rows, cols);
-	if (*rows >= 45 && *cols >= 140) {
-		is_larger = 1;
-	}
-	return is_larger;
+    get_terminal_size(rows, cols);
+    if (*rows >= 45 && *cols >= 140) {
+        is_larger = 1;
+    }
+    return is_larger;
 }
 
-void handler(int signum)
-{
+void handler(int signum) {
     switch (signum) {
         case SIGALRM:
             return;
@@ -124,22 +122,20 @@ void handler(int signum)
     }
 }
 
-void set_timer(void)
-{
+void set_timer(void) {
     struct itimerval it;
 
     /* Clear itimerval struct members */
     timerclear(&it.it_interval);
     timerclear(&it.it_value);
 
-    /* Set my_timer */
+    /* Set timer */
     it.it_interval.tv_usec = TIME_STEP;
     it.it_value.tv_usec = 10;
     setitimer(ITIMER_REAL, &it, NULL);
 }
 
-void set_signals()
-{
+void set_signals() {
     struct sigaction action;
 
     action.sa_handler = handler;

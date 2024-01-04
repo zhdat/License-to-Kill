@@ -19,6 +19,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdarg.h>
+#include "debug.h"
 
 #include "logger.h"
 
@@ -28,18 +29,18 @@ void log_format(const char *tag, const char *message, va_list args)
     time(&now);
     char *date = ctime(&now);
     date[strlen(date) - 1] = '\0';
-    printf("%s [%s] ", date, tag);
+	printf("%s [%s] ", date, tag);
     vprintf(message, args);
-    printf("\n");
+	printf("\n");
 }
 
 void log_error(const char *message, ...)
 {
     va_list args;
     va_start(args, message);
-    printf(RED);
+	printf(RED);
     log_format("Error", message, args);
-    printf(RESET "");
+	printf(RESET "");
     va_end(args);
 }
 
@@ -55,8 +56,8 @@ void log_debug(const char *message, ...)
 {
     va_list args;
     va_start(args, message);
-    printf(CYN);
+	printf(CYN);
     log_format("Debug", message, args);
-    printf(RESET "");
+	printf(RESET "");
     va_end(args);
 }

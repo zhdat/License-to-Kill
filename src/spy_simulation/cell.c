@@ -1,6 +1,7 @@
 #include "cell.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "debug.h"
 
 void delete_city(city_t *city) {
     int i;
@@ -46,7 +47,7 @@ void print_city(city_t *city) {
     }
 }
 
-void print_city_with_characters(city_t * city) {
+void print_city_with_characters(city_t *city) {
     int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
@@ -74,10 +75,9 @@ void print_city_with_characters(city_t * city) {
                     printf("?");
                     break;
             }
-            if(city->cells[i][j].nb_of_characters > 0) {
+            if (city->cells[i][j].nb_of_characters > 0) {
                 printf("[%d]", city->cells[i][j].nb_of_characters);
-            }
-            else {
+            } else {
                 printf(" ");
             }
         }
@@ -86,11 +86,11 @@ void print_city_with_characters(city_t * city) {
 }
 
 
-
-
-cell_t* get_cell(city_t* city, int x, int y) {
-    if(city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
+cell_t *get_cell(city_t *city, int x, int y) {
+    if (city == NULL || x < 0 || x >= city->width || y < 0 || y >= city->height) {
+#if DEBUG
         printf("Error: invalid parameters in get_cell\n");
+#endif
         return NULL;
     }
     return &city->cells[x][y];
@@ -117,12 +117,10 @@ void init_city(city_t *city) {
     city->width = 7;
     city->height = 7;
 
+#if DEBUG
     printf("Init city...\n");
+#endif
 
-    if (city == NULL) {
-        printf("Error: city is NULL in init_city\n");
-        return;
-    }
     city->cells[0][0].type = WASTELAND;
     city->cells[0][1].type = RESIDENTIAL_BUILDING;
     city->cells[0][2].type = WASTELAND;
@@ -192,7 +190,9 @@ int should_be_monitored(cell_type_t cell_type) {
 
 void initialize_surveillance_system(city_t *city) {
     if (city == NULL) {
+#if DEBUG
         printf("Error: city is NULL in initialize_surveillance_system\n");
+#endif
         return;
     }
 
@@ -211,12 +211,12 @@ void initialize_surveillance_system(city_t *city) {
 
 
 // Function to find cells of a specific type and return their coordinates
-coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count) {
+coordinate_t *findTypeOfBuilding(city_t *city, cell_type_t building_type, int count) {
     if (city == NULL || count <= 0) {
         return NULL; // Null check for city and check for non-positive count
     }
 
-    coordinate_t* coordinates = malloc(count * sizeof(coordinate_t));
+    coordinate_t *coordinates = malloc(count * sizeof(coordinate_t));
     if (coordinates == NULL) {
         return NULL; // Memory allocation check
     }

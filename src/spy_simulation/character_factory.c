@@ -1,6 +1,7 @@
 #include "character_factory.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "debug.h"
 
 
 #include "logger.h"
@@ -10,12 +11,11 @@
 
 static int last_id = 0;
 
-int generate_unique_id(void ) {
+int generate_unique_id(void) {
     return ++last_id;
 }
 
-character_factory_t *new_character_factory(character_t (*factory_method)(int, int))
-{
+character_factory_t *new_character_factory(character_t (*factory_method)(int, int)) {
     character_factory_t *factory;
 
     factory = (character_factory_t *) malloc(sizeof(character_factory_t));
@@ -24,8 +24,7 @@ character_factory_t *new_character_factory(character_t (*factory_method)(int, in
     return factory;
 }
 
-character_t new_citizen(int row, int column)
-{
+character_t new_citizen(int row, int column) {
     character_t citizen;
 
     citizen.id = generate_unique_id(); // Assuming a function to generate a unique ID
@@ -38,12 +37,10 @@ character_t new_citizen(int row, int column)
     citizen.work_column = -1;
 
 
-
     return citizen;
 }
 
-source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int, int))
-{
+source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int, int)) {
     source_agent_factory_t *factory;
 
     factory = (source_agent_factory_t *) malloc(sizeof(source_agent_factory_t));
@@ -53,8 +50,7 @@ source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method
 }
 
 
-source_agent_t new_spy_with_licence(int row, int column)
-{
+source_agent_t new_spy_with_licence(int row, int column) {
     source_agent_t spy;
 
     spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
@@ -75,8 +71,7 @@ source_agent_t new_spy_with_licence(int row, int column)
 
 }
 
-source_agent_t new_spy_without_licence(int row, int column)
-{
+source_agent_t new_spy_without_licence(int row, int column) {
     source_agent_t spy;
 
     spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
@@ -96,8 +91,7 @@ source_agent_t new_spy_without_licence(int row, int column)
     return spy;
 }
 
-attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (*factory_method)(int, int))
-{
+attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (*factory_method)(int, int)) {
     attending_officer_factory_t *factory;
 
     factory = (attending_officer_factory_t *) malloc(sizeof(attending_officer_factory_t));
@@ -106,8 +100,7 @@ attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (
     return factory;
 }
 
-attending_officer_t new_case_officer(int row, int column)
-{
+attending_officer_t new_case_officer(int row, int column) {
     attending_officer_t case_officer;
 
     case_officer.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
@@ -123,8 +116,8 @@ attending_officer_t new_case_officer(int row, int column)
     return case_officer;
 }
 
-counter_intelligence_officer_factory_t *new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int))
-{
+counter_intelligence_officer_factory_t *
+new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int)) {
     counter_intelligence_officer_factory_t *factory;
 
     factory = (counter_intelligence_officer_factory_t *) malloc(sizeof(counter_intelligence_officer_factory_t));
@@ -133,8 +126,7 @@ counter_intelligence_officer_factory_t *new_counter_intelligence_officer_factory
     return factory;
 }
 
-counter_intelligence_officer_t new_counter_intelligence_officer(int row, int column, int target_id)
-{
+counter_intelligence_officer_t new_counter_intelligence_officer(int row, int column, int target_id) {
     counter_intelligence_officer_t counterintelligence_officer;
 
 

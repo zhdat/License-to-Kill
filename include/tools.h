@@ -9,7 +9,7 @@
 typedef struct thread_s thread_t;
 
 struct thread_s {
-    memory_t* mem;
+    memory_t *mem;
     int id_character;
 };
 
@@ -25,11 +25,11 @@ void increments_population_in_cell(memory_t *mem, int col, int row);
 
 void decrements_population_in_cell(memory_t *mem, int col, int row);
 
-int is_cell_filled(cell_t cells[MAX_COLUMNS][MAX_ROWS], int row, int col);
+enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col);
 
-void next_move(city_t* cells, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row);
+void next_move(city_t *cells, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row);
 
-coordinate_t * findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count);
+coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count);
 
 
 //
@@ -48,10 +48,14 @@ int characters_are_at_same_cell(character_t character1, character_t character2);
 
 void caesarCipher(char *message, int shift);
 
-void decrpyt_message(char* message, int shift);
+void decrpyt_message(char *message, int shift);
 
 MessageBank setMessageBank(void);
 
-char* generateSpyMessage(MessageBank *bank, InformationCruciality importance);
+char *generateSpyMessage(MessageBank *bank, InformationCruciality importance);
+
+int selectRandomNumberUnder(int max);
+
+int selectRandomPercentage(void);
 
 #endif //PROJECT_TOOLS_H

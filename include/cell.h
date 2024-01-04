@@ -45,6 +45,9 @@ enum cell_type_e {
 	SUPERMARKET			  /*!< A cell that contains a supermarket. */
 };
 
+#define NUMBER_OF_ROWS 7
+#define NUMBER_OF_COLUMNS 7
+
 #define MAX_NUMBER_OF_CHARACTERS_ON_WASTELAND 999
 #define MAX_NUMBER_OF_CHARACTERS_ON_RESIDENTIAL_BUILDING 15
 #define MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL 20

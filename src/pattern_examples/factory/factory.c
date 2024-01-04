@@ -60,20 +60,28 @@ character_t *new_counterintelligence_officer(void)
 
 void operation_citizen(character_t *citizen)
 {
-    printf(">> Operation of a citizen...\n");
+    #if DEBUG
+	printf(">> Operation of a citizen...\n");
+	#endif
 }
 
 void operation_spy(character_t *spy)
 {
-    printf(">> Operation of a spy...\n");
+    #if DEBUG
+	printf(">> Operation of a spy...\n");
+	#endif
 }
 
 void operation_case_officer(character_t *case_officer)
 {
-    printf(">> Operation of a case officer...\n");
+    #if DEBUG
+	printf(">> Operation of a case officer...\n");
+	#endif
 }
 
 void operation_counterintelligence_officer(character_t *counterintelligence_officer)
 {
-    printf(">> Operation of a counterintelligence_officer...\n");
+    #if DEBUG
+	printf(">> Operation of a counterintelligence_officer...\n");
+	#endif
 }

@@ -23,6 +23,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "debug.h"
 
 #include "cell.h"
 #include "character.h"
@@ -37,7 +38,7 @@
 
 #define MAP_WRITE 0x0002
 
-extern WINDOW* main_window;
+extern WINDOW *main_window;
 extern int old_cursor;
 
 /**
@@ -58,7 +59,7 @@ int main(void) {
     int rows;
     int cols;
     int key;
-    monitor_t* monitor;
+    monitor_t *monitor;
 
     /* ---------------------------------------------------------------------- */
     /* The following code only allows to avoid segmentation fault !           */
@@ -67,13 +68,13 @@ int main(void) {
     //mem = (memory_t*)malloc(sizeof(memory_t));
 
     //log_info("Starting monitor");
-    memory_t* memory = open_shared_memory();
+    memory_t *memory = open_shared_memory();
     set_memory(memory);
 
 
     /* ---------------------------------------------------------------------- */
 
-    monitor = (monitor_t*) malloc(sizeof(monitor_t));
+    monitor = (monitor_t *) malloc(sizeof(monitor_t));
     monitor->has_to_update = 0;
 
     set_timer();
@@ -103,7 +104,7 @@ int main(void) {
     // int number_of_turns = 2016;
     // int turn_duration = calculate_turn_duration();
 
-    /* Start my_timer */
+    /* Start timer */
 
     /*  Loop and get user input  */
     while (true) {

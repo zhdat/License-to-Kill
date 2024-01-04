@@ -1,4 +1,5 @@
 #include "enemy_country.h"
+#include "debug.h"
 
 sem_t *move_sem;
 
@@ -6,7 +7,7 @@ void set_semaphore(sem_t *sem) {
     move_sem = sem;
 }
 
-void writeToSharedMemory(memory_t* mem) {
+void writeToSharedMemory(memory_t *mem) {
     int num_message = 1;
     char buffer[MAX_LENGTH_OF_MESSAGE];
     ssize_t msg_size;
@@ -23,7 +24,7 @@ void writeToSharedMemory(memory_t* mem) {
         exit(EXIT_FAILURE);
     }
 
-    while(mem->simulation_has_ended == 0) {
+    while (mem->simulation_has_ended == 0) {
         msg_size = mq_receive(mq, buffer, sizeof(buffer), NULL);
         if (msg_size == -1) {
             perror("mq_receive");
@@ -34,7 +35,6 @@ void writeToSharedMemory(memory_t* mem) {
         *pos = '\0';
         pos++;
         priority = strtol(pos, &endptr, 10);
-
 
 
         strcpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, buffer);
