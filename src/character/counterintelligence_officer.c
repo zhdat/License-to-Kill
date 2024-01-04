@@ -76,7 +76,7 @@ void* all_day_counter_intelligence_officer(void* args) {
     memory_t* mem = arg->mem;
     counter_intelligence_officer_t* officer = &(mem->counter_intelligence_officers[arg->id]);
 
-    int target_id[4];
+    /*int target_id[4];
     for (int k = 0; k < 4; k++) {
         for (int i = 0; i < MAX_ROWS; i++) {
             for (int j = 0; i < MAX_COLUMNS; i++) {
@@ -84,9 +84,8 @@ void* all_day_counter_intelligence_officer(void* args) {
                 target_id[k] = detect_movement_to_id(mem, i, j);
             }
         }
-    }
-    log_info("target id: %d", target_id[0]);
-    officer->targeted_character_id = target_id[0];
+    }*/
+    officer->targeted_character_id = 2;
 
     while (officer->targeted_character_id != -1) {
         if (signal_received_officer == 1) {
