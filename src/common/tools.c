@@ -87,6 +87,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
 
     // Stocker l'id du personnage dans la nouvelle cellule
     if (character != NULL) {
+        log_info("character id: %d", character->id);
         city->cells[*new_pos_row][*new_pos_col].ids[city->cells[*new_pos_row][*new_pos_col].nb_of_characters] = character->id;
     }
 }
