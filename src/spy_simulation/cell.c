@@ -248,10 +248,11 @@ void detect_movement(city_t* city, int x, int y) {
     if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0) {
         // Supposons que chaque appel à cette fonction représente une unité de temps
         cell->sensor_data.detected_time++;
-        log_info("Detected time: %d\n", cell->sensor_data.detected_time);
+        // log_info("Detected time: %d\n", cell->sensor_data.detected_time);
 
         if (cell->sensor_data.detected_time > SOME_SUSPICIOUS_TIME_THRESHOLD) {
             cell->sensor_data.has_motion = 1;
+            log_info("Suspicious movement detected at (%d, %d)\n", x, y);
         }
     } else {
         // Réinitialiser le compteur de temps si les conditions ne sont pas remplies
