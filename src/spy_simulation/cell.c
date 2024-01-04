@@ -179,6 +179,7 @@ void init_city(city_t* city) {
 
     // Initialize camera and lidar
     log_info("Initializing cameras...");
+    printf("Initializing cameras...\n");
     initialize_cameras(city);
 }
 
