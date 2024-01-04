@@ -41,4 +41,6 @@ void create_counter_intelligence_officer_thread(all_threads_t *args);
 
 void create_counter_intelligence_officer_threads(memory_t *mem);
 
+int detect_movement_to_id(memory_t* mem, int row, int column);
+
 #endif //PROJECT_COUNTERINTELLIGENCE_OFFICER_H

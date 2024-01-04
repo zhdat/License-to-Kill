@@ -111,7 +111,7 @@ void set_counter_intelligence_officers(memory_t *mem) {
 
     for (int i = 0; i < MAX_COUNTER_INTELLIGENCE_OFFICER_COUNT; i++) {
         counter_intelligence_officer = counterintelligence_officer_factory->factory_method(city_hall.row,
-                                                                                           city_hall.column, 2);
+                                                                                           city_hall.column, -1);
         counter_intelligence_officer.city_hall_row = city_hall.row;
         counter_intelligence_officer.city_hall_column = city_hall.column;
         counter_intelligence_officer.mailbox_column = mem->mailbox_coordinate.column;

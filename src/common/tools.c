@@ -9,11 +9,11 @@ double euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
-void increments_population_in_cell(memory_t *mem, int col, int row) {
+void increments_population_in_cell(memory_t* mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)++;
 }
 
-void decrements_population_in_cell(memory_t *mem, int col, int row) {
+void decrements_population_in_cell(memory_t* mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
@@ -37,7 +37,17 @@ enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
 }
 
 
-void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row) {
+void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row,
+               character_t* character) {
+    // Supprimer l'id du personnage de la cellule actuelle
+    int i;
+    for (i = 0; i < city->cells[cell_start.row][cell_start.column].nb_of_characters; i++) {
+        if (city->cells[cell_start.row][cell_start.column].ids[i] == character->id) {
+            city->cells[cell_start.row][cell_start.column].ids[i] = -1;
+            break;
+        }
+    }
+
     int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
@@ -74,11 +84,19 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
     // Mettre a jour les nouvelles positions
     *new_pos_row = current_row;
     *new_pos_col = current_column;
+
+    // Stocker l'id du personnage dans la nouvelle cellule
+    if (character != NULL) {
+        city->cells[*new_pos_row][*new_pos_col].ids[city->cells[*new_pos_row][*new_pos_col].nb_of_characters] = character->id;
+    }
+
+    // mettre à jour les caméras
+    detect_movement(city, *new_pos_row, *new_pos_col);
 }
 
 
-coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
-    coordinate_t *neighbouring_cells = (coordinate_t *) malloc(sizeof(coordinate_t) * 8);
+coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbouring_cells_count) {
+    coordinate_t* neighbouring_cells = (coordinate_t*) malloc(sizeof(coordinate_t) * 8);
     int count = 0;
 
     for (int d_row = -1; d_row <= 1; d_row++) {
@@ -119,7 +137,7 @@ int characters_are_at_same_cell(character_t character1, character_t character2) 
 }
 
 // Fonction pour appliquer le chiffrement César
-void caesarCipher(char *message, int shift) {
+void caesarCipher(char* message, int shift) {
     for (int i = 0; message[i] != '\0'; ++i) {
         char ch = message[i];
 
@@ -139,7 +157,7 @@ void caesarCipher(char *message, int shift) {
     }
 }
 
-void decrpyt_message(char *message, int shift) {
+void decrpyt_message(char* message, int shift) {
     // Logique de déchiffrement
     int i = 0;
     while (message[i] != '\0') {
@@ -191,7 +209,7 @@ MessageBank setMessageBank(void) {
     return bank;
 }
 
-char *generateSpyMessage(MessageBank *bank, InformationCruciality importance) {
+char* generateSpyMessage(MessageBank* bank, InformationCruciality importance) {
     int messageCount = 0;
     while (bank->messages[importance][messageCount] != NULL && messageCount < MAX_MESSAGES) {
         messageCount++;

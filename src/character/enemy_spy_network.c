@@ -161,7 +161,7 @@ void move_source_agent(agent_thread_args_t *arg, int row, int column) {
 
     sem_wait(move_sem);
     decrements_population_in_cell(mem, start_column, start_row);
-    next_move(&(mem->city_map), start_cell, end_cell, &spies->character.column, &spies->character.row);
+    next_move(&(mem->city_map), start_cell, end_cell, &spies->character.column, &spies->character.row, &(spies->character));
     increments_population_in_cell(mem, spies->character.column, spies->character.row);
     sem_post(move_sem);
 
@@ -189,7 +189,7 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
 
     sem_wait(move_sem);
     decrements_population_in_cell(mem, start_column, start_row);
-    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row);
+    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row, &(officer->character));
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
     sem_post(move_sem);
 }
