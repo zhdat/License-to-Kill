@@ -89,9 +89,6 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
     if (character != NULL) {
         city->cells[*new_pos_row][*new_pos_col].ids[city->cells[*new_pos_row][*new_pos_col].nb_of_characters] = character->id;
     }
-
-    // mettre à jour les caméras
-    detect_movement(city, *new_pos_row, *new_pos_col);
 }
 
 

@@ -116,6 +116,5 @@ coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int co
 void print_city_with_characters(city_t * city);
 void activate_camera(city_t* city, int x, int y);
 void activate_lidar(city_t* city, int x, int y);
-void detect_movement(city_t* city, int x, int y);
 void initialize_cameras(city_t *city);
 #endif /* CELL_H */

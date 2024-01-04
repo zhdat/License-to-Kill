@@ -236,31 +236,6 @@ void activate_lidar(city_t* city, int x, int y) {
     }
 }
 
-void detect_movement(city_t* city, int x, int y) {
-    cell_t* cell = get_cell(city, x, y);
-    if (cell == NULL || !cell->sensor_data.camera_active) {
-        return;
-    }
-
-    // log_info("Detecting movement at (%d, %d)\n", x, y);
-    // Conditions pour déterminer un mouvement suspect
-    // Exemple: Un personnage reste trop longtemps dans une entreprise ou l'hôtel de ville
-    if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0) {
-        // Supposons que chaque appel à cette fonction représente une unité de temps
-        cell->sensor_data.detected_time++;
-        // log_info("Detected time: %d\n", cell->sensor_data.detected_time);
-
-        if (cell->sensor_data.detected_time > SOME_SUSPICIOUS_TIME_THRESHOLD) {
-            cell->sensor_data.has_motion = 1;
-            log_info("Suspicious movement detected at (%d, %d)\n", x, y);
-        }
-    } else {
-        // Réinitialiser le compteur de temps si les conditions ne sont pas remplies
-        cell->sensor_data.detected_time = 0;
-        cell->sensor_data.has_motion = 0;
-    }
-}
-
 void initialize_cameras(city_t* city) {
     //log_info("Initializing cameras...\n");
     if (city == NULL) {

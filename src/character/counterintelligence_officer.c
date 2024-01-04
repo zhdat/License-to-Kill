@@ -80,6 +80,7 @@ void* all_day_counter_intelligence_officer(void* args) {
     for (int k = 0; k < 4; k++) {
         for (int i = 0; i < MAX_ROWS; i++) {
             for (int j = 0; i < MAX_COLUMNS; i++) {
+                detect_movement(&(mem->city_map), i, j, mem);
                 target_id[k] = detect_movement_to_id(mem, i, j);
             }
         }
@@ -91,8 +92,6 @@ void* all_day_counter_intelligence_officer(void* args) {
         if (signal_received_officer == 1) {
             signal_received_officer = 0;
             for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-                // Recupérer le tableau d'ids suspects
-                officer->targeted_character_id = mem->city_map.cells[officer->character.row][officer->character.column].ids[i];
                 if (officer->targeted_character_id == mem->source_agents[i].character.id) {
                     move_counter_intelligence_officer(arg, mem->source_agents[i].character.row,
                                                       mem->source_agents[i].character.column, i);
@@ -147,4 +146,29 @@ int detect_movement_to_id(memory_t* mem, int row, int column) {
         }
     }
     return -1;
+}
+
+void detect_movement(city_t* city, int x, int y, memory_t* mem) {
+    cell_t* cell = get_cell(city, x, y);
+    if (cell == NULL || !cell->sensor_data.camera_active) {
+        return;
+    }
+
+    // log_info("Detecting movement at (%d, %d)\n", x, y);
+    // Conditions pour déterminer un mouvement suspect
+    // Exemple: Un personnage reste trop longtemps dans une entreprise ou l'hôtel de ville
+    if ((cell->type == COMPANY || cell->type == CITY_HALL) && cell->nb_of_characters > 0 && (mem->timer.hours >= 19 || mem->timer.hours < 8)){
+        // Supposons que chaque appel à cette fonction représente une unité de temps
+        cell->sensor_data.detected_time++;
+        // log_info("Detected time: %d\n", cell->sensor_data.detected_time);
+
+        if (cell->sensor_data.detected_time > SOME_SUSPICIOUS_TIME_THRESHOLD) {
+            cell->sensor_data.has_motion = 1;
+            log_info("Suspicious movement detected at (%d, %d)\n", x, y);
+        }
+    } else {
+        // Réinitialiser le compteur de temps si les conditions ne sont pas remplies
+        cell->sensor_data.detected_time = 0;
+        cell->sensor_data.has_motion = 0;
+    }
 }
