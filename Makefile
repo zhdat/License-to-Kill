@@ -32,13 +32,13 @@ obj/main.o: src/main.c include/logger.h include/debug.h
 bin/monitor: obj/monitor_main.o obj/monitor.o obj/monitor_common.o obj/common/logger.o obj/character/character.o obj/cell.o obj/common/memory.o obj/simulation_signals.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h include/memory.h include/debug.h
+obj/monitor_main.o: src/monitor/main.c include/monitor.h include/monitor_common.h include/memory.h include/debug.h include/macosx.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor.o: src/monitor/monitor.c include/monitor.h include/debug.h
+obj/monitor.o: src/monitor/monitor.c include/monitor.h include/debug.h include/macosx.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h include/debug.h
+obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h include/debug.h include/macosx.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ obj/monitor_common.o: src/monitor/monitor_common.c include/monitor_common.h incl
 obj/common/logger.o: src/common/logger.c include/logger.h include/debug.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
-obj/common/memory.o: src/common/memory.c include/memory.h include/debug.h
+obj/common/memory.o: src/common/memory.c include/memory.h include/debug.h include/macosx.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/common/tools.o: src/common/tools.c include/tools.h include/memory.h include/logger.h include/debug.h

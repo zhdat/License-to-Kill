@@ -178,6 +178,7 @@ void init_city(city_t* city) {
     city->cells[6][6].type = RESIDENTIAL_BUILDING;
 
     // Initialize camera and lidar
+    log_info("Initializing cameras...");
     initialize_cameras(city);
 }
 

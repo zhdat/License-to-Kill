@@ -24,9 +24,7 @@
 #ifdef __APPLE__
 #include "macosx.h"
 #elif __linux__
-
 #include <mqueue.h>
-
 #endif
 
 #include <sys/mman.h>
