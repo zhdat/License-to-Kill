@@ -17,7 +17,7 @@ void decrements_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
-enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
+static int is_cell_full(cell_t cells[7][7], int row, int col) {
     if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLUMNS) {
         return 1;
     }
@@ -36,22 +36,39 @@ enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col) {
     }
 }
 
+static int is_cell_accessible(cell_t cells[7][7], int row, int col, character_t character) {
+    if (is_cell_full(cells, row, col)) {
+        return 0;
+    }
+    coordinate_t home_cell = {character.home_row, character.home_column};
+    coordinate_t work_cell = {character.work_row, character.work_column};
+    coordinate_t moveto_cell = {row, col};
 
-void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row) {
+    if (cells[row][col].type == RESIDENTIAL_BUILDING || cells[row][col].type == COMPANY) {
+        if (!is_same_cell(home_cell, moveto_cell) || !is_same_cell(work_cell, moveto_cell)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row,
+               character_t character) {
     int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
     int current_row = cell_start.row, current_column = cell_start.column;
 
     // Essayez de bouger dans la direction principale
-    if (!is_cell_full(city->cells, current_row + step_row, current_column + step_col)) {
+    if (is_cell_accessible(city->cells, current_row + step_row, current_column + step_col, character)) {
         current_row += step_row;
         current_column += step_col;
     } else {
         // Essayez de bouger verticalement ou horizontalement si directement bloqué
-        if (step_row != 0 && !is_cell_full(city->cells, current_row + step_row, current_column)) {
+        if (step_row != 0 && is_cell_accessible(city->cells, current_row + step_row, current_column, character)) {
             current_row += step_row;
-        } else if (step_col != 0 && !is_cell_full(city->cells, current_row, current_column + step_col)) {
+        } else if (step_col != 0 && is_cell_accessible(city->cells, current_row, current_column + step_col, character)) {
             current_column += step_col;
         } else {
             // Prendre un détour
@@ -75,7 +92,6 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
     *new_pos_row = current_row;
     *new_pos_col = current_column;
 }
-
 
 coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
     coordinate_t *neighbouring_cells = (coordinate_t *) malloc(sizeof(coordinate_t) * 8);
