@@ -1,20 +1,17 @@
 #include "enemy_country.h"
 #include "debug.h"
 
-sem_t *move_sem;
-
-void set_semaphore(sem_t *sem) {
-    move_sem = sem;
-}
+/**
+ * \file main.c
+ * \brief Defines function for initializing and managing the enemy country.
+ */
 
 void writeToSharedMemory(memory_t *mem) {
-    int num_message = 1;
     char buffer[MAX_LENGTH_OF_MESSAGE];
     ssize_t msg_size;
     mqd_t mq;
-    char *position, *pos, *endptr;
+    char *pos, *endptr;
     int priority;
-    message_t new_message;
 
     mq = create_message_queue();
 

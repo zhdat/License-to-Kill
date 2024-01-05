@@ -9,6 +9,13 @@
 #include "memory.h"
 #include "debug.h"
 
+/**
+ * \file memory.c
+ *
+ * Defines functions used to manipulate our shared mem.
+ */
+
+
 memory_t *open_shared_memory(void) {
     int fd;
     memory_t *mem;

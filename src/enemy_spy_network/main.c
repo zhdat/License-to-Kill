@@ -1,6 +1,11 @@
 #include "enemy_spy_network.h"
 #include "debug.h"
 
+/**
+ * \file main.c
+ * \brief Uses functions for initializing and managing the enemy spy network.
+ */
+
 int main(void) {
     //log_info("Starting enemy_spy_network");
     memory_t *mem = open_shared_memory();

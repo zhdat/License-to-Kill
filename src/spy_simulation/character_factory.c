@@ -1,15 +1,12 @@
 #include "character_factory.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "debug.h"
 
-
-#include "logger.h"
-#include "memory.h"
-#include "spy_simulation.h"
-
+/**
+ * @file character_factory.c
+ * @brief Defines character factories for creating various types of characters in the spy simulation.
+ */
 
 static int last_id = 0;
+
 
 int generate_unique_id(void) {
     return ++last_id;
@@ -53,8 +50,8 @@ source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method
 source_agent_t new_spy_with_licence(int row, int column) {
     source_agent_t spy;
 
-    spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    spy.character.row = row; // Assuming variables for initial positions
+    spy.character.id = generate_unique_id();
+    spy.character.row = row;
     spy.character.column = column;
     spy.character.health = 10;
     spy.character.home_row = row;
@@ -65,7 +62,6 @@ source_agent_t new_spy_with_licence(int row, int column) {
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
     spy.targeted_companies_count = 0;
-    spy.has_stolen_a_company_tonight = 0;
 
     return spy;
 
@@ -74,8 +70,8 @@ source_agent_t new_spy_with_licence(int row, int column) {
 source_agent_t new_spy_without_licence(int row, int column) {
     source_agent_t spy;
 
-    spy.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    spy.character.row = row; // Assuming variables for initial positions
+    spy.character.id = generate_unique_id();
+    spy.character.row = row;
     spy.character.column = column;
     spy.character.health = 10;
     spy.character.home_row = row;
@@ -86,7 +82,6 @@ source_agent_t new_spy_without_licence(int row, int column) {
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
     spy.targeted_companies_count = 0;
-    spy.has_stolen_a_company_tonight = 0;
 
     return spy;
 }
@@ -103,8 +98,8 @@ attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (
 attending_officer_t new_case_officer(int row, int column) {
     attending_officer_t case_officer;
 
-    case_officer.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    case_officer.character.row = row; // Assuming variables for initial positions
+    case_officer.character.id = generate_unique_id();
+    case_officer.character.row = row;
     case_officer.character.column = column;
     case_officer.character.health = 10;
     case_officer.character.home_row = row;
@@ -130,8 +125,8 @@ counter_intelligence_officer_t new_counter_intelligence_officer(int row, int col
     counter_intelligence_officer_t counterintelligence_officer;
 
 
-    counterintelligence_officer.character.id = generate_unique_id(); // Assuming a function to generate a unique ID
-    counterintelligence_officer.character.row = row; // Assuming variables for initial positions
+    counterintelligence_officer.character.id = generate_unique_id();
+    counterintelligence_officer.character.row = row;
     counterintelligence_officer.character.column = column;
     counterintelligence_officer.character.health = 10;
     counterintelligence_officer.character.home_row = row;

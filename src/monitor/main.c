@@ -33,7 +33,6 @@
 #include "timer.h"
 
 #include "spy_simulation.h"
-#include "simulation_signals.h"
 #include "logger.h"
 
 #define MAP_WRITE 0x0002
@@ -69,7 +68,7 @@ int main(void) {
 
     //log_info("Starting monitor");
     memory_t *memory = open_shared_memory();
-    set_memory(memory);
+    //set_memory(memory);
 
 
     /* ---------------------------------------------------------------------- */
@@ -100,11 +99,6 @@ int main(void) {
     /* Initialize terminal user interface elements */
     init_monitor_elements(main_window, memory, rows, cols);
 
-    /* Simulation configuration */
-    // int number_of_turns = 2016;
-    // int turn_duration = calculate_turn_duration();
-
-    /* Start timer */
 
     /*  Loop and get user input  */
     while (true) {

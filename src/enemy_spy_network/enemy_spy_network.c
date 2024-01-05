@@ -5,6 +5,11 @@
 #include "enemy_spy_network.h"
 #include "debug.h"
 
+/**
+ * \file enemy_spy_network.c
+ * \brief Defines functions for initializing and managing the enemy spy network.
+ */
+
 volatile int signal_received_spies[MAX_SOURCE_AGENT_COUNT] = {0, 0, 0};
 volatile int signal_received_officer = 0;
 source_agent_t *agent_map[MAX_SOURCE_AGENT_COUNT];
@@ -72,7 +77,6 @@ static InformationCruciality select_crucial_information(void) {
 }
 
 void agent_mapping(source_agent_t *agent, int id) {
-    //log_debug("Mapping TID %ld to agent %d\n", tid, id);
     agent_map[id] = agent;
 }
 
@@ -80,14 +84,6 @@ void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
     sig = sig;
     info = info;
     unused = unused;
-    /*pthread_t tid = pthread_self(); // Utiliser pthread_self() pour obtenir le TID
-    int index = get_agent_by_tid(tid);
-    log_info("Tid %ld received SIGUSR1", tid);
-    //log_info("Agent %d was shot", index);
-    if (index != -1) {
-        source_agent_t *agent = agent_map[index].agent;
-        agent->character.health = 1;
-    }*/
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {
@@ -479,7 +475,6 @@ void *attempt_information_theft(void *arg) {
     }
     post_message(priority, type);
     current_agent->targeted_companies_count = 0;
-    current_agent->has_stolen_a_company_tonight = 1;
 
 
     // rentre chez lui
@@ -688,7 +683,7 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
 #if DEBUG
-            log_info("creation des threads...");
+            //log_info("creation des threads...");
 #endif
             if (mem->source_agents[i].character.health <= 0) {
                 continue;

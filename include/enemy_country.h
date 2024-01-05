@@ -1,8 +1,6 @@
 #ifndef TP_SYS2_ENEMY_COUNTRY_H
 #define TP_SYS2_ENEMY_COUNTRY_H
 
-#define DECALAGE 3
-
 #include "common.h"
 #include <semaphore.h>
 #include "logger.h"
@@ -19,26 +17,25 @@
 #ifdef __APPLE__
 #include "macosx/mqueue.h"
 #elif __linux__
-
 #include <mqueue.h>
-
 #endif
 
 
-#define MAX_MSG_SIZE 1024
-
-typedef struct {
-    char sentence[MAX_MSG_SIZE];
-    int priority;
-} Message;
+/**
+ * \file enemy_country.h
+ * \brief Handles operations related to the enemy country, particularly in managing shared memory for message communication.
+ */
 
 
-void set_semaphore(sem_t *sem);
-
+/**
+ * \brief Writes messages received from a message queue to shared memory.
+ *
+ * This function continuously reads messages from a message queue and writes them into the shared memory.
+ * It extracts the priority from each message and stores it along with the message text.
+ *
+ * \param mem Pointer to the shared memory structure where messages are stored.
+ */
 void writeToSharedMemory(memory_t *mem);
 
-void decrpyt_message(char *message);
-
-int isValidMessage(char *message);
 
 #endif //TP_SYS2_ENEMY_COUNTRY_H
