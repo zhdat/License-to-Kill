@@ -46,7 +46,7 @@ void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int 
 
     sem_wait(move_sem);
     decrements_population_in_cell(mem, start_column, start_row);
-    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row);
+    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row, officer->character);
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
 
     // Vérifier si un l'espion ciblé est sur la même cellule
