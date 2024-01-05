@@ -14,6 +14,10 @@ double euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
+int manhattan_distance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
 void increments_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)++;
 }
@@ -22,11 +26,11 @@ void decrements_population_in_cell(memory_t *mem, int col, int row) {
     (mem->city_map.cells[col][row].nb_of_characters)--;
 }
 
-static int is_cell_full(cell_t cells[7][7], int row, int col) {
-    if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLUMNS) {
-        return 1;
-    }
+static int is_cell_valid(int row, int col) {
+    return row >= 0 && row < MAX_ROWS && col >= 0 && col < MAX_COLUMNS;
+}
 
+static int is_cell_full(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col) {
     switch (cells[row][col].type) {
         case CITY_HALL:
             return cells[row][col].nb_of_characters >= MAX_NUMBER_OF_CHARACTERS_ON_CITY_HALL;
@@ -41,18 +45,33 @@ static int is_cell_full(cell_t cells[7][7], int row, int col) {
     }
 }
 
-static int is_cell_accessible(cell_t cells[7][7], int row, int col, character_t character) {
-    if (is_cell_full(cells, row, col)) {
-        return 0;
-    }
+static int is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
+    /*
     coordinate_t home_cell = {character.home_row, character.home_column};
     coordinate_t work_cell = {character.work_row, character.work_column};
     coordinate_t moveto_cell = {row, col};
 
-    if (cells[row][col].type == RESIDENTIAL_BUILDING || cells[row][col].type == COMPANY) {
-        if (!is_same_cell(home_cell, moveto_cell) || !is_same_cell(work_cell, moveto_cell)) {
-            return 0;
-        }
+    if (cells[row][col].type == RESIDENTIAL_BUILDING && !is_same_cell(home_cell, moveto_cell)) {
+        return 0;
+    }
+    if (cells[row][col].type == COMPANY && !is_same_cell(work_cell, moveto_cell)) {
+        return 0;
+    }
+     */
+    return 1;
+}
+
+static int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
+    if (!is_cell_valid(row, col)) {
+        return 0;
+    }
+
+    if (is_cell_full(cells, row, col)) {
+        return 0;
+    }
+
+    if (!is_cell_authorised(cells, row, col, character)) {
+        return 0;
     }
 
     return 1;
@@ -78,16 +97,19 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
         } else {
             // Prendre un détour
             bool detour_taken = false;
-            for (int d_row = -1; d_row <= 1 && !detour_taken; d_row++) {
+            for (int d_row = -1; d_row <= 1; d_row++) {
                 for (int d_col = -1; d_col <= 1; d_col++) {
                     if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
-                        if (!is_cell_full(city->cells, current_row + d_row, current_column + d_col)) {
+                        if (is_cell_accessible(city->cells, current_row + d_row, current_column + d_col, character)) {
                             current_row += d_row;
                             current_column += d_col;
                             detour_taken = true;
                             break;
                         }
                     }
+                }
+                if (detour_taken) {
+                    break;
                 }
             }
         }
