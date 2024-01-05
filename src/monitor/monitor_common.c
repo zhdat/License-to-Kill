@@ -26,6 +26,12 @@
 #include "monitor_common.h"
 #include "memory.h"
 
+/**
+ * \file monitor_common.c
+ * \brief Provides common functions for the monitor.
+ *
+ */
+
 extern WINDOW *main_window;
 extern WINDOW *city_window;
 extern WINDOW *character_window;

@@ -1,7 +1,15 @@
 #include "cell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "debug.h"
+
+/**
+ * \file cell.c
+ *
+ * Defines a cell within the grid map of the city. The cell may contains:
+ * - Nothing (\e WASTELAND);
+ * - A residential building (\e RESIDENTIAL_BUILDING);
+ * - The City Hall (\e CITY_HALL);
+ * - A company (\e COMPANY);
+ * - SUPERMARKET (\e SUPERMARKET).
+ */
 
 void delete_city(city_t *city) {
     int i;
@@ -41,44 +49,6 @@ void print_city(city_t *city) {
                 default:
                     printf("?");
                     break;
-            }
-        }
-        printf("\n");
-    }
-}
-
-void print_city_with_characters(city_t *city) {
-    int i, j;
-    if (city == NULL) {
-        printf("Error: city is NULL in print_city\n");
-        exit(0);
-    }
-    for (i = 0; i < city->width; i++) {
-        for (j = 0; j < city->height; j++) {
-            switch (city->cells[j][i].type) {
-                case WASTELAND:
-                    printf("W");
-                    break;
-                case RESIDENTIAL_BUILDING:
-                    printf("R");
-                    break;
-                case CITY_HALL:
-                    printf("C");
-                    break;
-                case COMPANY:
-                    printf("O");
-                    break;
-                case SUPERMARKET:
-                    printf("S");
-                    break;
-                default:
-                    printf("?");
-                    break;
-            }
-            if (city->cells[i][j].nb_of_characters > 0) {
-                printf("[%d]", city->cells[i][j].nb_of_characters);
-            } else {
-                printf(" ");
             }
         }
         printf("\n");

@@ -1,9 +1,3 @@
-#include <sys/time.h>
-#include <unistd.h>
-#include <signal.h>
-#include <stdlib.h>
-#include "debug.h"
-
 #include "timer.h"
 
 static memory_t *mem;

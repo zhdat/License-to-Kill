@@ -47,7 +47,7 @@
 
 
 /**
- * \file mem.h
+ * \file memory.h
  *
  * Defines structures and functions used to manipulate our shared mem.
  */
@@ -73,18 +73,24 @@ struct map_s {
     cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells that constitute the city map. */
 };
 
+/**
+ * \brief Map of all the companies with their cruciality and number of employees.
+ */
 typedef struct {
-    int row;
-    int column;
-    int nb_of_employees;
-    InformationDistribution cruciality;
+    int row; /*!< The coordinates of the company. */
+    int column; /*!< The coordinates of the company. */
+    int nb_of_employees; /*!< The number of employees of the company. */
+    InformationDistribution cruciality; /*!< The cruciality of the company. */
 } company_t;
 
 
+/**
+ * \brief Messages with their priority, content and encryption status.
+ */
 typedef struct {
-    long type;
-    char msg_text[MAX_LENGTH_OF_MESSAGE];
-    int priority;
+    char msg_text[MAX_LENGTH_OF_MESSAGE]; /*!< The content of the message. */
+    int priority;   /*!< 2 if the priority is very low, 3 if the priority is low, 6 if the priority is medium,
+                     * 9 if the priority is strong, 10 if the priority is crucial */
     int is_false_message; /*!< 0 if the message is true, 1 if the message is false */
     int is_encrypted; /*!< 0 if the message is not encrypted, 1 if the message is encrypted */
 } message_t;
@@ -101,16 +107,6 @@ struct memory_s {
                                 * - 3: the counterintelligence officer did not discover the mailbox. The spy network
                                 *      wins!
                                 */
-    int step; /*!< Numéro de l'étape de simulation en cours.*/
-    int total_steps; /*!< Nombre total d'étapes de simulation à effectuer.*/
-
-    int days; /*!< Nombre de jours écoulés depuis le début de la simulation.*/
-    int hours; /*!< Heure actuelle dans la simulation.*/
-    int minutes; /*!< Minutes actuelles dans la simulation.*/
-
-    int citizens_at_home; /*!< Nombre de citoyens actuellement à leur domicile.*/
-    int citizens_at_work; /*!< Nombre de citoyens actuellement au travail.*/
-    int citizens_walking; /*!< Nombre de citoyens actuellement en déplacement.*/
 
     character_t citizens[MAX_CITIZEN_COUNT]; /*!< Tableau contenant les citoyens.*/
 
@@ -134,30 +130,82 @@ struct memory_s {
 
     timer_type timer; /*!< Timer de la simulation.*/
 
-    pthread_mutex_t mutex; /*!< Mutex pour la synchronisation des threads.*/
-
 };
 
+/**
+ * \brief Opens and maps shared memory for use in the process.
+ *
+ * @return Pointer to the mapped shared memory structure.
+ */
 memory_t *open_shared_memory(void);
 
+/**
+ * \brief Unmaps and ends the use of shared memory in the process.
+ *
+ * \param mem Pointer to the shared memory structure.
+ */
 void end_shared_memory(memory_t *mem);
 
+/**
+ * \brief Destroys the shared memory segment.
+ */
 void destroy_shared_memory(void);
 
+/**
+ * \brief Creates a semaphore for synchronization purposes.
+ *
+ * @return Pointer to the created semaphore.
+ */
 sem_t *create_semaphore(void);
 
+/**
+ * \brief Opens an existing semaphore.
+ *
+ * @return Pointer to the opened semaphore.
+ */
 sem_t *open_semaphore(void);
 
+/**
+ * \brief Closes a semaphore.
+ *
+ * \param sem Pointer to the semaphore to be closed.
+ */
 void close_semaphore(sem_t *sem);
 
+/**
+ * \brief Destroys a semaphore.
+ *
+ * \param sem Pointer to the semaphore to be destroyed.
+ */
 void destroy_semaphore(sem_t *sem);
 
+/**
+ * \brief Creates a semaphore for message synchronization.
+ *
+ * @return Pointer to the created semaphore for message synchronization.
+ */
 sem_t *create_semaphore_message();
 
+/**
+ * \brief Opens an existing semaphore for message synchronization.
+ *
+ * @return Pointer to the opened semaphore for message synchronization.
+ */
 sem_t *open_semaphore_message();
 
+
+/**
+ * \brief Creates a message queue for inter-process communication.
+ *
+ * @return Descriptor of the created message queue.
+ */
 mqd_t create_message_queue();
 
+/**
+ * \brief Opens an existing message queue for inter-process communication.
+ *
+ * @return Descriptor of the opened message queue.
+ */
 mqd_t open_message_queue();
 
 

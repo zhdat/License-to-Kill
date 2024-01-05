@@ -1,6 +1,11 @@
 #include "citizen_manager.h"
 #include "debug.h"
 
+/**
+ * \file citizen_manager.c
+ * \brief Defines functions for initializing and managing the citizen manager.
+ */
+
 volatile int timer_citizens[MAX_CITIZEN_COUNT];
 
 sem_t *move_sem;
@@ -164,6 +169,9 @@ void create_morning_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT],
     int i;
     int j;
     if (mem->timer.hours == 8 && mem->timer.minutes == 0) {
+#if DEBUG
+        //printf("Création des threads du matin\n");
+#endif
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             pthread_create(&ids[i], NULL, citizen_to_work, (void *) args[i]);
         }

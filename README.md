@@ -1,26 +1,80 @@
-# Resources for the "License to kill" project 
 
-## Monitor program
+# "License to Kill" Project
 
-The *ncurses* TUI (*Terminal User Interface*) will give better results using 
-The "Meslo LG L for Powerline" font that should already be installed on your
-system. The font can also be downloaded at [https://github.com/powerline/fonts](https://github.com/powerline/fonts).
+## Description
 
-Here is what you should see by running "`bin/monitor`" from the root of your 
-project, once you will have implemented the shared mem ("`memory_t`" 
-structure).
+This project is a complex simulation of a spy network operating in a fictional city. It implements a multiprocess 
+application using various C programming techniques to simulate dynamic interactions among espionage agents, 
+counter-espionage officers, and ordinary citizens. The simulation integrates mechanisms such as inter-process 
+communication, thread synchronization, shared memory, and signal management.
 
-![The monitor program](./doc/figures/spies_monitor.png)
+![The Monitor Program](./doc/figures/spies_monitor.png)
 
-## Design patterns
+## Features
 
-Some patterns are included and could be used in the project (see in [src/pattern_examples](src/pattern_examples)).
+* Simulation of different characters (spies, counter-espionage officers, citizens) moving around a city.
+* Management of interactions between characters, including tracking, spying, and evasion attempts.
+* Use of shared memory for tracking the state of the simulation.
+* Inter-process communication using message queues and semaphores.
 
-More useful information about patterns can be found in Régis Clouard's [course](https://foad.ensicaen.fr/course/view.php?id=62) and also [here](https://refactoring.guru/design-patterns/examples).
+## Prerequisites
 
-## Others resources
- 
-- An interesting C language guide: [Beej homepage](https://beej.us/guide/bgc/html/split/index.html)
-- Coding style: see [here](https://projectacrn.github.io/latest/developer-guides/c_coding_guidelines.html#c-ty-08-the-struct-field-type-shall-be-consistent)
-- Memory queue functions for MacOSX came from [Stanislav Pankevich](https://github.com/stanislaw/posix-macos-addons)'s repositery.
+* GCC (GNU Compiler Collection) for compiling C code.
+* UNIX-like operating system (Linux, macOS).
+* Ncurses library for the monitor's user interface.
 
+## Installation
+
+For a quick installation and execution, use the following command:
+
+```bash
+make run
+```
+
+### Compiling the Project
+
+* Clone the Git repository or download the project sources.
+* Access the project's root directory.
+* To compile the project, use the following command:
+  ```bash
+  make all
+  ```
+
+### Execution
+
+After compiling, several executables will be generated. Here's how to run them:
+
+Launch the main simulation process:
+
+```bash
+./main_program
+```
+
+### Cleaning
+
+To clean up the compiled files, use the command `make distclean`:
+
+```bash
+make distclean
+```
+
+## Documentation
+
+The project's documentation is available in the [doc](./doc/) directory.
+
+You can also generate documentation from the project's sources using the following command:
+
+```bash
+make doc
+```
+
+## Authors
+
+* Clément Jantet <clement[dot]jantet[at]ecole[dot]ensicaen[dot]fr>
+* Calliste Ravix <calliste[dot]ravix[at]ecole[dot]ensicaen[dot]fr>
+* Guillain Le Goff <guillain[dot]le-goff[at]ecole[dot]ensicaen[dot]fr>
+* Maxime Michel <maxime[dot]michel[at]ecole[dot]ensicaen[dot]fr>
+
+## License
+
+This project is under the Apache 2.0 license. See the LICENSE file for more details.

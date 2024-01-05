@@ -9,6 +9,15 @@
 #define NUMBER_OF_PROGRAMS 6
 #define NUMBER_OF_ARGS_TIMER (NUMBER_OF_PROGRAMS + 2 + 1)
 
+/**
+ * \file main.c
+ *
+ * \brief The main file of the spy simulation.
+ *
+ * This file is the main file of the spy simulation. It creates the processes
+ * for the simulation and waits for them to finish.
+ */
+
 void handle_fatal_error_and_exit(const char *msg) {
     perror(msg);
     exit(EXIT_FAILURE);

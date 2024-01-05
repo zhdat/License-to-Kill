@@ -1,12 +1,13 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
-#include "debug.h"
 
 #include "character_factory.h"
 #include "spy_simulation.h"
-#include "simulation_signals.h"
 
+/**
+ * \file main.c
+ * \brief Uses functions for initializing and managing the spy simulation.
+ */
 
 int main(void) {
     //log_info("Starting spy_simulation");

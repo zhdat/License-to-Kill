@@ -25,8 +25,9 @@ void increments_population_in_cell(memory_t *mem, int col, int row);
 
 void decrements_population_in_cell(memory_t *mem, int col, int row);
 
-void next_move(city_t *cells, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row,
-               character_t character);
+enum cell_type_e is_cell_full(cell_t cells[7][7], int row, int col);
+
+void next_move(city_t *cells, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row);
 
 coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count);
 
