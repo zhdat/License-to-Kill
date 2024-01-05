@@ -1,6 +1,11 @@
 #include "counterintelligence_officer.h"
 #include "debug.h"
 
+/**
+ * \file main.c
+ * \brief Defines functions for initializing and managing the counterintelligence officer.
+ */
+
 volatile int signal_received_officer = 0;
 
 sem_t *move_sem;

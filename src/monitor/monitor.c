@@ -24,6 +24,14 @@
 #include "timer.h"
 #include "debug.h"
 
+/**
+ * \file monitor.c
+ * \brief Provides functions to display the monitor.
+ *
+ * \details The monitor is a ncurses-based application that displays the city
+ * map and the general information about the simulation.
+ */
+
 WINDOW *main_window;
 WINDOW *city_window;
 WINDOW *character_window;

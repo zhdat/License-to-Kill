@@ -4,6 +4,11 @@
 
 #include "logger.h"
 
+/**
+ * \file logger.c
+ * \brief Contains functions for logging.
+ */
+
 void log_format(const char *tag, const char *message, va_list args) {
     time_t now;
     time(&now);

@@ -1,6 +1,11 @@
 #include "counterintelligence_officer.h"
 #include "debug.h"
 
+/**
+ * \file main.c
+ * \brief Uses functions for initializing and managing the counterintelligence officer.
+ */
+
 int main(void) {
     //log_info("Starting counterintelligence_officer");
     memory_t *mem = open_shared_memory();

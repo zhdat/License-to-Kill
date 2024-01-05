@@ -63,7 +63,7 @@ void get_terminal_size(int *rows, int *cols);
  *
  * \param rows The number of rows.
  * \param cols The number of columns.
- * @return
+ * @return 1 if the terminal size is larger enough, otherwise 0.
  */
 int is_terminal_size_larger_enough(int *rows, int *cols);
 

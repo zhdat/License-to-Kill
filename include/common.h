@@ -21,7 +21,7 @@
 /**
  * \file common.h
  *
- * Defines some constants and paths to interprocess mechanisms.
+ * \brief Defines some constants and paths to interprocess mechanisms.
  */
 
 /*
@@ -46,6 +46,13 @@
 #define STOLEN        "STOLEN"
 #define NOT_FOUND     "NOT_FOUND"
 
+
+/*
+ * ---------------------------------------------------------------------------
+ * Constants associated to messages
+ * ---------------------------------------------------------------------------
+ */
+
 #define CRUCIALITY_LEVELS 5
 
 typedef enum {
@@ -56,17 +63,21 @@ typedef enum {
     Crucial   // crucial
 } InformationCruciality;
 
-// Structure pour renvoyer le niveau de crucialité et le nombre d'informations
+/**
+ * \brief Structure to store the distribution of information.
+ */
 typedef struct {
-    int crucialityLevel; // Niveau de crucialité
-    int infoCount[CRUCIALITY_LEVELS]; // Tableau pour stocker le nombre d'informations pour chaque niveau
+    int crucialityLevel; /*< The cruciality level of the information. */
+    int infoCount[CRUCIALITY_LEVELS]; /*< The number of information for each cruciality level. */
 } InformationDistribution;
 
 #define MAX_MESSAGES 5
 
+/**
+ * \brief Structure to store the messages.
+ */
 typedef struct {
-    InformationCruciality importance;
-    char *messages[CRUCIALITY_LEVELS][MAX_MESSAGES]; // Messages pour chaque niveau d'importance
+    char *messages[CRUCIALITY_LEVELS][MAX_MESSAGES]; /*< The messages. */
 } MessageBank;
 
 #endif /* COMMON_H */

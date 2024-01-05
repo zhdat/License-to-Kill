@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include "debug.h"
 
+/**
+ * \file tools.c
+ * \brief Provides utility functions for the simulation, including distance calculations, cell population management, and character movements.
+ */
+
 double euclidean_distance(int x1, int y1, int x2, int y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }

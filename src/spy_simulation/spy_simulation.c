@@ -1,17 +1,24 @@
 #include "spy_simulation.h"
+
+#include "tools.h"
+#include "logger.h"
 #include "character_factory.h"
 #include "cell.h"
 #include "common.h"
-#include "memory.h"
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <time.h>
 #include "debug.h"
-#include <math.h>
 
+/**
+ * \file spy_simulation.c
+ * \brief Defines functions for initializing and managing the spy simulation.
+ */
 
 static int _fd = -1;
+
+static memory_t *_mem;
+
+void set_memory(memory_t *mem) {
+    _mem = mem;
+}
 
 memory_t *create_shared_memory(void) {
     memory_t *mem;
@@ -146,11 +153,12 @@ coordinate_t get_mailbox(memory_t *mem) {
 }
 
 coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
-    // il ne faut pas que la résidence soit la même que la boite aux lettres
     coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     int randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
     coordinate_t residence = residential_buildings[randomResidentialBuilding];
+
+    // we don't want the residence to be the same as the mailbox
     while ((residence.row == mem->mailbox_coordinate.row) || (residence.column == mem->mailbox_coordinate.column) ||
            (euclidean_distance(residence.column, residence.row, mem->mailbox_coordinate.column,
                                mem->mailbox_coordinate.row) > max_distance)) {
@@ -161,7 +169,7 @@ coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
 
 }
 
-// il ne faut pas que la résidence soit la même que la boite aux lettres
+
 coordinate_t find_random_low_populated_residence(memory_t *mem) {
     coordinate_t *residential_buildings;
     residential_buildings = get_residential_buildings(mem);
@@ -172,6 +180,7 @@ coordinate_t find_random_low_populated_residence(memory_t *mem) {
     int selected_index = -1;
 
     for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; ++i) {
+        // we don't want the residence to be the same as the mailbox
         if (is_same_cell(residential_buildings[i], mailbox)) {
             continue;
         }
@@ -260,57 +269,6 @@ void affect_work_to_citizens(memory_t *mem) {
 }
 
 
-int *print_where_citizens_work(memory_t *mem) {
-    int i, j;
-    int count = 0;
-    int total = 0;
-    if (mem == NULL) {
-        printf("Error: city is NULL in print_city\n");
-        return NULL;
-    }
-    printf("=============================\n");
-    for (i = 0; i < mem->city_map.height; i++) {
-        for (j = 0; j < mem->city_map.width; j++) {
-            switch (mem->city_map.cells[j][i].type) {
-                case WASTELAND:
-                    printf("W");
-                    break;
-                case RESIDENTIAL_BUILDING:
-                    printf("R");
-                    break;
-                case CITY_HALL:
-                    printf("C");
-                    break;
-                case COMPANY:
-                    printf("O");
-                    break;
-                case SUPERMARKET:
-                    printf("S");
-                    break;
-                default:
-                    printf("?");
-                    break;
-            }
-            for (int k = 0; k < MAX_CITIZEN_COUNT; k++) {
-                if (mem->citizens[k].work_row == i && mem->citizens[k].work_column == j) {
-                    count++;
-                }
-            }
-            if (count > 0) {
-                printf("[%d]", count);
-            } else {
-                printf(" ");
-            }
-            total += count;
-            count = 0;
-
-        }
-        printf("\n");
-    }
-    printf("Total : %d\n", total);
-    return 0;
-}
-
 void set_company_employees(memory_t *mem) {
     coordinate_t *companies_coordinates = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
     for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
@@ -387,5 +345,4 @@ void set_content_memory(memory_t *mem) {
     set_city_map(mem);
     set_characters(mem);
 
-    mem->step = 100;
 }
