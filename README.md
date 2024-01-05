@@ -1,59 +1,58 @@
-# "License to kill" project 
 
-![The monitor program](./doc/figures/spies_monitor.png)
+# "License to Kill" Project
 
 ## Description
 
-Ce projet est une simulation complexe d'un réseau d'espionnage opérant dans une ville fictive. 
-Il met en œuvre une application multiprocessus utilisant diverses techniques de programmation en C 
-pour simuler des interactions dynamiques entre des agents d'espionnage, des officiers de contre-espionnage, et des 
-citoyens ordinaires. La simulation intègre des mécanismes tels que la communication interprocessus, 
-la synchronisation des threads, le partage de mémoire, et la gestion des signaux.
+This project is a complex simulation of a spy network operating in a fictional city. It implements a multiprocess 
+application using various C programming techniques to simulate dynamic interactions among espionage agents, 
+counter-espionage officers, and ordinary citizens. The simulation integrates mechanisms such as inter-process 
+communication, thread synchronization, shared memory, and signal management.
 
-## Fonctionnalités
+![The Monitor Program](./doc/figures/spies_monitor.png)
 
-* Simulation de différents personnages (espions, officiers de contre-espionnage, citoyens) se déplaçant dans une ville.
-* Gestion des interactions entre personnages, y compris le suivi, l'espionnage et les tentatives d'évasion.
-* Utilisation de la mémoire partagée pour le suivi de l'état de la simulation.
-* Communication entre processus à l'aide de files de messages et de sémaphores.
+## Features
 
-## Prérequis
+* Simulation of different characters (spies, counter-espionage officers, citizens) moving around a city.
+* Management of interactions between characters, including tracking, spying, and evasion attempts.
+* Use of shared memory for tracking the state of the simulation.
+* Inter-process communication using message queues and semaphores.
 
-* GCC (GNU Compiler Collection) pour la compilation du code C. 
-* Système d'exploitation de type UNIX (Linux, macOS).
-* Bibliothèque ncurses pour l'interface utilisateur du moniteur.
+## Prerequisites
+
+* GCC (GNU Compiler Collection) for compiling C code.
+* UNIX-like operating system (Linux, macOS).
+* Ncurses library for the monitor's user interface.
 
 ## Installation
 
-Pour une installation et execution rapide, utilisez la commande suivante :
+For a quick installation and execution, use the following command:
 
 ```bash
 make run
 ```
 
-### Compiler le projet 
+### Compiling the Project
 
-* Clonez le dépôt Git ou téléchargez les sources du projet.
-* Accédez au répertoire racine du projet.
-* Pour compiler le projet, utilisez la commande suivante :
-```bash
-make all
-```
+* Clone the Git repository or download the project sources.
+* Access the project's root directory.
+* To compile the project, use the following command:
+  ```bash
+  make all
+  ```
 
-### Exécution
+### Execution
 
-Après la compilation, plusieurs exécutables seront générés. Voici comment les exécuter :
+After compiling, several executables will be generated. Here's how to run them:
 
-Lancez le processus principal de simulation :
+Launch the main simulation process:
 
 ```bash
 ./main_program
 ```
 
+### Cleaning
 
-### Nettoyage
-
-Pour nettoyer les fichiers compilés, utilisez la commande ```make distclean``` :
+To clean up the compiled files, use the command `make distclean`:
 
 ```bash
 make distclean
@@ -61,22 +60,21 @@ make distclean
 
 ## Documentation
 
-La documentation du projet est disponible dans le répertoire [doc](./doc/).
+The project's documentation is available in the [doc](./doc/) directory.
 
-Vous pouvez aussi générer la documentation à partir des sources du projet en utilisant la commande suivante :
+You can also generate documentation from the project's sources using the following command:
 
 ```bash
 make doc
 ```
 
-## Auteurs
+## Authors
 
 * Clément Jantet <clement[dot]jantet[at]ecole[dot]ensicaen[dot]fr>
 * Calliste Ravix <calliste[dot]ravix[at]ecole[dot]ensicaen[dot]fr>
 * Guillain Le Goff <guillain[dot]le-goff[at]ecole[dot]ensicaen[dot]fr>
 * Maxime Michel <maxime[dot]michel[at]ecole[dot]ensicaen[dot]fr>
 
+## License
 
-## Licence
-
-Ce projet est sous licence Apache 2.0. Voir le fichier LICENSE pour plus de détails.
+This project is under the Apache 2.0 license. See the LICENSE file for more details.
