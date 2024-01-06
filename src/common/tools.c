@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "debug.h"
 
 /**
@@ -210,8 +211,12 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
     *new_pos_col = current_column; */
 
     coordinate_t path[MAX_PATH_LENGTH];
+
     int path_length = 0;
     path_length = bfs_find_path(city, cell_start, cell_end, path);
+    for (int i = 0; i < path_length; i++) {
+        //log_info("path[%d] = (%d, %d)\n", i, path[i].row, path[i].column);
+    }
 
     if (path_length > 1) {
         // Prendre le premier pas du chemin trouvé
