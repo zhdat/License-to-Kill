@@ -17,6 +17,7 @@
 #include "logger.h"
 #include "character.h"
 
+//
 
 /**
  * \file counterintelligence_officer.h
