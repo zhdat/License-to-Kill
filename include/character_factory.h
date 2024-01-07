@@ -76,13 +76,6 @@ struct counter_intelligence_officer_factory_s {
 };
 
 /**
- * \brief Generates a unique identifier for characters.
- *
- * @return A unique integer ID.
- */
-int generate_unique_id(void);
-
-/**
  * \brief Creates a new character factory.
  *
  * \param factory_method The function that will be used to create new characters.

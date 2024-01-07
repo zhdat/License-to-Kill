@@ -12,7 +12,7 @@
  * \brief Defines functions for initializing and managing the spy simulation.
  */
 
-static int _fd = -1;
+static int fd = -1;
 
 static memory_t* _mem;
 
@@ -23,23 +23,23 @@ void set_memory(memory_t* mem) {
 memory_t* create_shared_memory(void) {
     memory_t* mem;
 
-    _fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
+    fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
 
-    if (_fd == -1) {
+    if (fd == -1) {
 #if DEBUG
         printf("Error cannot open shared memory \n");
 #endif
         exit(EXIT_FAILURE);
     }
 
-    if (ftruncate(_fd, sizeof(memory_t)) == -1) {
+    if (ftruncate(fd, sizeof(memory_t)) == -1) {
 #if DEBUG
         printf("Error ftruncate \n");
 #endif
         exit(EXIT_FAILURE);
     }
 
-    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
+    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     return mem;
 }
@@ -180,7 +180,6 @@ coordinate_t find_random_low_populated_residence(memory_t* mem) {
     int selected_index = -1;
 
     for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; ++i) {
-        // we don't want the residence to be the same as the mailbox
         if (is_same_cell(residential_buildings[i], mailbox)) {
             continue;
         }
