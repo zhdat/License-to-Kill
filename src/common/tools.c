@@ -166,7 +166,6 @@ static int is_cell_full(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row
 
 static int
 is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
-    /*
     coordinate_t home_cell = {character.home_row, character.home_column};
     coordinate_t work_cell = {character.work_row, character.work_column};
     coordinate_t moveto_cell = {row, col};
@@ -177,7 +176,6 @@ is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int
     if (cells[row][col].type == COMPANY && !is_same_cell(work_cell, moveto_cell)) {
         return 0;
     }
-     */
     return 1;
 }
 
@@ -217,19 +215,29 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
             current_column += step_col;
         } else {
             // Prendre un détour
-            coordinate_t* neighbouring_cells;
             int neighbouring_cells_count = 0;
-            neighbouring_cells = findNeighbouringCells(city, current_row, current_column, &neighbouring_cells_count);
+            coordinate_t* neighbouring_cells = findNeighbouringCells(city, current_row, current_column,
+                                                                     &neighbouring_cells_count);
 
-            if (neighbouring_cells_count > 0) {
-                int random_index = selectRandomNumberUnder(neighbouring_cells_count);
-                current_row = neighbouring_cells[random_index].row;
-                current_column = neighbouring_cells[random_index].column;
-            } else {
-                // Aucune cellule voisine n'est accessible, rester sur place
-                current_row = cell_start.row;
-                current_column = cell_start.column;
+            // Trouver la cellule la plus proche de l'objectif
+            int min_distance = INT_MAX;
+            int min_distance_index = -1;
+
+            for (int i = 0; i < neighbouring_cells_count; i++) {
+                int distance = manhattan_distance(neighbouring_cells[i].row, neighbouring_cells[i].column,
+                                                  cell_end.row, cell_end.column);
+                if (distance < min_distance) {
+                    min_distance = distance;
+                    min_distance_index = i;
+                }
             }
+
+            if (min_distance_index != -1) {
+                current_row = neighbouring_cells[min_distance_index].row;
+                current_column = neighbouring_cells[min_distance_index].column;
+            }
+
+            free(neighbouring_cells);
         }
     }
 
@@ -381,7 +389,7 @@ char* generateSpyMessage(MessageBank* bank, InformationCruciality importance) {
         int randomIndex = selectRandomNumberUnder(messageCount);
         return bank->messages[importance][randomIndex];
     } else {
-        return "Aucun message disponible pour ce niveau de crucialité.";
+        return "Aucun message disponible !";
     }
 }
 

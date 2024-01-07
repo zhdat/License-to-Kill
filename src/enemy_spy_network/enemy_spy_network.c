@@ -153,7 +153,6 @@ void move_source_agent(agent_thread_args_t* arg, int row, int column) {
 
     if (sem_wait(move_sem) == -1) {
         perror("sem_wait");
-        exit(EXIT_FAILURE);
     }
     decrements_population_in_cell(mem, start_column, start_row);
     next_move(&(mem->city_map), start_cell, end_cell, &spies->character.column, &spies->character.row,
@@ -161,7 +160,6 @@ void move_source_agent(agent_thread_args_t* arg, int row, int column) {
     increments_population_in_cell(mem, spies->character.column, spies->character.row);
     if (sem_post(move_sem) == -1) {
         perror("sem_post");
-        exit(EXIT_FAILURE);
     }
 }
 
@@ -189,7 +187,6 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
 
     if (sem_wait(move_sem) == -1) {
         perror("sem_wait");
-        exit(EXIT_FAILURE);
     }
     decrements_population_in_cell(mem, start_column, start_row);
     next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row,
@@ -197,7 +194,6 @@ void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
     if (sem_post(move_sem) == -1) {
         perror("sem_post");
-        exit(EXIT_FAILURE);
     }
 }
 
@@ -354,10 +350,8 @@ void* morning_attending_officer(void* arg) {
         }
     }
 
-    // récupère les messages
     attendingOfficer->have_messages = 1;
 
-    // rentre chez lui
     while (!is_at_home(attendingOfficer->character)) {
         if (signal_received_officer) {
             signal_received_officer = 0;
@@ -493,16 +487,17 @@ void* attempt_information_theft(void* arg) {
         }
     }
 
-    // @TODO: crypter le message (fonction de tools.c) (P0)
     if (current_agent->character.health <= 0) {
         pthread_exit(NULL);
     }
 
-    post_message(priority, type);
+    if (current_agent->character.health > 0) {
+        post_message(priority, type);
+    }
+    //post_message(priority, type);
     current_agent->targeted_companies_count = 0;
     strcpy(current_agent->stolen_message, EMPTY);
 
-// rentre chez lui
     while (!is_at_home(current_agent->character)) {
         if (signal_received_spies[args->id]) {
             signal_received_spies[args->id] = 0;
@@ -536,22 +531,24 @@ void post_message(InformationCruciality priority, int type) {
     }
 
     caesarCipher(mess, 3);
-    // concatener la priorité à mess
     char priority_char[10];
     sprintf(priority_char, " - %d", getMessagePriority(priority));
     strcat(mess, priority_char);
 
     sem_wait(semaphore_message);
     if (mq_send(mq, mess, strlen(mess) + 1, 1) == -1) {
-        perror("mq_send");
-        exit(EXIT_FAILURE);
+        perror("mq_send\n");
     }
+
     sem_post(semaphore_message);
+
+    mq_close(mq);
+    close_semaphore(semaphore_message);
 }
 
 InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company) {
     InformationCruciality cruciality = select_crucial_information();
-    for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
+    for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
         coordinate_t company_priority = {mem->companies_priority[i].row,
                                          mem->companies_priority[i].column};
         if (is_same_cell(company, company_priority)) {
@@ -608,7 +605,6 @@ void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
             sleep(1);
         }
 
-        // @TODO : fix le problème que l'officier va tt le temps à la mailbox et pas uniquement 2 fois par jour (P4)
         if ((mem->timer.hours == attending_officer_routine[0]) ||
             (mem->timer.hours == attending_officer_routine[1])) {
             if (mem->attending_officers[0].character.health > 0) {

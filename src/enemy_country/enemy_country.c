@@ -47,4 +47,5 @@ void writeToSharedMemory(memory_t* mem) {
         mem->mailbox_size++;
     }
     mq_close(mq);
+    destroy_message_queue(mq);
 }

@@ -184,14 +184,14 @@ void destroy_semaphore(sem_t* sem);
  *
  * @return Pointer to the created semaphore for message synchronization.
  */
-sem_t* create_semaphore_message();
+sem_t* create_semaphore_message(void);
 
 /**
  * \brief Opens an existing semaphore for message synchronization.
  *
  * @return Pointer to the opened semaphore for message synchronization.
  */
-sem_t* open_semaphore_message();
+sem_t* open_semaphore_message(void);
 
 
 /**
@@ -199,14 +199,21 @@ sem_t* open_semaphore_message();
  *
  * @return Descriptor of the created message queue.
  */
-mqd_t create_message_queue();
+mqd_t create_message_queue(void);
 
 /**
  * \brief Opens an existing message queue for inter-process communication.
  *
  * @return Descriptor of the opened message queue.
  */
-mqd_t open_message_queue();
+mqd_t open_message_queue(void);
+
+/**
+ * \brief Closes a message queue.
+ *
+ * \param mq Descriptor of the message queue to be closed.
+ */
+void destroy_message_queue(mqd_t mq);
 
 
 #endif /* MEMORY_H */

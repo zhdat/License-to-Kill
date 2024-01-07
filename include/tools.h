@@ -17,6 +17,7 @@
 #define MAX_PATH_LENGTH 100 /**< Maximum length of a path in the simulation */
 #define CITY_SIZE 7 /**< Size of the city grid used in the simulation */
 #define MAX_QUEUE_SIZE 100 /**< Maximum size of the queue used in the simulation */
+#define INT_MAX 2147483647 /**< Maximum value of an integer */
 
 typedef struct thread_s thread_t;
 typedef struct queue_node_s queue_node_t;
