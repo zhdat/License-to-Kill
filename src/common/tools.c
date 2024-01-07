@@ -96,19 +96,30 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
                    is_cell_accessible(city->cells, current_row, current_column + step_col, character)) {
             current_column += step_col;
         } else {
-            // Try a random move to a neighbouring cell
-            coordinate_t* neighbouring_cells;
+            // Prendre un détour
             int neighbouring_cells_count = 0;
-            neighbouring_cells = findNeighbouringCells(city, current_row, current_column, &neighbouring_cells_count);
+            coordinate_t* neighbouring_cells = findNeighbouringCells(city, current_row, current_column,
+                                                                     &neighbouring_cells_count);
 
-            if (neighbouring_cells_count > 0) {
-                int random_index = selectRandomNumberUnder(neighbouring_cells_count);
-                current_row = neighbouring_cells[random_index].row;
-                current_column = neighbouring_cells[random_index].column;
-            } else {
-                current_row = cell_start.row;
-                current_column = cell_start.column;
+            // Trouver la cellule la plus proche de l'objectif
+            int min_distance = INT_MAX;
+            int min_distance_index = -1;
+
+            for (int i = 0; i < neighbouring_cells_count; i++) {
+                int distance = manhattan_distance(neighbouring_cells[i].row, neighbouring_cells[i].column,
+                                                  cell_end.row, cell_end.column);
+                if (distance < min_distance) {
+                    min_distance = distance;
+                    min_distance_index = i;
+                }
             }
+
+            if (min_distance_index != -1) {
+                current_row = neighbouring_cells[min_distance_index].row;
+                current_column = neighbouring_cells[min_distance_index].column;
+            }
+
+            free(neighbouring_cells);
         }
     }
 
@@ -239,7 +250,7 @@ char* generateSpyMessage(MessageBank* bank, InformationCruciality importance) {
         int randomIndex = selectRandomNumberUnder(messageCount);
         return bank->messages[importance][randomIndex];
     } else {
-        return "Aucun message disponible pour ce niveau de crucialité.";
+        return "Aucun message disponible !";
     }
 }
 
