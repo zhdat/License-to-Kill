@@ -13,53 +13,70 @@
 
 // function queue
 void create_queue(queue_t* q) {
+    if (q == NULL) {
+        return;
+    }
     q->front = 0;
     q->rear = -1;
     q->size = 0;
-    pthread_mutex_init(&q->mutex, NULL); // Initialiser le mutex
+    pthread_mutex_init(&q->mutex, NULL); /*!< Initialise mutex */
 }
 
 int en_queue(queue_t* q, coordinate_t cell) {
-    pthread_mutex_lock(&q->mutex); // Verrouiller le mutex avant de modifier la file
+    if (q == NULL) {
+        return -1;
+    }
+    pthread_mutex_lock(&q->mutex); /*!< Lock mutex */
     if (q->size == MAX_QUEUE_SIZE) {
-        pthread_mutex_unlock(&q->mutex); // Déverrouiller avant de retourner
-        return -1; // La queue est pleine
+        pthread_mutex_unlock(&q->mutex);
+        return -1; /*!< The queue is full */
     }
 
     q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
     q->nodes[q->rear] = (queue_node_t) {cell};
     q->size++;
-    pthread_mutex_unlock(&q->mutex); // Déverrouiller après avoir modifié la file
-    return 0; // Enfilé avec succès
+    pthread_mutex_unlock(&q->mutex);
+    return 0; /*!< Success */
 }
 
 coordinate_t de_queue(queue_t* q) {
-    pthread_mutex_lock(&q->mutex); // Verrouiller le mutex avant de modifier la file
+    if (q == NULL) {
+        return (coordinate_t) {-1, -1};
+    }
+    pthread_mutex_lock(&q->mutex);
     if (q->size == 0) {
-        pthread_mutex_unlock(&q->mutex); // Déverrouiller avant de retourner
-        return (coordinate_t) {-1, -1}; // La queue est vide
+        pthread_mutex_unlock(&q->mutex);
+        return (coordinate_t) {-1, -1}; /*!< The queue is empty */
     }
 
     coordinate_t cell = q->nodes[q->front].cell;
     q->front = (q->front + 1) % MAX_QUEUE_SIZE;
     q->size--;
 
-    pthread_mutex_unlock(&q->mutex); // Déverrouiller après avoir modifié la file
+    pthread_mutex_unlock(&q->mutex);
     return cell;
 }
 
 int is_queue_empty(queue_t* q) {
+    if (q == NULL) {
+        return -1;
+    }
     return q->size == 0;
 }
 
 void destroy_queue(queue_t* q) {
+    if (q == NULL) {
+        return;
+    }
     pthread_mutex_destroy(&q->mutex);
 }
 
 int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate_t* path) {
-    // Initialisation
+    /* Initialise the visited array */
     int visited[CITY_SIZE][CITY_SIZE];
     memset(visited, 0, sizeof(visited));
+
+    /* Initialise the prev array */
     coordinate_t prev[CITY_SIZE][CITY_SIZE];
     memset(prev, -1, sizeof(prev));
 
@@ -71,20 +88,17 @@ int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate
     while (!is_queue_empty(queue)) {
         coordinate_t current = de_queue(queue);
 
-        // Vérifier si la destination est atteinte
-        if (is_same_cell(current, end)) {
+        if (is_same_cell(current, end)) { /*!< Found the end cell */
             break;
         }
 
-        // Explorer les cellules voisines
         for (int d_row = -1; d_row <= 1; d_row++) {
             for (int d_col = -1; d_col <= 1; d_col++) {
-                if (d_row == 0 && d_col == 0) continue; // Ignorer la cellule actuelle
+                if (d_row == 0 && d_col == 0) continue; /*!< Avoid the current cell */
 
                 int new_row = current.row + d_row;
                 int new_col = current.column + d_col;
 
-                // Vérifier la validité de la nouvelle cellule
                 if (new_row >= 0 && new_row < CITY_SIZE && new_col >= 0 && new_col < CITY_SIZE) {
                     if (!visited[new_row][new_col] && is_cell_accessible(city->cells, new_row, new_col,
                                                                          (character_t) {0})) {
@@ -99,13 +113,13 @@ int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate
 
     destroy_queue(queue);
 
-    // Reconstruire le chemin
+    /* Rebuid the path */
     int path_length = 0;
     for (coordinate_t at = end; at.row != -1 && at.column != -1; at = prev[at.row][at.column]) {
         path[(path_length)++] = at;
     }
 
-    // Inverser le chemin pour qu'il commence à 'start'
+    /* Reverse the path */
     for (int i = 0; i < path_length / 2; i++) {
         coordinate_t temp = path[i];
         path[i] = path[path_length - i - 1];
@@ -286,7 +300,6 @@ int characters_are_at_same_cell(character_t character1, character_t character2) 
     return character1.row == character2.row && character1.column == character2.column;
 }
 
-// Fonction pour appliquer le chiffrement César
 void caesarCipher(char* message, int shift) {
     for (int i = 0; message[i] != '\0'; i++) {
         char ch = message[i];
