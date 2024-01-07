@@ -12,7 +12,7 @@
  * \brief Defines functions for initializing and managing the spy simulation.
  */
 
-static int _fd = -1;
+static int fd = -1;
 
 static memory_t* _mem;
 
@@ -23,23 +23,23 @@ void set_memory(memory_t* mem) {
 memory_t* create_shared_memory(void) {
     memory_t* mem;
 
-    _fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
+    fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
 
-    if (_fd == -1) {
+    if (fd == -1) {
 #if DEBUG
         printf("Error cannot open shared memory \n");
 #endif
         exit(EXIT_FAILURE);
     }
 
-    if (ftruncate(_fd, sizeof(memory_t)) == -1) {
+    if (ftruncate(fd, sizeof(memory_t)) == -1) {
 #if DEBUG
         printf("Error ftruncate \n");
 #endif
         exit(EXIT_FAILURE);
     }
 
-    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
+    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     return mem;
 }
@@ -179,8 +179,7 @@ coordinate_t find_random_low_populated_residence(memory_t* mem) {
     int min_population = 999;
     int selected_index = -1;
 
-    for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; ++i) {
-        // we don't want the residence to be the same as the mailbox
+    for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; i++) {
         if (is_same_cell(residential_buildings[i], mailbox)) {
             continue;
         }
@@ -225,8 +224,8 @@ void affect_work_to_citizens(memory_t* mem) {
         mem->citizens[randomCitizen].work_column = city_hall.column;
     }
 
-    for (int i = 0; i < NUMBER_OF_SUPERMARKETS; ++i) {
-        for (int j = 0; j < 3; ++j) {
+    for (int i = 0; i < NUMBER_OF_SUPERMARKETS; i++) {
+        for (int j = 0; j < 3; j++) {
             randomSupermarketID = selectRandomNumberUnder(NUMBER_OF_SUPERMARKETS);
             coordinate_t supermarket = supermarkets[randomSupermarketID];
             while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
@@ -237,8 +236,8 @@ void affect_work_to_citizens(memory_t* mem) {
         }
     }
 
-    for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
+        for (int j = 0; j < 5; j++) {
             randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
             coordinate_t company = companies[randomCompanyID];
             while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
@@ -250,7 +249,7 @@ void affect_work_to_citizens(memory_t* mem) {
     }
 
     // affectations de tous les citoyens restants dans des companies randomSupermarketId (max MAX_NUMBER_OF_CHARACTERS_ON_COMPANY)
-    for (int i = 0; i < MAX_CITIZEN_COUNT; ++i) {
+    for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         if (mem->citizens[i].work_row == -1 || mem->citizens[i].work_column == -1) {
             randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
             coordinate_t company = companies[randomCompanyID];

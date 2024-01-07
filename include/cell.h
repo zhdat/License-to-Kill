@@ -107,15 +107,6 @@ typedef struct {
 city_t* create_city(int width, int height);
 
 /**
- * \brief Deletes a city and frees associated memory.
- *
- * This function deallocates the memory used by the city structure and its cells.
- *
- * \param city Pointer to the city structure to be deleted.
- */
-void delete_city(city_t* city);
-
-/**
  * \brief Prints the layout of the city.
  *
  * Each type of cell is represented by a different character:
@@ -189,9 +180,9 @@ void initialize_surveillance_system(city_t* city);
  *
  * \param city Pointer to the city structure.
  * \param building_type The type of building to find.
- * \param count The number of buildings to find.
+ * \param number_of_sea The number of buildings to find.
  * @return An array of coordinates for the found buildings, or NULL if not found.
  */
-coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count);
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings);
 
 #endif /* CELL_H */

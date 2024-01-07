@@ -42,7 +42,7 @@ void set_pids(int argc, char** argv);
  * \param memory Pointer to the shared memory.
  * \return Returns 1 if the simulation is finished, otherwise 0.
  */
-int simulationFinished(memory_t* memory);
+int has_simulation_ended(memory_t* memory);
 
 
 /**

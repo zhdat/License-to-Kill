@@ -1,4 +1,7 @@
 #include "cell.h"
+#include <pthread.h>
+
+pthread_mutex_t city_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /**
  * \file cell.c
@@ -11,25 +14,14 @@
  * - SUPERMARKET (\e SUPERMARKET).
  */
 
-void delete_city(city_t* city) {
-    int i;
-    if (city != NULL) {
-        for (i = 0; i < city->height; i++) {
-            free(city->cells[i]);
-        }
-        //free(city->cells);
-        free(city);
-    }
-}
-
+// DEBUG
 void print_city(city_t* city) {
-    int i, j;
     if (city == NULL) {
         printf("Error: city is NULL in print_city\n");
         return;
     }
-    for (i = 0; i < city->height; i++) {
-        for (j = 0; j < city->width; j++) {
+    for (int i = 0; i < city->height; i++) {
+        for (int j = 0; j < city->width; j++) {
             switch (city->cells[j][i].type) {
                 case WASTELAND:
                     printf("W");
@@ -86,10 +78,6 @@ void clear_city(city_t* city) {
 void init_city(city_t* city) {
     city->width = 7;
     city->height = 7;
-
-#if DEBUG
-    printf("Init city...\n");
-#endif
 
     city->cells[0][0].type = WASTELAND;
     city->cells[0][1].type = RESIDENTIAL_BUILDING;
@@ -152,9 +140,9 @@ int should_be_monitored(cell_type_t cell_type) {
     switch (cell_type) {
         case COMPANY:
         case CITY_HALL:
-            return 1; // Surveillance accrue pour les bâtiments importants
+            return 1;
         default:
-            return 0; // Pas de surveillance ou surveillance minimale
+            return 0;
     }
 }
 
@@ -170,9 +158,6 @@ void initialize_surveillance_system(city_t* city) {
         for (int j = 0; j < city->width; j++) {
             cell_t* cell = &city->cells[j][i];
             if (should_be_monitored(cell->type)) {
-                // Configurez ici la surveillance pour la cellule
-                // Par exemple, augmenter un niveau de surveillance ou assigner des ressources de surveillance
-                // Pour l'exemple, on va simplement marquer la cellule comme surveillée
                 cell->nb_of_characters = 1;
             }
         }
@@ -180,32 +165,32 @@ void initialize_surveillance_system(city_t* city) {
 }
 
 
-// Function to find cells of a specific type and return their coordinates
-coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int count) {
-    if (city == NULL || count <= 0) {
-        return NULL; // Null check for city and check for non-positive count
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings) {
+    if (city == NULL || number_of_searched_buildings <= 0) {
+        return NULL;
     }
 
-    coordinate_t* coordinates = malloc(count * sizeof(coordinate_t));
+    coordinate_t* coordinates = malloc(number_of_searched_buildings * sizeof(coordinate_t));
+
     if (coordinates == NULL) {
-        return NULL; // Memory allocation check
+        return NULL;
     }
 
-    int found = 0; // Counter for found buildings
-    for (int i = 0; i < city->width; ++i) {
-        for (int j = 0; j < city->height; ++j) {
+    int number_of_found_buildings = 0;
+    for (int i = 0; i < city->width; i++) {
+        for (int j = 0; j < city->height; j++) {
             if (city->cells[j][i].type == building_type) {
-                coordinates[found].row = i;
-                coordinates[found].column = j;
-                found++;
+                coordinates[number_of_found_buildings].row = i;
+                coordinates[number_of_found_buildings].column = j;
+                ++number_of_found_buildings;
 
-                if (found >= count) {
-                    return coordinates; // Return early if all buildings are found
+                if (number_of_found_buildings >= number_of_searched_buildings) {
+                    return coordinates;
                 }
             }
         }
     }
 
-    return coordinates; // Return the found coordinates (may be fewer than count if not all are found)
+    return coordinates;
 }
 
