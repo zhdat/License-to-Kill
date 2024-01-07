@@ -15,10 +15,7 @@ volatile int signal_received_officer = 0;
 source_agent_t* agent_map[MAX_SOURCE_AGENT_COUNT];
 int attending_officer_routine[4] = {0, 0, 0, 0};
 
-pthread_mutex_t signal_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t signal_cond = PTHREAD_COND_INITIALIZER;
-
-sem_t *move_sem;
+sem_t* move_sem;
 
 // @TODO: faire une map de chaques entreprise volée, par quel agent, et quand (P3)
 
@@ -28,13 +25,10 @@ void set_semaphore(sem_t* sem) {
 
 void handle_signal(int sig) {
     sig = sig;
-    pthread_mutex_lock(&signal_mutex);
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         signal_received_spies[i] = 1;
     }
     signal_received_officer = 1;
-    pthread_cond_broadcast(&signal_cond);
-    pthread_mutex_unlock(&signal_mutex);
 }
 
 void set_signals(void) {
@@ -79,18 +73,17 @@ static InformationCruciality select_crucial_information(void) {
     }
 }
 
-void agent_mapping(source_agent_t *agent, int id) {
+void agent_mapping(source_agent_t* agent, int id) {
     agent_map[id] = agent;
 }
 
-void handle_sigusr1(int sig, siginfo_t *info, void *unused) {
+void handle_sigusr1(int sig, siginfo_t* info, void* unused) {
     sig = sig;
     info = info;
     unused = unused;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i];
+            source_agent_t* agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health--;
             agent->is_attacked = 0;
@@ -110,14 +103,13 @@ void set_signals_weak_bullet(void) {
     sigaction(SIGUSR1, &action, NULL);
 }
 
-void handle_sigusr2(int sig, siginfo_t *info, void *unused) {
+void handle_sigusr2(int sig, siginfo_t* info, void* unused) {
     sig = sig;
     info = info;
     unused = unused;
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-        // log_debug("is agent %d attacked ? %d", i, agent_map[i].agent->is_attacked);
         if (agent_map[i]->is_attacked == 1) {
-            source_agent_t *agent = agent_map[i];
+            source_agent_t* agent = agent_map[i];
             sem_wait(move_sem);
             agent->character.health -= 2;
             agent->is_attacked = 0;
@@ -142,8 +134,8 @@ void move_source_agent(agent_thread_args_t* arg, int row, int column) {
         return;
     }
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    source_agent_t *spies = &(mem->source_agents[arg->id]);
+    memory_t* mem = arg->mem;
+    source_agent_t* spies = &(mem->source_agents[arg->id]);
 
     if (spies->character.health <= 0) {
         return;
@@ -173,7 +165,7 @@ void move_source_agent(agent_thread_args_t* arg, int row, int column) {
     }
 }
 
-void move_attending_officer(agent_thread_args_t *arg, int row, int column) {
+void move_attending_officer(agent_thread_args_t* arg, int row, int column) {
     if (arg == NULL) {
         return;
     }
@@ -225,31 +217,25 @@ void* morning_source_agent(void* arg) {
 
         while (!character_is_at(current_agent->character,
                                 supermarket_coordinates[random_supermarket])) {
-            pthread_mutex_lock(&signal_mutex);
-            while (!signal_received_spies[args->id]) {
-                pthread_cond_wait(&signal_cond, &signal_mutex);
-            }
-            signal_received_spies[args->id] = 0;
-            pthread_mutex_unlock(&signal_mutex);
-            move_source_agent(args, supermarket_coordinates[random_supermarket].row,
-                              supermarket_coordinates[random_supermarket].column);
-            if (current_agent->character.health <= 0) {
-                break;
+            if (signal_received_spies[args->id]) {
+                signal_received_spies[args->id] = 0;
+                move_source_agent(args, supermarket_coordinates[random_supermarket].row,
+                                  supermarket_coordinates[random_supermarket].column);
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
             }
         }
 
         /*!< go back home */
         while (!is_at_home(current_agent->character)) {
-            pthread_mutex_lock(&signal_mutex);
-            while (!signal_received_spies[args->id]) {
-                pthread_cond_wait(&signal_cond, &signal_mutex);
-            }
-            signal_received_spies[args->id] = 0;
-            pthread_mutex_unlock(&signal_mutex);
-            move_source_agent(args, current_agent->character.home_row,
-                              current_agent->character.home_column);
-            if (current_agent->character.health <= 0) {
-                break;
+            if (signal_received_spies[args->id]) {
+                signal_received_spies[args->id] = 0;
+                move_source_agent(args, current_agent->character.home_row,
+                                  current_agent->character.home_column);
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
             }
         }
 
@@ -263,16 +249,13 @@ void* morning_source_agent(void* arg) {
 
 
         while (!character_is_at(current_agent->character, companies_coordinates[random_company])) {
-            pthread_mutex_lock(&signal_mutex);
-            while (!signal_received_spies[args->id]) {
-                pthread_cond_wait(&signal_cond, &signal_mutex);
-            }
-            signal_received_spies[args->id] = 0;
-            pthread_mutex_unlock(&signal_mutex);
-            move_source_agent(args, companies_coordinates[random_company].row,
-                              companies_coordinates[random_company].column);
-            if (current_agent->character.health <= 0) {
-                break;
+            if (signal_received_spies[args->id]) {
+                signal_received_spies[args->id] = 0;
+                move_source_agent(args, companies_coordinates[random_company].row,
+                                  companies_coordinates[random_company].column);
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
             }
         }
 
@@ -282,12 +265,31 @@ void* morning_source_agent(void* arg) {
         // il rentre chez lui
 
         while (!is_at_home(current_agent->character)) {
-            pthread_mutex_lock(&signal_mutex);
-            while (!signal_received_spies[args->id]) {
-                pthread_cond_wait(&signal_cond, &signal_mutex);
+            if (signal_received_spies[args->id]) {
+                signal_received_spies[args->id] = 0;
+                move_source_agent(args, current_agent->character.home_row,
+                                  current_agent->character.home_column);
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
             }
+        }
+    }
+
+    sleep(1);
+    pthread_exit(NULL);
+}
+
+void* evening_source_agent(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+
+    int pid = getpid();
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
+    current_agent->character.pid = pid;
+
+    while (!is_at_home(current_agent->character)) {
+        if (signal_received_spies[args->id]) {
             signal_received_spies[args->id] = 0;
-            pthread_mutex_unlock(&signal_mutex);
             move_source_agent(args, current_agent->character.home_row,
                               current_agent->character.home_column);
             if (current_agent->character.health <= 0) {
@@ -300,66 +302,35 @@ void* morning_source_agent(void* arg) {
     pthread_exit(NULL);
 }
 
-void *evening_source_agent(void* arg) {
-    agent_thread_args_t* args = (agent_thread_args_t*) arg;
-
-    int pid = getpid();
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
-    current_agent->character.pid = pid;
-
-    while (!is_at_home(current_agent->character)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_spies[args->id]) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_spies[args->id] = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_source_agent(args, current_agent->character.home_row,
-                          current_agent->character.home_column);
-        if (current_agent->character.health <= 0) {
-            break;
-        }
-    }
-
-    sleep(1);
-    pthread_exit(NULL);
-}
-
-void *evening_attending_officer(void* arg) {
+void* evening_attending_officer(void* arg) {
     agent_thread_args_t* args = (agent_thread_args_t*) arg;
     attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
 
     int random_supermarket = selectRandomNumberUnder(NUMBER_OF_SUPERMARKETS);
-    coordinate_t *supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
+    coordinate_t* supermarket_coordinates = findTypeOfBuilding(&args->mem->city_map, SUPERMARKET,
                                                                NUMBER_OF_SUPERMARKETS);
 
 
     while (!character_is_at(attendingOfficer->character,
                             supermarket_coordinates[random_supermarket])) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_officer) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_officer = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_attending_officer(args, supermarket_coordinates[random_supermarket].row,
-                               supermarket_coordinates[random_supermarket].column);
-        if (attendingOfficer->character.health <= 0) {
-            break;
+        if (signal_received_officer) {
+            signal_received_officer = 0;
+            move_attending_officer(args, supermarket_coordinates[random_supermarket].row,
+                                   supermarket_coordinates[random_supermarket].column);
+            if (attendingOfficer->character.health <= 0) {
+                break;
+            }
         }
     }
 
     while (!is_at_home(attendingOfficer->character)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_officer) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_officer = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_attending_officer(args, attendingOfficer->character.home_row,
-                               attendingOfficer->character.home_column);
-        if (attendingOfficer->character.health <= 0) {
-            break;
+        if (signal_received_officer) {
+            signal_received_officer = 0;
+            move_attending_officer(args, attendingOfficer->character.home_row,
+                                   attendingOfficer->character.home_column);
+            if (attendingOfficer->character.health <= 0) {
+                break;
+            }
         }
     }
 
@@ -367,22 +338,19 @@ void *evening_attending_officer(void* arg) {
     pthread_exit(NULL);
 }
 
-void *morning_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    attending_officer_t *attendingOfficer = &(args->mem->attending_officers[args->id]);
+void* morning_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
 
 
     // va à la mailbox
     while (!character_is_at(attendingOfficer->character, args->mem->mailbox_coordinate)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_officer) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_officer = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_attending_officer(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
-        if (attendingOfficer->character.health <= 0) {
-            break;
+        if (signal_received_officer) {
+            signal_received_officer = 0;
+            move_attending_officer(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
+            if (attendingOfficer->character.health <= 0) {
+                break;
+            }
         }
     }
 
@@ -391,16 +359,13 @@ void *morning_attending_officer(void *arg) {
 
     // rentre chez lui
     while (!is_at_home(attendingOfficer->character)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_officer) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_officer = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_attending_officer(args, attendingOfficer->character.home_row,
-                               attendingOfficer->character.home_column);
-        if (attendingOfficer->character.health <= 0) {
-            break;
+        if (signal_received_officer) {
+            signal_received_officer = 0;
+            move_attending_officer(args, attendingOfficer->character.home_row,
+                                   attendingOfficer->character.home_column);
+            if (attendingOfficer->character.health <= 0) {
+                break;
+            }
         }
     }
 
@@ -408,9 +373,9 @@ void *morning_attending_officer(void *arg) {
     pthread_exit(NULL);
 }
 
-void *night_attending_officer(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
-    attending_officer_t *attendingOfficer = &(args->mem->attending_officers[args->id]);
+void* night_attending_officer(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
+    attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
 
     if (attendingOfficer->have_messages == 0) {
         pthread_exit(NULL);
@@ -425,10 +390,10 @@ void *night_attending_officer(void *arg) {
 }
 
 
-void pickup_messages(memory_t *mem) {
+void pickup_messages(memory_t* mem) {
     for (int i = 0; i < mem->mailbox_size; i++) {
         if (mem->encrpyted_messages[i].is_encrypted == 0) {
-            char *message = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
+            char* message = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
             strcpy(message, mem->encrpyted_messages[i].msg_text);
             decrpyt_message(message, 3);
             strcpy(mem->decrypted_messages[mem->decrypted_mailbox_size].msg_text, message);
@@ -438,19 +403,19 @@ void pickup_messages(memory_t *mem) {
     }
 }
 
-void *attempt_information_theft(void *arg) {
-    agent_thread_args_t *args = (agent_thread_args_t *) arg;
+void* attempt_information_theft(void* arg) {
+    agent_thread_args_t* args = (agent_thread_args_t*) arg;
 
     int pid = getpid();
-    source_agent_t *current_agent = &(args->mem->source_agents[args->id]);
+    source_agent_t* current_agent = &(args->mem->source_agents[args->id]);
     current_agent->character.pid = pid;
 
 
     // go near a company
     int random_company = selectRandomNumberUnder(current_agent->targeted_companies_count);
     coordinate_t company = current_agent->targeted_companies[random_company];
-    int *neighbour_cells_count = malloc(sizeof(int));
-    coordinate_t *neighbour_cells = findNeighbouringCells(&args->mem->city_map, company.row, company.column,
+    int* neighbour_cells_count = malloc(sizeof(int));
+    coordinate_t* neighbour_cells = findNeighbouringCells(&args->mem->city_map, company.row, company.column,
                                                           neighbour_cells_count);
     int random_neighbour_cell = selectRandomNumberUnder(*neighbour_cells_count);
 
@@ -460,33 +425,27 @@ void *attempt_information_theft(void *arg) {
 
 
     while (!character_is_at(current_agent->character, neighbour_cells[random_neighbour_cell])) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_spies[args->id]) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_spies[args->id] = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
-                          neighbour_cells[random_neighbour_cell].column);
-        if (current_agent->character.health <= 0) {
-            break;
+        if (signal_received_spies[args->id]) {
+            signal_received_spies[args->id] = 0;
+            move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
+                              neighbour_cells[random_neighbour_cell].column);
+            if (current_agent->character.health <= 0) {
+                break;
+            }
         }
     }
 
     while (turns < 12) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_spies[args->id]) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
+        if (signal_received_spies[args->id]) {
+            signal_received_spies[args->id] = 0;
+            random_neighbour_cell = selectRandomNumberUnder(*neighbour_cells_count);
+            move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
+                              neighbour_cells[random_neighbour_cell].column);
+            if (current_agent->character.health <= 0) {
+                break;
+            }
+            turns++;
         }
-        signal_received_spies[args->id] = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        random_neighbour_cell = selectRandomNumberUnder(*neighbour_cells_count);
-        move_source_agent(args, neighbour_cells[random_neighbour_cell].row,
-                          neighbour_cells[random_neighbour_cell].column);
-        if (current_agent->character.health <= 0) {
-            break;
-        }
-        turns++;
     }
 
     int thief_is_possible = selectRandomNumberUnder(100);
@@ -494,25 +453,22 @@ void *attempt_information_theft(void *arg) {
     if (thief_is_possible < 85) {
         // vole l'information
         while (turns < 18) {
-            pthread_mutex_lock(&signal_mutex);
-            while (!signal_received_spies[args->id]) {
-                pthread_mutex_lock(&signal_mutex);
+            if (signal_received_spies[args->id]) {
+                signal_received_spies[args->id] = 0;
+                move_source_agent(args, company.row, company.column);
+                if (current_agent->character.health <= 0) {
+                    break;
+                }
+                turns++;
             }
-            signal_received_spies[args->id] = 0;
-            pthread_mutex_unlock(&signal_mutex);
-            move_source_agent(args, company.row, company.column);
-            if (current_agent->character.health <= 0) {
-                break;
-            }
-            turns++;
         }
         thief_is_possible = selectRandomNumberUnder(100);
         if (thief_is_possible < 90) {
-            if(current_agent->character.health <= 0){
+            if (current_agent->character.health <= 0) {
                 pthread_exit(NULL);
             }
             priority = accomplish_mission(args->mem, company);
-            if(current_agent->character.health <= 0){
+            if (current_agent->character.health <= 0) {
                 pthread_exit(NULL);
             }
             type = 1; // Real message
@@ -528,15 +484,12 @@ void *attempt_information_theft(void *arg) {
 
     // @TODO: s'il y a déjà quelqu'un à la mailbox attendre qu'il parte, sinon revenir le lendemain (P1)
     while (!character_is_at(current_agent->character, args->mem->mailbox_coordinate)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_spies[args->id]) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_spies[args->id] = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
-        if (current_agent->character.health <= 0) {
-            break;
+        if (signal_received_spies[args->id]) {
+            signal_received_spies[args->id] = 0;
+            move_source_agent(args, args->mem->mailbox_coordinate.row, args->mem->mailbox_coordinate.column);
+            if (current_agent->character.health <= 0) {
+                break;
+            }
         }
     }
 
@@ -551,17 +504,14 @@ void *attempt_information_theft(void *arg) {
 
 // rentre chez lui
     while (!is_at_home(current_agent->character)) {
-        pthread_mutex_lock(&signal_mutex);
-        while (!signal_received_spies[args->id]) {
-            pthread_cond_wait(&signal_cond, &signal_mutex);
-        }
-        signal_received_spies[args->id] = 0;
-        pthread_mutex_unlock(&signal_mutex);
-        move_source_agent(args, current_agent
-                                  ->character.home_row,
-                          current_agent->character.home_column);
-        if (current_agent->character.health <= 0) {
-            break;
+        if (signal_received_spies[args->id]) {
+            signal_received_spies[args->id] = 0;
+            move_source_agent(args, current_agent
+                                      ->character.home_row,
+                              current_agent->character.home_column);
+            if (current_agent->character.health <= 0) {
+                break;
+            }
         }
     }
 
@@ -573,7 +523,7 @@ void *attempt_information_theft(void *arg) {
 void post_message(InformationCruciality priority, int type) {
     mqd_t mq = open_message_queue();
 
-    sem_t *semaphore_message = open_semaphore_message();
+    sem_t* semaphore_message = open_semaphore_message();
 
     char mess[MAX_LENGTH_OF_MESSAGE];
 
@@ -599,7 +549,7 @@ void post_message(InformationCruciality priority, int type) {
     sem_post(semaphore_message);
 }
 
-InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company) {
+InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company) {
     InformationCruciality cruciality = select_crucial_information();
     for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
         coordinate_t company_priority = {mem->companies_priority[i].row,
@@ -632,10 +582,10 @@ void initialize_attending_officer_routine(void) {
 }
 
 
-void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_morning_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
 
     if (mem->timer.hours >= 8 && mem->timer.hours <= 17 && mem->timer.minutes == 0) {
@@ -692,10 +642,10 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads) {
 
 }
 
-void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_evening_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     if (mem->timer.hours == 17 && mem->timer.minutes == 0) {
 
@@ -747,10 +697,10 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads) {
 }
 
 
-void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
+void create_network_night_thread(memory_t* mem, all_threads_t* threads) {
     pthread_attr_t attr;
-    agent_thread_args_t *ptr;
-    agent_thread_args_t *ptr2;
+    agent_thread_args_t* ptr;
+    agent_thread_args_t* ptr2;
 
     // @TODO : créer les threads avec une probabilité en fonction de l'heure qu'il est (P2)
     if ((mem->timer.hours >= 18 || mem->timer.hours <= 8) && mem->timer.minutes == 0) {
@@ -817,8 +767,8 @@ void create_network_night_thread(memory_t *mem, all_threads_t *threads) {
 }
 
 
-void create_enemy_spy_thread(memory_t *mem) {
-    all_threads_t *threads;
+void create_enemy_spy_thread(memory_t* mem) {
+    all_threads_t* threads;
     threads = malloc(sizeof(all_threads_t));
 
     for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
@@ -841,7 +791,6 @@ void create_enemy_spy_thread(memory_t *mem) {
         create_network_night_thread(mem, threads);
     }
 }
-
 
 
 
