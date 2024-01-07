@@ -84,7 +84,7 @@ void destroy_semaphore(sem_t* sem) {
     }
 }
 
-sem_t* create_semaphore_message() {
+sem_t* create_semaphore_message(void) {
     sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_CREAT, 0644, 0);
 
@@ -98,7 +98,7 @@ sem_t* create_semaphore_message() {
     return semaphore;
 }
 
-sem_t* open_semaphore_message() {
+sem_t* open_semaphore_message(void) {
     sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_RDWR, 0644, 0);
 
@@ -112,9 +112,7 @@ sem_t* open_semaphore_message() {
     return semaphore;
 }
 
-mqd_t create_message_queue() {
-    //mq_unlink(QUEUE_NAME);
-
+mqd_t create_message_queue(void) {
     // Attributs de la file de messages
     struct mq_attr attr;
     attr.mq_flags = 0;        // Flags (utiliser 0 pour aucune option spéciale)
@@ -133,7 +131,7 @@ mqd_t create_message_queue() {
 }
 
 
-mqd_t open_message_queue() {
+mqd_t open_message_queue(void) {
     mqd_t mq = mq_open(QUEUE_NAME, O_RDWR);
     if (mq == (mqd_t) -1) {
         perror("mq_open");

@@ -10,6 +10,9 @@ volatile int timer_citizens[MAX_CITIZEN_COUNT];
 
 sem_t* move_sem;
 
+pthread_mutex_t timer_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t timer_cond = PTHREAD_COND_INITIALIZER;
+
 void set_semaphore(sem_t* sem) {
     move_sem = sem;
 }
@@ -20,6 +23,8 @@ void timer_handler(int signum) {
     for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
         timer_citizens[i] = 1;
     }
+    pthread_cond_broadcast(&timer_cond);
+    pthread_mutex_unlock(&timer_mutex);
 }
 
 void set_timer_citizens(void) {
@@ -45,8 +50,19 @@ void move_citizen(citizen_monitor_args_t* arg, int row, int column) {
     memory_t* mem;
     character_t* citizen;
 
+    if (arg == NULL) {
+        return;
+    }
+
     mem = arg->mem;
+    if (mem == NULL) {
+        return;
+    }
+
     citizen = &(mem->citizens[arg->index]);
+    if (citizen == NULL) {
+        return;
+    }
 
     start_row = citizen->row;
     start_column = citizen->column;
@@ -73,8 +89,19 @@ void* citizen_to_work(void* args) {
     int column;
 
     arg = (citizen_monitor_args_t*) args;
+    if (arg == NULL) {
+        return NULL;
+    }
+
     index = arg->index;
+    if (index < 0 || index >= MAX_CITIZEN_COUNT) {
+        return NULL;
+    }
+
     mem = arg->mem;
+    if (mem == NULL) {
+        return NULL;
+    }
 
     citizen = &(mem->citizens[index]);
     row = citizen->work_row;
@@ -82,10 +109,14 @@ void* citizen_to_work(void* args) {
 
 
     while (!is_at_work(*citizen)) {
-        if (timer_citizens[index] == 1) {
-            move_citizen(arg, row, column);
-            timer_citizens[index] = 0;
+        pthread_mutex_lock(&timer_mutex);
+        while (timer_citizens[index] == 0) {
+            pthread_cond_wait(&timer_cond, &timer_mutex);
         }
+        move_citizen(arg, row, column);
+        timer_citizens[index] = 0;
+        pthread_mutex_unlock(&timer_mutex);
+        usleep(10);
     }
     return NULL;
 }
@@ -99,17 +130,37 @@ void* citizen_to_home(void* args) {
     int column;
 
     arg = (citizen_monitor_args_t*) args;
+    if (arg == NULL) {
+        return NULL;
+    }
+
     index = arg->index;
+    if (index < 0 || index >= MAX_CITIZEN_COUNT) {
+        return NULL;
+    }
+
     mem = arg->mem;
+    if (mem == NULL) {
+        return NULL;
+    }
+
     citizen = &(mem->citizens[index]);
+    if (citizen == NULL) {
+        return NULL;
+    }
+
     row = citizen->home_row;
     column = citizen->home_column;
 
     while (!is_at_home(*citizen)) {
-        if (timer_citizens[index] == 1) {
-            move_citizen(arg, row, column);
-            timer_citizens[index] = 0;
+        pthread_mutex_lock(&timer_mutex);
+        while (timer_citizens[index] == 0) {
+            pthread_cond_wait(&timer_cond, &timer_mutex);
         }
+        move_citizen(arg, row, column);
+        timer_citizens[index] = 0;
+        pthread_mutex_unlock(&timer_mutex);
+        usleep(10);
     }
     return NULL;
 }
@@ -141,19 +192,25 @@ void* citizen_to_home_supermarket(void* args) {
 
     if (have_to_go_to_supermarket) {
         while (!character_is_at(*citizen, supermarket_coordinates[supermarket_id])) {
-            if (timer_citizens[index] == 1) {
-                move_citizen(arg, supermarket_coordinates[supermarket_id].row,
-                             supermarket_coordinates[supermarket_id].column);
-                timer_citizens[index] = 0;
+            pthread_mutex_lock(&timer_mutex);
+            while (timer_citizens[index] == 0) {
+                pthread_cond_wait(&timer_cond, &timer_mutex);
             }
+            move_citizen(arg, supermarket_coordinates[supermarket_id].row,
+                         supermarket_coordinates[supermarket_id].column);
+            timer_citizens[index] = 0;
+            pthread_mutex_unlock(&timer_mutex);
         }
     }
 
     while (!is_at_home(*citizen)) {
-        if (timer_citizens[index] == 1) {
-            move_citizen(arg, row, column);
-            timer_citizens[index] = 0;
+        pthread_mutex_lock(&timer_mutex);
+        while (timer_citizens[index] == 0) {
+            pthread_cond_wait(&timer_cond, &timer_mutex);
         }
+        move_citizen(arg, row, column);
+        timer_citizens[index] = 0;
+        pthread_mutex_unlock(&timer_mutex);
     }
     return NULL;
 }
@@ -174,7 +231,10 @@ void create_morning_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT],
         //printf("Création des threads du matin\n");
 #endif
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
-            pthread_create(&ids[i], NULL, citizen_to_work, (void*) args[i]);
+            if (pthread_create(&ids[i], NULL, citizen_to_work, (void*) args[i]) == 1){
+                perror("pthread_create");
+                exit(EXIT_FAILURE);
+            }
         }
         for (j = 0; j < MAX_CITIZEN_COUNT; j++) {
             pthread_join(ids[j], NULL);
@@ -189,7 +249,10 @@ void create_evening_company_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUN
     if (mem->timer.hours == 17 && mem->timer.minutes == 0) {
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             if (!work_in_supermarket(*mem, mem->citizens[i])) {
-                pthread_create(&ids[i], NULL, citizen_to_home_supermarket, (void*) args[i]);
+                if (pthread_create(&ids[i], NULL, citizen_to_home_supermarket, (void*) args[i]) == 1){
+                    perror("pthread_create");
+                    exit(EXIT_FAILURE);
+                }
             }
         }
         for (j = 0; j < MAX_CITIZEN_COUNT; j++) {
@@ -207,7 +270,10 @@ void create_evening_supermarket_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_
     if (mem->timer.hours == 20 && mem->timer.minutes == 0) {
         for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
             if (work_in_supermarket(*mem, mem->citizens[i])) {
-                pthread_create(&ids[i], NULL, citizen_to_home, (void*) args[i]);
+                if (pthread_create(&ids[i], NULL, citizen_to_home, (void*) args[i]) == 1){
+                    perror("pthread_create");
+                    exit(EXIT_FAILURE);
+                }
             }
         }
         for (j = 0; j < MAX_CITIZEN_COUNT; j++) {
@@ -234,6 +300,10 @@ void create_citizens_thread(memory_t* mem) {
         create_morning_thread(mem, ids, args);
         create_evening_company_thread(mem, ids, args);
         create_evening_supermarket_thread(mem, ids, args);
+    }
+
+    for (i = 0; i < MAX_CITIZEN_COUNT; i++) {
+        free(args[i]);
     }
 }
 

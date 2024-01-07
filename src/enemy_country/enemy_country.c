@@ -29,25 +29,22 @@ void writeToSharedMemory(memory_t* mem) {
         }
 
         pos = strchr(buffer, '-');
+        if (pos == NULL) {
+            log_info("- not find !\n");
+            continue;
+        }
         *pos = '\0';
         pos++;
         priority = strtol(pos, &endptr, 10);
 
-
+        if (mem->mailbox_size == MAX_MAILBOX_SIZE) {
+            log_info("Mailbox is full. Message is not added to the mailbox.\n");
+            continue;
+        }
         strcpy(mem->encrpyted_messages[mem->mailbox_size].msg_text, buffer);
         mem->encrpyted_messages[mem->mailbox_size].is_encrypted = 0;
         mem->encrpyted_messages[mem->mailbox_size].priority = priority;
         mem->mailbox_size++;
-
     }
-
     mq_close(mq);
 }
-
-
-
-
-
-
-
-
