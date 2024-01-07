@@ -31,8 +31,6 @@ MU_TEST(test_caesarCipher) {
     mu_check(strcmp(message, "def") == 0);
 }
 
-
-
 MU_TEST_SUITE(test_suite) {
     MU_RUN_TEST(test_create_queue);
     MU_RUN_TEST(test_euclidean_distance);
