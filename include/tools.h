@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define MAX_PATH_LENGTH 1000
+#define MAX_PATH_LENGTH 100
 #define CITY_SIZE 7
 
 typedef struct thread_s thread_t;
@@ -20,7 +20,7 @@ struct thread_s {
 
 // Structure for queue node
 
-#define MAX_QUEUE_SIZE 1000 // Taille maximale de la queue
+#define MAX_QUEUE_SIZE 100 // Taille maximale de la queue
 
 struct queue_node_s{
     coordinate_t cell;
@@ -31,6 +31,7 @@ struct queue_s{
     int front; // Indice du premier élément
     int rear;  // Indice du dernier élément
     int size;  // Nombre d'éléments actuels dans la queue
+    pthread_mutex_t mutex; // Mutex pour protéger la file d'attente
 };
 
 void create_queue(queue_t *q);

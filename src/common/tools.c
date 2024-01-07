@@ -16,32 +16,44 @@ void create_queue(queue_t *q) {
     q->front = 0;
     q->rear = -1;
     q->size = 0;
+    pthread_mutex_init(&q->mutex, NULL); // Initialiser le mutex
 }
 
 int en_queue(queue_t *q, coordinate_t cell) {
+    pthread_mutex_lock(&q->mutex); // Verrouiller le mutex avant de modifier la file
     if (q->size == MAX_QUEUE_SIZE) {
+        pthread_mutex_unlock(&q->mutex); // Déverrouiller avant de retourner
         return -1; // La queue est pleine
     }
 
     q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
     q->nodes[q->rear] = (queue_node_t){cell};
     q->size++;
+    pthread_mutex_unlock(&q->mutex); // Déverrouiller après avoir modifié la file
     return 0; // Enfilé avec succès
 }
 
 coordinate_t de_queue(queue_t *q) {
+    pthread_mutex_lock(&q->mutex); // Verrouiller le mutex avant de modifier la file
     if (q->size == 0) {
+        pthread_mutex_unlock(&q->mutex); // Déverrouiller avant de retourner
         return (coordinate_t){-1, -1}; // La queue est vide
     }
 
     coordinate_t cell = q->nodes[q->front].cell;
     q->front = (q->front + 1) % MAX_QUEUE_SIZE;
     q->size--;
+
+    pthread_mutex_unlock(&q->mutex); // Déverrouiller après avoir modifié la file
     return cell;
 }
 
 int is_queue_empty(queue_t *q) {
     return q->size == 0;
+}
+
+void destroy_queue(queue_t *q) {
+    pthread_mutex_destroy(&q->mutex);
 }
 
 int bfs_find_path(city_t *city, coordinate_t start, coordinate_t end, coordinate_t *path) {
@@ -84,6 +96,8 @@ int bfs_find_path(city_t *city, coordinate_t start, coordinate_t end, coordinate
             }
         }
     }
+
+    destroy_queue(queue);
 
     // Reconstruire le chemin
     int path_length = 0;
