@@ -490,7 +490,7 @@ void* attempt_information_theft(void* arg) {
     }
 
     if (current_agent->character.health > 0) {
-        post_message(priority, type);
+        post_message(priority, type_of_message);
     }
     //post_message(priority, type);
     current_agent->targeted_companies_count = 0;
@@ -541,7 +541,6 @@ void post_message(InformationCruciality priority, int type) {
     sem_post(semaphore_message);
 
     mq_close(mq);
-    close_semaphore(semaphore_message);
 }
 
 InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company) {

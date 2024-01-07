@@ -96,12 +96,12 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
                    is_cell_accessible(city->cells, current_row, current_column + step_col, character)) {
             current_column += step_col;
         } else {
-            // Prendre un détour
+            // Take a deviation
             int neighbouring_cells_count = 0;
             coordinate_t* neighbouring_cells = findNeighbouringCells(city, current_row, current_column,
                                                                      &neighbouring_cells_count);
 
-            // Trouver la cellule la plus proche de l'objectif
+            // Find the neighbouring cell that is the closest to the end cell
             int min_distance = INT_MAX;
             int min_distance_index = -1;
 
@@ -123,7 +123,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
         }
     }
 
-    // Mettre a jour les nouvelles positions
+    // Update the new position
     *new_pos_row = current_row;
     *new_pos_col = current_column;
 }
