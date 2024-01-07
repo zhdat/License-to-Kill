@@ -70,10 +70,10 @@ make doc
 
 ## Authors
 
-* Clément Jantet <clement[dot]jantet[at]ecole[dot]ensicaen[dot]fr>
-* Calliste Ravix <calliste[dot]ravix[at]ecole[dot]ensicaen[dot]fr>
-* Guillain Le Goff <guillain[dot]le-goff[at]ecole[dot]ensicaen[dot]fr>
-* Maxime Michel <maxime[dot]michel[at]ecole[dot]ensicaen[dot]fr>
+* Clément Jantet <clement.jantet@ecole.ensicaen.fr>
+* Calliste Ravix <calliste.ravix@ecole.ensicaen.fr>
+* Guillain Le Goff <guillain.le-goff@ecole.ensicaen.fr>
+* Maxime Michel <maxime.michel@ecole.ensicaen.fr>
 
 ## License
 
