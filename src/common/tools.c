@@ -46,8 +46,8 @@ static int is_cell_full(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row
     }
 }
 
-static int is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
-    /*
+static int
+is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
     coordinate_t home_cell = {character.home_row, character.home_column};
     coordinate_t work_cell = {character.work_row, character.work_column};
     coordinate_t moveto_cell = {row, col};
@@ -59,7 +59,6 @@ static int is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], i
         return 0;
     }
     return 1;
-    */
 }
 
 int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
@@ -85,20 +84,19 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
 
     int current_row = cell_start.row, current_column = cell_start.column;
 
-    // Diagonal movement
+    // Try to move diagonally
     if (is_cell_accessible(city->cells, current_row + step_row, current_column + step_col, character)) {
         current_row += step_row;
         current_column += step_col;
     } else {
-        // Vertical movement
+        // Try to move vertically or horizontally
         if (step_row != 0 && is_cell_accessible(city->cells, current_row + step_row, current_column, character)) {
             current_row += step_row;
-        // Horizontal movement
         } else if (step_col != 0 &&
                    is_cell_accessible(city->cells, current_row, current_column + step_col, character)) {
             current_column += step_col;
-        // Otherwise, Try a random movement to a neighbouring cell
         } else {
+            // Try a random move to a neighbouring cell
             coordinate_t* neighbouring_cells;
             int neighbouring_cells_count = 0;
             neighbouring_cells = findNeighbouringCells(city, current_row, current_column, &neighbouring_cells_count);
@@ -114,10 +112,9 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
         }
     }
 
-    // Update position
+    // Mettre a jour les nouvelles positions
     *new_pos_row = current_row;
     *new_pos_col = current_column;
-
 }
 
 coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbouring_cells_count) {
@@ -126,7 +123,7 @@ coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbo
 
     for (int d_row = -1; d_row <= 1; d_row++) {
         for (int d_col = -1; d_col <= 1; d_col++) {
-            if (d_row != 0 || d_col != 0) {
+            if (d_row != 0 || d_col != 0) { // Avoid the current cell
                 if (!is_cell_full(city->cells, row + d_row, col + d_col) && is_cell_valid(row + d_row, col + d_col)) {
                     neighbouring_cells[count].row = row + d_row;
                     neighbouring_cells[count].column = col + d_col;

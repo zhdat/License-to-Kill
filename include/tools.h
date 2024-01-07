@@ -19,8 +19,6 @@
 #define MAX_QUEUE_SIZE 100 /**< Maximum size of the queue used in the simulation */
 
 typedef struct thread_s thread_t;
-typedef struct queue_node_s queue_node_t;
-typedef struct queue_s queue_t;
 
 /**
  * @struct thread_s
@@ -110,33 +108,6 @@ void decrements_population_in_cell(memory_t* mem, int col, int row);
 coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbouring_cells_count);
 
 /**
- * @brief Find the shortest path from start to end using a custom algorithm.
- *
- * @param city Pointer to the city grid structure.
- * @param start The starting coordinate for the path.
- * @param end The ending coordinate for the path.
- * @param path Array to store the path coordinates.
- * @param path_length Pointer to store the length of the path found.
- * @param character The character for whom the path is being found.
- */
-void find_shortest_path(city_t* city, coordinate_t start, coordinate_t end, coordinate_t* path, int* path_length,
-                        character_t character);
-
-/**
- * @brief Checks if a cell is accessible for a given character.
- *
- * Determines whether a particular cell in the grid is accessible based on the character's
- * attributes and the properties of the cell.
- *
- * @param cells The grid of cells in the city.
- * @param row The row index of the cell to check.
- * @param col The column index of the cell to check.
- * @param character The character attempting to access the cell.
- * @return int Returns 1 if the cell is accessible, 0 otherwise.
- */
-int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character);
-
-/**
  * @brief Determines the next move for a character based on the start and end cells.
  *
  * This function calculates the next position for a character to move towards the target
@@ -152,6 +123,22 @@ int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row,
  */
 void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row,
                character_t character);
+
+/**
+ * @brief Checks if a cell is accessible for a given character.
+ *
+ * Determines whether a particular cell in the grid is accessible based on the character's
+ * attributes and the properties of the cell.
+ *
+ * @param cells The grid of cells in the city.
+ * @param row The row index of the cell to check.
+ * @param col The column index of the cell to check.
+ * @param character The character attempting to access the cell.
+ * @return int Returns 1 if the cell is accessible, 0 otherwise.
+ */
+int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character);
+
+// Additional utility functions...
 
 /**
  * @brief Checks if two cells are the same.
