@@ -203,21 +203,18 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
             current_column += step_col;
         } else {
             // Prendre un détour
-            bool detour_taken = false;
-            for (int d_row = -1; d_row <= 1; d_row++) {
-                for (int d_col = -1; d_col <= 1; d_col++) {
-                    if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
-                        if (is_cell_accessible(city->cells, current_row + d_row, current_column + d_col, character)) {
-                            current_row += d_row;
-                            current_column += d_col;
-                            detour_taken = true;
-                            break;
-                        }
-                    }
-                }
-                if (detour_taken) {
-                    break;
-                }
+            coordinate_t* neighbouring_cells;
+            int neighbouring_cells_count = 0;
+            neighbouring_cells = findNeighbouringCells(city, current_row, current_column, &neighbouring_cells_count);
+
+            if (neighbouring_cells_count > 0) {
+                int random_index = selectRandomNumberUnder(neighbouring_cells_count);
+                current_row = neighbouring_cells[random_index].row;
+                current_column = neighbouring_cells[random_index].column;
+            } else {
+                // Aucune cellule voisine n'est accessible, rester sur place
+                current_row = cell_start.row;
+                current_column = cell_start.column;
             }
         }
     }
@@ -245,7 +242,7 @@ void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int
         *new_pos_row = cell_start.row;
         *new_pos_col = cell_start.column;
     }
-     */
+    */
 }
 
 coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbouring_cells_count) {
@@ -254,8 +251,8 @@ coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbo
 
     for (int d_row = -1; d_row <= 1; d_row++) {
         for (int d_col = -1; d_col <= 1; d_col++) {
-            if (d_row != 0 || d_col != 0) { // Éviter la cellule actuelle
-                if (!is_cell_full(city->cells, row + d_row, col + d_col)) {
+            if (d_row != 0 || d_col != 0) { // Avoid the current cell
+                if (!is_cell_full(city->cells, row + d_row, col + d_col) && is_cell_valid(row + d_row, col + d_col)) {
                     neighbouring_cells[count].row = row + d_row;
                     neighbouring_cells[count].column = col + d_col;
                     count++;
@@ -311,7 +308,6 @@ void caesarCipher(char* message, int shift) {
 }
 
 void decrpyt_message(char* message, int shift) {
-    // Logique de déchiffrement
     int i = 0;
     while (message[i] != '\0') {
         if (message[i] >= 'a' && message[i] <= 'z') {
@@ -370,8 +366,6 @@ char* generateSpyMessage(MessageBank* bank, InformationCruciality importance) {
 
     if (messageCount > 0) {
         int randomIndex = selectRandomNumberUnder(messageCount);
-        //log_info("tentative de genération de message avec importance %d", importance);
-        //log_info("Message généré: %s", bank->messages[importance][randomIndex]);
         return bank->messages[importance][randomIndex];
     } else {
         return "Aucun message disponible pour ce niveau de crucialité.";
