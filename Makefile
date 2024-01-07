@@ -176,5 +176,6 @@ clean:
 
 distclean: clean
 	rm -rf bin/*
-	rm -rf /dev/shm/nothinghere /dev/shm/sem.*
+	rm -rf /dev/shm/nothinghere
+	rm -rf /dev/shm/sem.*
 	rm -rf doc/html
