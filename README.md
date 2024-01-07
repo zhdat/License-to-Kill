@@ -74,7 +74,3 @@ make doc
 * Calliste Ravix <calliste.ravix@ecole.ensicaen.fr>
 * Guillain Le Goff <guillain.le-goff@ecole.ensicaen.fr>
 * Maxime Michel <maxime.michel@ecole.ensicaen.fr>
-
-## License
-
-This project is under the Apache 2.0 license. See the LICENSE file for more details.
