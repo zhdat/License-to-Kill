@@ -58,6 +58,7 @@ struct source_agent_s {
     int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
     coordinate_t targeted_companies[NUMBER_OF_COMPANIES]; /*!< The targeted companies. */
     int targeted_companies_count; /*!< The number of targeted companies. */
+    char stolen_message[MAX_LENGTH_OF_MESSAGE]; /*!< The stolen message. */
 };
 
 /**
@@ -69,6 +70,7 @@ struct attending_officer_s {
     int mailbox_row; /*!< The row of the mailbox. */
     int mailbox_column; /*!< The column of the mailbox. */
     int is_attacked; /*!< 1 if he is attacked, 0 otherwise. */
+    int have_messages ; /*!< 1 if he has messages, 0 otherwise. */
 };
 
 /**

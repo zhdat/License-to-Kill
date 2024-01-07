@@ -62,6 +62,7 @@ source_agent_t new_spy_with_licence(int row, int column) {
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
     spy.targeted_companies_count = 0;
+    strcpy(spy.stolen_message, EMPTY);
 
     return spy;
 
@@ -82,6 +83,7 @@ source_agent_t new_spy_without_licence(int row, int column) {
     spy.nb_of_stolen_companies = 0;
     spy.is_attacked = 0;
     spy.targeted_companies_count = 0;
+    strcpy(spy.stolen_message, EMPTY);
 
     return spy;
 }
@@ -107,6 +109,7 @@ attending_officer_t new_case_officer(int row, int column) {
     case_officer.character.work_row = -1;
     case_officer.character.work_column = -1;
     case_officer.is_attacked = 0;
+    case_officer.have_messages = 0;
 
     return case_officer;
 }

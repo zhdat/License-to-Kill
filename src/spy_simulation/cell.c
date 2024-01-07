@@ -192,8 +192,8 @@ coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int co
     }
 
     int found = 0; // Counter for found buildings
-    for (int i = 0; i < city->width; ++i) {
-        for (int j = 0; j < city->height; ++j) {
+    for (int i = 0; i < city->width; i++) {
+        for (int j = 0; j < city->height; j++) {
             if (city->cells[j][i].type == building_type) {
                 coordinates[found].row = i;
                 coordinates[found].column = j;

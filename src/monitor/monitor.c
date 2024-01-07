@@ -326,7 +326,7 @@ void display_spy_information(WINDOW* window, memory_t* mem, int row, int column,
     home_column = mem->source_agents[number].character.home_column;
     nb_of_stolen_companies = mem->source_agents[number].nb_of_stolen_companies;
     has_license_to_kill = mem->source_agents[number].has_licence_to_kill;
-    strcpy(stolen_message_content, "bla bla bla");
+    strcpy(stolen_message_content, mem->source_agents[number].stolen_message);
 
     /* ---------------------------------------------------------------------- */
 
