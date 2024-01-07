@@ -8,9 +8,9 @@
 
 volatile int signal_received_officer = 0;
 
-sem_t *move_sem;
+sem_t* move_sem;
 
-void set_semaphore(sem_t *sem) {
+void set_semaphore(sem_t* sem) {
     move_sem = sem;
 }
 
@@ -29,10 +29,10 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
-void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int column, int index) {
+void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index) {
     int start_row, start_column;
-    memory_t *mem = arg->mem;
-    counter_intelligence_officer_t *officer = &(mem->counter_intelligence_officers[arg->id]);
+    memory_t* mem = arg->mem;
+    counter_intelligence_officer_t* officer = &(mem->counter_intelligence_officers[arg->id]);
     coordinate_t start_cell;
     coordinate_t end_cell;
 
@@ -46,11 +46,12 @@ void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int 
 
     sem_wait(move_sem);
     decrements_population_in_cell(mem, start_column, start_row);
-    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row, officer->character);
+    next_move(&(mem->city_map), start_cell, end_cell, &officer->character.column, &officer->character.row,
+              officer->character);
     increments_population_in_cell(mem, officer->character.column, officer->character.row);
 
     // Vérifier si un l'espion ciblé est sur la même cellule
-    source_agent_t *agent = &(mem->source_agents[index]);
+    source_agent_t* agent = &(mem->source_agents[index]);
     if (agent->character.row == officer->character.row && agent->character.column == officer->character.column &&
         agent->character.id == officer->targeted_character_id) {
         // Un espion est sur la même cellule, envoyez un signal SIGUSR1
@@ -75,10 +76,10 @@ void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int 
     sem_post(move_sem);
 }
 
-void *all_day_counter_intelligence_officer(void *args) {
-    officer_thread_args_t *arg = (officer_thread_args_t *) args;
-    memory_t *mem = arg->mem;
-    counter_intelligence_officer_t *officer = &(mem->counter_intelligence_officers[arg->id]);
+void* all_day_counter_intelligence_officer(void* args) {
+    officer_thread_args_t* arg = (officer_thread_args_t*) args;
+    memory_t* mem = arg->mem;
+    counter_intelligence_officer_t* officer = &(mem->counter_intelligence_officers[arg->id]);
 
     while (officer->targeted_character_id != -1) {
         if (signal_received_officer == 1) {
@@ -96,9 +97,9 @@ void *all_day_counter_intelligence_officer(void *args) {
     pthread_exit(NULL);
 }
 
-void create_counter_intelligence_officer_thread(all_threads_t *args) {
+void create_counter_intelligence_officer_thread(all_threads_t* args) {
     pthread_attr_t attr;
-    officer_thread_args_t *ptr;
+    officer_thread_args_t* ptr;
 
     ptr = &args->counter_intelligence_officer_args[0];
     pthread_attr_init(&attr);
@@ -113,9 +114,9 @@ void create_counter_intelligence_officer_thread(all_threads_t *args) {
     }
 }
 
-void create_counter_intelligence_officer_threads(memory_t *mem) {
-    all_threads_t *threads;
-    threads = (all_threads_t *) malloc(sizeof(all_threads_t));
+void create_counter_intelligence_officer_threads(memory_t* mem) {
+    all_threads_t* threads;
+    threads = (all_threads_t*) malloc(sizeof(all_threads_t));
     if (threads == NULL) {
         perror("malloc");
         exit(EXIT_FAILURE);

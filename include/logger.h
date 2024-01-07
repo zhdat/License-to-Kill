@@ -26,10 +26,10 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
-void log_error(const char *message, ...);
+void log_error(const char* message, ...);
 
-void log_info(const char *message, ...);
+void log_info(const char* message, ...);
 
-void log_debug(const char *message, ...);
+void log_debug(const char* message, ...);
 
 #endif /* LOGGER_H */

@@ -34,7 +34,7 @@ typedef struct monitor_s monitor_t;
  *
  * \param msg The message to display before quitting.
  */
-void quit_after_error(const char *msg);
+void quit_after_error(const char* msg);
 
 /**
  * \brief Quit nicely.
@@ -49,7 +49,7 @@ void quit_nicely(int reason);
  * \param window The sub-window.
  * \param row The row of the line to clear
  */
-void clear_line(WINDOW *window, int row);
+void clear_line(WINDOW* window, int row);
 
 /**
  * \brief Returns the size of the terminal.
@@ -57,7 +57,7 @@ void clear_line(WINDOW *window, int row);
  * \param rows The number of rows.
  * \param cols The number of columns.
  */
-void get_terminal_size(int *rows, int *cols);
+void get_terminal_size(int* rows, int* cols);
 
 /**
  *
@@ -65,7 +65,7 @@ void get_terminal_size(int *rows, int *cols);
  * \param cols The number of columns.
  * @return 1 if the terminal size is larger enough, otherwise 0.
  */
-int is_terminal_size_larger_enough(int *rows, int *cols);
+int is_terminal_size_larger_enough(int* rows, int* cols);
 
 /**
  * \brief Sets up the timer using the TIME_STEP value.

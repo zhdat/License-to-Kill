@@ -14,14 +14,14 @@
 
 static int _fd = -1;
 
-static memory_t *_mem;
+static memory_t* _mem;
 
-void set_memory(memory_t *mem) {
+void set_memory(memory_t* mem) {
     _mem = mem;
 }
 
-memory_t *create_shared_memory(void) {
-    memory_t *mem;
+memory_t* create_shared_memory(void) {
+    memory_t* mem;
 
     _fd = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0644);
 
@@ -39,13 +39,13 @@ memory_t *create_shared_memory(void) {
         exit(EXIT_FAILURE);
     }
 
-    mem = (memory_t *) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
+    mem = (memory_t*) mmap(NULL, sizeof(memory_t), PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
 
     return mem;
 }
 
-void set_spies(memory_t *mem) {
-    source_agent_factory_t *spy_factory_has_license, *spy_factory_has_not_license;
+void set_spies(memory_t* mem) {
+    source_agent_factory_t* spy_factory_has_license, * spy_factory_has_not_license;
     source_agent_t spy;
 
     spy_factory_has_license = new_source_agent_factory(new_spy_with_licence);
@@ -69,8 +69,8 @@ void set_spies(memory_t *mem) {
 
 }
 
-void set_citizens(memory_t *mem) {
-    character_factory_t *citizen_factory;
+void set_citizens(memory_t* mem) {
+    character_factory_t* citizen_factory;
     character_t citizen;
 
     citizen_factory = new_character_factory(new_citizen);
@@ -86,8 +86,8 @@ void set_citizens(memory_t *mem) {
     }
 }
 
-void set_attending_officers(memory_t *mem) {
-    attending_officer_factory_t *attending_officer_factory;
+void set_attending_officers(memory_t* mem) {
+    attending_officer_factory_t* attending_officer_factory;
     attending_officer_t attending_officer;
 
     attending_officer_factory = new_attending_officer_factory(new_case_officer);
@@ -107,8 +107,8 @@ void set_attending_officers(memory_t *mem) {
     }
 }
 
-void set_counter_intelligence_officers(memory_t *mem) {
-    counter_intelligence_officer_factory_t *counterintelligence_officer_factory;
+void set_counter_intelligence_officers(memory_t* mem) {
+    counter_intelligence_officer_factory_t* counterintelligence_officer_factory;
     counter_intelligence_officer_t counter_intelligence_officer;
 
     counterintelligence_officer_factory = new_counter_intelligence_officer_factory(new_counter_intelligence_officer);
@@ -133,27 +133,27 @@ void set_counter_intelligence_officers(memory_t *mem) {
 }
 
 
-coordinate_t *get_residential_buildings(memory_t *mem) {
+coordinate_t* get_residential_buildings(memory_t* mem) {
 
-    coordinate_t *residential_buildings;
+    coordinate_t* residential_buildings;
     residential_buildings = findTypeOfBuilding(&(mem->city_map), RESIDENTIAL_BUILDING, NUMBER_OF_RESIDENTIAL_BUILDINGS);
     return residential_buildings;
 }
 
-void set_mailbox(memory_t *mem) {
-    coordinate_t *residential_buildings;
+void set_mailbox(memory_t* mem) {
+    coordinate_t* residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     int randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
     mem->mailbox_coordinate.row = residential_buildings[randomResidentialBuilding].row;
     mem->mailbox_coordinate.column = residential_buildings[randomResidentialBuilding].column;
 }
 
-coordinate_t get_mailbox(memory_t *mem) {
+coordinate_t get_mailbox(memory_t* mem) {
     return mem->mailbox_coordinate;
 }
 
-coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
-    coordinate_t *residential_buildings;
+coordinate_t get_residence_near_mailbox(memory_t* mem, int max_distance) {
+    coordinate_t* residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     int randomResidentialBuilding = selectRandomNumberUnder(NUMBER_OF_RESIDENTIAL_BUILDINGS);
     coordinate_t residence = residential_buildings[randomResidentialBuilding];
@@ -170,8 +170,8 @@ coordinate_t get_residence_near_mailbox(memory_t *mem, int max_distance) {
 }
 
 
-coordinate_t find_random_low_populated_residence(memory_t *mem) {
-    coordinate_t *residential_buildings;
+coordinate_t find_random_low_populated_residence(memory_t* mem) {
+    coordinate_t* residential_buildings;
     residential_buildings = get_residential_buildings(mem);
     coordinate_t mailbox = get_mailbox(mem);
     coordinate_t residence = residential_buildings[0];
@@ -201,12 +201,12 @@ coordinate_t find_random_low_populated_residence(memory_t *mem) {
 }
 
 
-void affect_work_to_citizens(memory_t *mem) {
-    coordinate_t *companies;
+void affect_work_to_citizens(memory_t* mem) {
+    coordinate_t* companies;
     companies = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
-    coordinate_t *supermarkets;
+    coordinate_t* supermarkets;
     supermarkets = findTypeOfBuilding(&(mem->city_map), SUPERMARKET, NUMBER_OF_SUPERMARKETS);
-    coordinate_t *city_halls;
+    coordinate_t* city_halls;
     city_halls = findTypeOfBuilding(&(mem->city_map), CITY_HALL, NUMBER_OF_CITY_HALLS);
 
     int randomSupermarketID;
@@ -269,8 +269,8 @@ void affect_work_to_citizens(memory_t *mem) {
 }
 
 
-void set_company_employees(memory_t *mem) {
-    coordinate_t *companies_coordinates = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
+void set_company_employees(memory_t* mem) {
+    coordinate_t* companies_coordinates = findTypeOfBuilding(&(mem->city_map), COMPANY, NUMBER_OF_COMPANIES);
     for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
         coordinate_t current_company = companies_coordinates[i];
         mem->companies_priority[i].column = current_company.column;
@@ -317,13 +317,13 @@ InformationDistribution getInformationDistribution(int numberOfEmployees) {
     return distribution;
 }
 
-void set_city_map(memory_t *mem) {
+void set_city_map(memory_t* mem) {
     clear_city(&(mem->city_map));
     init_city(&(mem->city_map));
     set_mailbox(mem);
 }
 
-void set_characters(memory_t *mem) {
+void set_characters(memory_t* mem) {
     set_spies(mem);
     set_citizens(mem);
     set_attending_officers(mem);
@@ -332,12 +332,12 @@ void set_characters(memory_t *mem) {
     set_company_employees(mem);
 }
 
-void set_mailbox_messages(memory_t *mem) {
+void set_mailbox_messages(memory_t* mem) {
     mem->mailbox_size = 0;
     mem->decrypted_mailbox_size = 0;
 }
 
-void set_content_memory(memory_t *mem) {
+void set_content_memory(memory_t* mem) {
     srand(time(NULL));
     mem->memory_has_changed = 1;
     mem->simulation_has_ended = 0;

@@ -17,7 +17,9 @@
 #ifdef __APPLE__
 #include "macosx/mqueue.h"
 #elif __linux__
+
 #include <mqueue.h>
+
 #endif
 
 
@@ -35,7 +37,7 @@
  *
  * \param mem Pointer to the shared memory structure where messages are stored.
  */
-void writeToSharedMemory(memory_t *mem);
+void writeToSharedMemory(memory_t* mem);
 
 
 #endif //TP_SYS2_ENEMY_COUNTRY_H

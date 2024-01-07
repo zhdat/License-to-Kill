@@ -18,7 +18,7 @@
  * for the simulation and waits for them to finish.
  */
 
-void handle_fatal_error_and_exit(const char *msg) {
+void handle_fatal_error_and_exit(const char* msg) {
     perror(msg);
     exit(EXIT_FAILURE);
 }
@@ -42,12 +42,12 @@ void wait_children(int nb_children) {
     }
 }
 
-char **args_for_timer(pid_t *array_pid) {
+char** args_for_timer(pid_t* array_pid) {
     int i, count_program;
-    char **array_args = (char **) malloc((NUMBER_OF_ARGS_TIMER) * sizeof(char *));
+    char** array_args = (char**) malloc((NUMBER_OF_ARGS_TIMER) * sizeof(char*));
 
     for (i = 0; i < NUMBER_OF_ARGS_TIMER; i++) {
-        array_args[i] = (char *) malloc(15 * sizeof(char));
+        array_args[i] = (char*) malloc(15 * sizeof(char));
     }
 
     array_args[0] = "timer";
@@ -62,7 +62,7 @@ char **args_for_timer(pid_t *array_pid) {
     return array_args;
 }
 
-void free_args_for_timer(char **array_args) {
+void free_args_for_timer(char** array_args) {
     for (int i = 0; i < NUMBER_OF_PROGRAMS; i++) {
         free(array_args[i]);
     }
@@ -70,10 +70,10 @@ void free_args_for_timer(char **array_args) {
 }
 
 int main(void) {
-    pid_t *pids = (pid_t *) malloc(sizeof(pid_t) * (NUMBER_OF_PROGRAMS));
+    pid_t* pids = (pid_t*) malloc(sizeof(pid_t) * (NUMBER_OF_PROGRAMS));
     pid_t pid_timer;
     pids[1] = create_child();
-    char **array_args_timer = NULL;
+    char** array_args_timer = NULL;
 
     if (pids[1] == 0) {
         execlp("./bin/spy_simulation", "spy_simulation", NULL);

@@ -1,10 +1,10 @@
 #include "timer.h"
 
-static memory_t *mem;
+static memory_t* mem;
 static int number_of_pids = 0;
-static int *pids;
+static int* pids;
 
-void set_memory(memory_t *memory_start) {
+void set_memory(memory_t* memory_start) {
     mem = memory_start;
     mem->timer.days = 0;
     mem->timer.hours = 0;
@@ -13,15 +13,15 @@ void set_memory(memory_t *memory_start) {
     mem->timer.turns = 0;
 }
 
-void set_pids(int argc, char **argv) {
+void set_pids(int argc, char** argv) {
     number_of_pids = argc - 2;
-    pids = (int *) malloc(number_of_pids * sizeof(int));
+    pids = (int*) malloc(number_of_pids * sizeof(int));
     for (int i = 0; i < number_of_pids; i++) {
         pids[i] = (int) strtol(argv[i + 2], NULL, 10);
     }
 }
 
-int simulationFinished(memory_t *memory) {
+int simulationFinished(memory_t* memory) {
     if (memory->simulation_has_ended != 0) {
         return 1;
     }

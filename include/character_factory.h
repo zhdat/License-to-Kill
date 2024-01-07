@@ -37,7 +37,7 @@ typedef struct counter_intelligence_officer_factory_s counter_intelligence_offic
  * properties and behaviors.
  */
 struct character_factory_s {
-    character_t (*factory_method)(int, int);
+    character_t (* factory_method)(int, int);
 };
 
 /**
@@ -48,7 +48,7 @@ struct character_factory_s {
  * source agent characters, a specialized type of character in the spy simulation.
  */
 struct source_agent_factory_s {
-    source_agent_t (*factory_method)(int, int);
+    source_agent_t (* factory_method)(int, int);
 };
 
 /**
@@ -60,7 +60,7 @@ struct source_agent_factory_s {
  * simulation context.
  */
 struct attending_officer_factory_s {
-    attending_officer_t (*factory_method)(int, int);
+    attending_officer_t (* factory_method)(int, int);
 };
 
 /**
@@ -72,7 +72,7 @@ struct attending_officer_factory_s {
  * having unique abilities and goals.
  */
 struct counter_intelligence_officer_factory_s {
-    counter_intelligence_officer_t (*factory_method)(int, int, int);
+    counter_intelligence_officer_t (* factory_method)(int, int, int);
 };
 
 /**
@@ -88,7 +88,7 @@ int generate_unique_id(void);
  * \param factory_method The function that will be used to create new characters.
  * @return A pointer to the new character factory.
  */
-character_factory_t *new_character_factory(character_t (*factory_method)(int, int));
+character_factory_t* new_character_factory(character_t (* factory_method)(int, int));
 
 /**
  * \brief Creates a new source agent factory.
@@ -96,7 +96,7 @@ character_factory_t *new_character_factory(character_t (*factory_method)(int, in
  * \param factory_method The function that will be used to create new source agents.
  * @return A pointer to the new source agent factory.
  */
-source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int, int));
+source_agent_factory_t* new_source_agent_factory(source_agent_t (* factory_method)(int, int));
 
 /**
  * \brief Creates a new attending officer factory.
@@ -104,7 +104,7 @@ source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method
  * \param factory_method The function that will be used to create new attending officers.
  * @return A pointer to the new attending officer factory.
  */
-attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (*factory_method)(int, int));
+attending_officer_factory_t* new_attending_officer_factory(attending_officer_t (* factory_method)(int, int));
 
 /**
  * \brief Creates a new counter intelligence officer factory.
@@ -112,8 +112,8 @@ attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (
  * \param factory_method The function that will be used to create new counter intelligence officers.
  * @return A pointer to the new counter intelligence officer factory.
  */
-counter_intelligence_officer_factory_t *
-new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int));
+counter_intelligence_officer_factory_t*
+new_counter_intelligence_officer_factory(counter_intelligence_officer_t (* factory_method)(int, int, int));
 
 /**
  * \brief Creates a new character.

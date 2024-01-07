@@ -28,7 +28,7 @@
  */
 typedef struct {
     int id;
-    memory_t *mem;
+    memory_t* mem;
 } officer_thread_args_t;
 
 /**
@@ -44,7 +44,7 @@ typedef struct {
  *
  * \param sem Pointer to the semaphore to be used for movement control.
  */
-void set_semaphore(sem_t *sem);
+void set_semaphore(sem_t* sem);
 
 /**
  * \brief Handles the signal for counter-intelligence officer activities.
@@ -72,7 +72,7 @@ void set_signals(void);
  * \param column The destination column for the officer.
  * \param index Index of the source agent being targeted by the officer.
  */
-void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int column, int index);
+void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index);
 
 /**
  * \brief Thread function for the all-day activity of a counter-intelligence officer.
@@ -82,14 +82,14 @@ void move_counter_intelligence_officer(officer_thread_args_t *arg, int row, int 
  * \param args Pointer to `officer_thread_args_t` containing officer and memory information.
  * @return NULL.
  */
-void *all_day_counter_intelligence_officer(void *args);
+void* all_day_counter_intelligence_officer(void* args);
 
 /**
  * \brief Creates a thread for a counter-intelligence officer.
  *
  * \param args Pointer to `all_threads_t` containing thread and argument information for officers.
  */
-void create_counter_intelligence_officer_thread(all_threads_t *args);
+void create_counter_intelligence_officer_thread(all_threads_t* args);
 
 /**
  * \brief Creates and manages threads for counter-intelligence officers' activities.
@@ -98,6 +98,6 @@ void create_counter_intelligence_officer_thread(all_threads_t *args);
  *
  * \param mem Pointer to the shared memory containing simulation data.
  */
-void create_counter_intelligence_officer_threads(memory_t *mem);
+void create_counter_intelligence_officer_threads(memory_t* mem);
 
 #endif //PROJECT_COUNTERINTELLIGENCE_OFFICER_H

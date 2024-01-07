@@ -84,9 +84,9 @@ static double minunit_proc_timer = 0;
 static char minunit_last_message[MINUNIT_MESSAGE_LEN];
 
 /*  Test setup and teardown function pointers */
-static void (*minunit_setup)(void) = NULL;
+static void (* minunit_setup)(void) = NULL;
 
-static void (*minunit_teardown)(void) = NULL;
+static void (* minunit_teardown)(void) = NULL;
 
 /*  Definitions */
 #define MU_TEST(method_name) static void method_name(void)
@@ -122,12 +122,12 @@ static void (*minunit_teardown)(void) = NULL;
     if (minunit_status) {\
         minunit_fail++;\
         #if DEBUG
-	printf("F");
-	#endif\
+printf("F");
+#endif\
         #if DEBUG
-	printf("\n%s\n", minunit_last_message);
-	#endif\
-    }\
+printf("\n%s\n", minunit_last_message);
+#endif\
+ }\
     fflush(stdout);\
     if (minunit_teardown) (*minunit_teardown)();\
 )
@@ -137,12 +137,12 @@ static void (*minunit_teardown)(void) = NULL;
     double minunit_end_real_timer;\
     double minunit_end_proc_timer;\
     #if DEBUG
-	printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);
-	#endif\
+printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);
+#endif\
     minunit_end_real_timer = mu_timer_real();\
     minunit_end_proc_timer = mu_timer_cpu();\
-    printf("\nFinished in %.8f seconds (real) %.8f seconds (proc)\n\n",\
-        minunit_end_real_timer - minunit_real_timer,\
+    printf("\nFinished in %.8f seconds (real) %.8f seconds (proc)\n\n", \
+        minunit_end_real_timer - minunit_real_timer, \
         minunit_end_proc_timer - minunit_proc_timer);\
 )
 #define MU_EXIT_CODE minunit_fail
@@ -156,9 +156,9 @@ static void (*minunit_teardown)(void) = NULL;
         return;\
     } else {\
         #if DEBUG
-	printf(".");
-	#endif\
-    }\
+printf(".");
+#endif\
+ }\
 )
 
 #define mu_fail(message) MU__SAFE_BLOCK(\
@@ -176,9 +176,9 @@ static void (*minunit_teardown)(void) = NULL;
         return;\
     } else {\
         #if DEBUG
-	printf(".");
-	#endif\
-    }\
+printf(".");
+#endif\
+ }\
 )
 
 #define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
@@ -193,9 +193,9 @@ static void (*minunit_teardown)(void) = NULL;
         return;\
     } else {\
         #if DEBUG
-	printf(".");
-	#endif\
-    }\
+printf(".");
+#endif\
+ }\
 )
 
 #define mu_assert_double_eq(expected, result) MU__SAFE_BLOCK(\
@@ -211,9 +211,9 @@ static void (*minunit_teardown)(void) = NULL;
         return;\
     } else {\
         #if DEBUG
-	printf(".");
-	#endif\
-    }\
+printf(".");
+#endif\
+ }\
 )
 
 #define mu_assert_string_eq(expected, result) MU__SAFE_BLOCK(\
@@ -232,9 +232,9 @@ static void (*minunit_teardown)(void) = NULL;
         return;\
     } else {\
         #if DEBUG
-	printf(".");
-	#endif\
-    }\
+printf(".");
+#endif\
+ }\
 )
 
 /*
@@ -250,8 +250,7 @@ static void (*minunit_teardown)(void) = NULL;
  * The returned real time is only useful for computing an elapsed time
  * between two calls to this function.
  */
-static double mu_timer_real(void)
-{
+static double mu_timer_real(void) {
 #if defined(_WIN32)
     /* Windows 2000 and later. ---------------------------------- */
     LARGE_INTEGER Time;
@@ -325,8 +324,7 @@ static double mu_timer_real(void)
  * Returns the amount of CPU time used by the current process,
  * in seconds, or -1.0 if an error occurred.
  */
-static double mu_timer_cpu(void)
-{
+static double mu_timer_cpu(void) {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
     FILETIME createTime;
