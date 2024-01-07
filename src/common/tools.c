@@ -47,6 +47,7 @@ static int is_cell_full(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row
 }
 
 static int is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
+    /*
     coordinate_t home_cell = {character.home_row, character.home_column};
     coordinate_t work_cell = {character.work_row, character.work_column};
     coordinate_t moveto_cell = {row, col};
@@ -58,6 +59,7 @@ static int is_cell_authorised(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], i
         return 0;
     }
     return 1;
+    */
 }
 
 int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character) {
