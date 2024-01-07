@@ -14,7 +14,7 @@ endif
 
 .PHONY: all clean distclean run doc
 
-all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/enemy_spy_network bin/citizen_manager bin/counterintelligence_officer
+all: bin/main_program bin/monitor bin/spy_simulation bin/timer bin/enemy_country bin/enemy_spy_network bin/citizen_manager bin/counterintelligence_officer tests/citizen_manager/test_citizen_manager tests/common/test_tools
 
 # ----------------------------------------------------------------------------
 # MAIN PROGRAM
@@ -136,6 +136,21 @@ obj/enemy_country/enemy_country.o: src/enemy_country/enemy_country.c include/ene
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 obj/enemy_country/main.o: src/enemy_country/main.c include/enemy_country.h include/common.h include/debug.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+# ----------------------------------------------------------------------------
+# TESTS
+# ----------------------------------------------------------------------------
+tests/citizen_manager/test_citizen_manager: tests/citizen_manager/test_citizen_manager.o obj/citizen_manager/citizen_manager.o obj/common/memory.o obj/common/tools.o obj/common/logger.o obj/spy_simulation/cell.o obj/spy_simulation/character_factory.o obj/spy_simulation/spy_simulation.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+tests/citizen_manager/test_citizen_manager.o: tests/citizen_manager/test_citizen_manager.c include/citizen_manager.h include/debug.h include/memory.h include/spy_simulation.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
+
+tests/common/test_tools: tests/common/test_tools.o obj/common/tools.o obj/common/memory.o obj/common/logger.o obj/spy_simulation/cell.o obj/spy_simulation/character_factory.o obj/spy_simulation/spy_simulation.o
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+tests/common/test_tools.o: tests/common/test_tools.c include/tools.h include/memory.h include/logger.h include/debug.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ -c
 
 # ----------------------------------------------------------------------------

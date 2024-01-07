@@ -124,6 +124,17 @@ int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate
 double euclidean_distance(int x1, int y1, int x2, int y2);
 
 /**
+ * @brief Calculates the Manhattan distance between two points.
+ *
+ * @param x1 X-coordinate of the first point.
+ * @param y1 Y-coordinate of the first point.
+ * @param x2 X-coordinate of the second point.
+ * @param y2 Y-coordinate of the second point.
+ * @return int The Manhattan distance between the two points.
+ */
+int manhattan_distance(int x1, int y1, int x2, int y2);
+
+/**
  * @brief Calculate the simulation time in minutes based on the turn number.
  *
  * @param turn The current turn number in the simulation.
