@@ -36,6 +36,10 @@ void set_signals(void) {
     sigaction(SIGALRM, &action, NULL);
 }
 
+static int is_right_target(counter_intelligence_officer_t* officer, source_agent_t* agent) {
+    return officer->targeted_character_id == agent->character.id ? 1 : 0;
+}
+
 void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int column, int index) {
     int start_row, start_column;
     memory_t* mem = arg->mem;
@@ -59,11 +63,9 @@ void move_counter_intelligence_officer(officer_thread_args_t* arg, int row, int 
 
     /* Check if there is a spy on the same cell */
     source_agent_t* agent = &(mem->source_agents[index]);
-    if (agent->character.row == officer->character.row && agent->character.column == officer->character.column &&
-        agent->character.id == officer->targeted_character_id) {
+    if (characters_are_at_same_cell(agent->character, officer->character) && is_right_target(officer, agent)) {
         /* Check if the spy is not at home */
-        if (agent->character.row != agent->character.home_row &&
-            agent->character.column != agent->character.home_column) {
+        if (!is_at_home(agent->character)) {
             if (mem->timer.hours >= 2) {
                 if (agent->character.pid != 0) {
                     agent->is_attacked = 1;
@@ -94,7 +96,7 @@ void* all_day_counter_intelligence_officer(void* args) {
         signal_received_officer = 0;
         pthread_mutex_unlock(&signal_mutex);
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
-            if (officer->targeted_character_id == mem->source_agents[i].character.id) {
+            if (is_right_target(officer, &(mem->source_agents[i]))) {
                 move_counter_intelligence_officer(arg, mem->source_agents[i].character.row,
                                                   mem->source_agents[i].character.column, i);
                 break;

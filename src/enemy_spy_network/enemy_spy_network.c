@@ -54,7 +54,7 @@ static int getMessagePriority(InformationCruciality cruciality) {
         case VeryLow:
             return 2;
         default:
-            return 0; // En cas de valeur non reconnue
+            return 0;
     }
 }
 
@@ -237,7 +237,6 @@ void* morning_source_agent(void* arg) {
 
     } else if (random_activity >= 10 && random_activity < 40) {
         /*!< stay at home */
-
     } else {
 
         int random_company = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
@@ -258,7 +257,7 @@ void* morning_source_agent(void* arg) {
         current_agent->targeted_companies[current_agent->targeted_companies_count] = companies_coordinates[random_company];
         current_agent->targeted_companies_count++;
 
-        // il rentre chez lui
+        /*!< go back home */
 
         while (!is_at_home(current_agent->character)) {
             if (signal_received_spies[args->id]) {
@@ -307,8 +306,7 @@ void* evening_attending_officer(void* arg) {
                                                                NUMBER_OF_SUPERMARKETS);
 
 
-    while (!character_is_at(attendingOfficer->character,
-                            supermarket_coordinates[random_supermarket])) {
+    while (!character_is_at(attendingOfficer->character, supermarket_coordinates[random_supermarket])) {
         if (signal_received_officer) {
             signal_received_officer = 0;
             move_attending_officer(args, supermarket_coordinates[random_supermarket].row,
@@ -339,7 +337,7 @@ void* morning_attending_officer(void* arg) {
     attending_officer_t* attendingOfficer = &(args->mem->attending_officers[args->id]);
 
 
-    // va à la mailbox
+    /*!< go to mailbox */
     while (!character_is_at(attendingOfficer->character, args->mem->mailbox_coordinate)) {
         if (signal_received_officer) {
             signal_received_officer = 0;
@@ -350,8 +348,10 @@ void* morning_attending_officer(void* arg) {
         }
     }
 
+    /*!< get messages */
     attendingOfficer->have_messages = 1;
 
+    /*!< go back home */
     while (!is_at_home(attendingOfficer->character)) {
         if (signal_received_officer) {
             signal_received_officer = 0;
@@ -374,7 +374,7 @@ void* night_attending_officer(void* arg) {
     if (attendingOfficer->have_messages == 0) {
         pthread_exit(NULL);
     }
-    // send messages
+    /*!< send message */
     pickup_messages(args->mem);
 
     attendingOfficer->have_messages = 0;
@@ -405,7 +405,7 @@ void* attempt_information_theft(void* arg) {
     current_agent->character.pid = pid;
 
 
-    // go near a company
+    /*!< go near company */
     int random_company = selectRandomNumberUnder(current_agent->targeted_companies_count);
     coordinate_t company = current_agent->targeted_companies[random_company];
     int* neighbour_cells_count = malloc(sizeof(int));
@@ -414,9 +414,8 @@ void* attempt_information_theft(void* arg) {
     int random_neighbour_cell = selectRandomNumberUnder(*neighbour_cells_count);
 
     int turns = 0;
-    int type = 0; // 0 = fake, 1 = real
+    int type_of_message = 0; // 0 = fake, 1 = real
     InformationCruciality priority = selectRandomNumberUnder(CRUCIALITY_LEVELS);
-
 
     while (!character_is_at(current_agent->character, neighbour_cells[random_neighbour_cell])) {
         if (signal_received_spies[args->id]) {
@@ -445,7 +444,6 @@ void* attempt_information_theft(void* arg) {
     int thief_is_possible = selectRandomNumberUnder(100);
 
     if (thief_is_possible < 85) {
-        // vole l'information
         while (turns < 18) {
             if (signal_received_spies[args->id]) {
                 signal_received_spies[args->id] = 0;
@@ -465,7 +463,7 @@ void* attempt_information_theft(void* arg) {
             if (current_agent->character.health <= 0) {
                 pthread_exit(NULL);
             }
-            type = 1; // Real message
+            type_of_message = 1; // Real message
             current_agent->nb_of_stolen_companies++;
             strcpy(current_agent->stolen_message, "YES");
         }
@@ -744,7 +742,6 @@ void create_network_night_thread(memory_t* mem, all_threads_t* threads) {
 #endif
             }
         }
-        // joindre les threads
 
         for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
             if (mem->source_agents[i].character.health <= 0) {
@@ -774,12 +771,12 @@ void create_enemy_spy_thread(memory_t* mem) {
         agent_mapping(&(mem->source_agents[i]), i);
 
     }
+
     for (int i = 0; i < MAX_ATTENDING_OFFICER_COUNT; i++) {
         threads->attending_officer_args[i].id = i;
         threads->attending_officer_args[i].mem = mem;
 
     }
-
 
     while (mem->simulation_has_ended == 0) {
         create_network_morning_thread(mem, threads);

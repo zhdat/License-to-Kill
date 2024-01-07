@@ -27,14 +27,14 @@ memory_t* create_shared_memory(void) {
 
     if (fd == -1) {
 #if DEBUG
-        printf("Error cannot open shared memory \n");
+        perror("Error cannot open shared memory \n");
 #endif
         exit(EXIT_FAILURE);
     }
 
     if (ftruncate(fd, sizeof(memory_t)) == -1) {
 #if DEBUG
-        printf("Error ftruncate \n");
+        perror("Error ftruncate \n");
 #endif
         exit(EXIT_FAILURE);
     }

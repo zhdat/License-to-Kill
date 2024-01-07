@@ -20,8 +20,6 @@
 #define INT_MAX 2147483647 /**< Maximum value of an integer */
 
 typedef struct thread_s thread_t;
-typedef struct queue_node_s queue_node_t;
-typedef struct queue_s queue_t;
 
 /**
  * @struct thread_s
@@ -34,84 +32,6 @@ struct thread_s {
     memory_t* mem; /**< Pointer to shared memory */
     int id_character; /**< ID of the character managed by this thread */
 };
-
-/**
- * @struct queue_node_s
- * @brief Structure representing a node in a queue.
- *
- * Each node holds a cell coordinate.
- */
-struct queue_node_s {
-    coordinate_t cell;
-};
-
-/**
- * @struct queue_s
- * @brief Structure representing a queue, used for BFS pathfinding.
- *
- * The queue is used in BFS pathfinding algorithms to store and manage coordinates.
- */
-struct queue_s {
-    queue_node_t nodes[MAX_QUEUE_SIZE]; /**< Array of queue nodes */
-    int front; /**< Index of the front element in the queue */
-    int rear; /**< Index of the rear element in the queue */
-    int size; /**< Current number of elements in the queue */
-    pthread_mutex_t mutex; /**< Mutex for protecting the queue in a multithreaded environment */
-};
-
-/**
- * @brief Initializes a queue.
- *
- * This function initializes the given queue with default values and prepares the mutex for use.
- *
- * @param q Pointer to the queue to be initialized.
- */
-void create_queue(queue_t* q);
-
-/**
- * @brief Adds a new coordinate to the queue.
- *
- * Enqueues a coordinate cell at the end of the queue. If the queue is full, the function
- * returns an error code.
- *
- * @param q Pointer to the queue.
- * @param cell The coordinate to add to the queue.
- * @return int Returns 0 on success, -1 if the queue is full.
- */
-int en_queue(queue_t* q, coordinate_t cell);
-
-/**
- * @brief Removes and returns the front coordinate from the queue.
- *
- * Dequeues and returns the coordinate at the front of the queue. If the queue is empty,
- * it returns a coordinate with negative values.
- *
- * @param q Pointer to the queue.
- * @return coordinate_t The coordinate at the front of the queue.
- */
-coordinate_t de_queue(queue_t* q);
-
-/**
- * @brief Checks if the queue is empty.
- *
- * @param q Pointer to the queue.
- * @return int Returns 1 if the queue is empty, 0 otherwise.
- */
-int is_queue_empty(queue_t* q);
-
-/**
- * @brief Finds the shortest path from start to end using BFS.
- *
- * This function uses the Breadth-First Search (BFS) algorithm to find the shortest path
- * in a city grid from a starting coordinate to an ending coordinate.
- *
- * @param city Pointer to the city grid.
- * @param start Starting coordinate for the path.
- * @param end Ending coordinate for the path.
- * @param path Array to store the path coordinates.
- * @return int The length of the path found.
- */
-int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate_t* path);
 
 /**
  * @brief Calculates the Euclidean distance between two points.
@@ -187,19 +107,6 @@ void decrements_population_in_cell(memory_t* mem, int col, int row);
  * @return coordinate_t* An array of neighbouring cell coordinates.
  */
 coordinate_t* findNeighbouringCells(city_t* city, int row, int col, int* neighbouring_cells_count);
-
-/**
- * @brief Find the shortest path from start to end using a custom algorithm.
- *
- * @param city Pointer to the city grid structure.
- * @param start The starting coordinate for the path.
- * @param end The ending coordinate for the path.
- * @param path Array to store the path coordinates.
- * @param path_length Pointer to store the length of the path found.
- * @param character The character for whom the path is being found.
- */
-void find_shortest_path(city_t* city, coordinate_t start, coordinate_t end, coordinate_t* path, int* path_length,
-                        character_t character);
 
 /**
  * @brief Determines the next move for a character based on the start and end cells.

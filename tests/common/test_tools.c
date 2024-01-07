@@ -7,14 +7,6 @@
 #include <unistd.h>
 #include "debug.h"
 
-MU_TEST(test_create_queue) {
-    queue_t q;
-    create_queue(&q);
-    mu_check(q.front == 0);
-    mu_check(q.rear == -1);
-    mu_check(q.size == 0);
-}
-
 MU_TEST(test_euclidean_distance) {
     double dist = euclidean_distance(0, 0, 3, 4);
     mu_check(fabs(dist - 5.0) < 0.0001);
@@ -32,7 +24,6 @@ MU_TEST(test_caesarCipher) {
 }
 
 MU_TEST_SUITE(test_suite) {
-    MU_RUN_TEST(test_create_queue);
     MU_RUN_TEST(test_euclidean_distance);
     MU_RUN_TEST(test_manhattan_distance);
     MU_RUN_TEST(test_caesarCipher);
