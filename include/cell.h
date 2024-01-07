@@ -183,6 +183,6 @@ void initialize_surveillance_system(city_t* city);
  * \param number_of_sea The number of buildings to find.
  * @return An array of coordinates for the found buildings, or NULL if not found.
  */
-coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings, coordinate_t* coordinates);
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings);
 
 #endif /* CELL_H */

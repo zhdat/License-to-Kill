@@ -1,4 +1,7 @@
 #include "cell.h"
+#include <pthread.h>
+
+pthread_mutex_t city_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /**
  * \file cell.c
@@ -162,8 +165,14 @@ void initialize_surveillance_system(city_t* city) {
 }
 
 
-coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings, coordinate_t* coordinates) {
+coordinate_t* findTypeOfBuilding(city_t* city, cell_type_t building_type, int number_of_searched_buildings) {
     if (city == NULL || number_of_searched_buildings <= 0) {
+        return NULL;
+    }
+
+    coordinate_t* coordinates = malloc(number_of_searched_buildings * sizeof(coordinate_t));
+
+    if (coordinates == NULL) {
         return NULL;
     }
 

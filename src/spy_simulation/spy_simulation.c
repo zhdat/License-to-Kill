@@ -179,7 +179,7 @@ coordinate_t find_random_low_populated_residence(memory_t* mem) {
     int min_population = 999;
     int selected_index = -1;
 
-    for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; ++i) {
+    for (int i = 0; i < NUMBER_OF_RESIDENTIAL_BUILDINGS; i++) {
         if (is_same_cell(residential_buildings[i], mailbox)) {
             continue;
         }
@@ -224,8 +224,8 @@ void affect_work_to_citizens(memory_t* mem) {
         mem->citizens[randomCitizen].work_column = city_hall.column;
     }
 
-    for (int i = 0; i < NUMBER_OF_SUPERMARKETS; ++i) {
-        for (int j = 0; j < 3; ++j) {
+    for (int i = 0; i < NUMBER_OF_SUPERMARKETS; i++) {
+        for (int j = 0; j < 3; j++) {
             randomSupermarketID = selectRandomNumberUnder(NUMBER_OF_SUPERMARKETS);
             coordinate_t supermarket = supermarkets[randomSupermarketID];
             while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
@@ -236,8 +236,8 @@ void affect_work_to_citizens(memory_t* mem) {
         }
     }
 
-    for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
+        for (int j = 0; j < 5; j++) {
             randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
             coordinate_t company = companies[randomCompanyID];
             while (mem->citizens[randomCitizen].work_row != -1 || mem->citizens[randomCitizen].work_column != -1) {
@@ -249,7 +249,7 @@ void affect_work_to_citizens(memory_t* mem) {
     }
 
     // affectations de tous les citoyens restants dans des companies randomSupermarketId (max MAX_NUMBER_OF_CHARACTERS_ON_COMPANY)
-    for (int i = 0; i < MAX_CITIZEN_COUNT; ++i) {
+    for (int i = 0; i < MAX_CITIZEN_COUNT; i++) {
         if (mem->citizens[i].work_row == -1 || mem->citizens[i].work_column == -1) {
             randomCompanyID = selectRandomNumberUnder(NUMBER_OF_COMPANIES);
             coordinate_t company = companies[randomCompanyID];

@@ -291,7 +291,7 @@ int characters_are_at_same_cell(character_t character1, character_t character2) 
 
 // Fonction pour appliquer le chiffrement César
 void caesarCipher(char* message, int shift) {
-    for (int i = 0; message[i] != '\0'; ++i) {
+    for (int i = 0; message[i] != '\0'; i++) {
         char ch = message[i];
 
         if (ch >= 'a' && ch <= 'z') {

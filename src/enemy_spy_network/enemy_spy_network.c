@@ -28,7 +28,7 @@ void set_semaphore(sem_t* sem) {
 
 void handle_signal(int sig) {
     sig = sig;
-    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; ++i) {
+    for (int i = 0; i < MAX_SOURCE_AGENT_COUNT; i++) {
         signal_received_spies[i] = 1;
     }
     signal_received_officer = 1;
@@ -375,7 +375,7 @@ void* morning_attending_officer(void* arg) {
 
 void pickup_messages(memory_t* mem) {
     // parcourir la mailobx, et s'il y a des nouveaux messages les décrypter et les stocker dans decrypted_messages
-    for (int i = 0; i < mem->mailbox_size; ++i) {
+    for (int i = 0; i < mem->mailbox_size; i++) {
         if (mem->encrpyted_messages[i].is_encrypted == 0) {
             char* message = malloc(sizeof(char) * MAX_LENGTH_OF_MESSAGE);
             strcpy(message, mem->encrpyted_messages[i].msg_text);
@@ -526,7 +526,7 @@ void post_message(InformationCruciality priority, int type) {
 
 InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company) {
     InformationCruciality cruciality = select_crucial_information();
-    for (int i = 0; i < NUMBER_OF_COMPANIES; ++i) {
+    for (int i = 0; i < NUMBER_OF_COMPANIES; i++) {
         coordinate_t company_priority = {mem->companies_priority[i].row,
                                          mem->companies_priority[i].column};
         if (is_same_cell(company, company_priority)) {
