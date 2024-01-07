@@ -44,11 +44,11 @@
  * The type of cells within the city map.
  */
 enum cell_type_e {
-	WASTELAND,			  /*!< An empty cell. */
-	RESIDENTIAL_BUILDING, /*!< A cell that contains a residential building. */
-	CITY_HALL,			  /*!< A cell that contains the City Hall. */
-	COMPANY,			  /*!< A cell that contains a company. */
-	SUPERMARKET			  /*!< A cell that contains a supermarket. */
+    WASTELAND,              /*!< An empty cell. */
+    RESIDENTIAL_BUILDING, /*!< A cell that contains a residential building. */
+    CITY_HALL,              /*!< A cell that contains the City Hall. */
+    COMPANY,              /*!< A cell that contains a company. */
+    SUPERMARKET              /*!< A cell that contains a supermarket. */
 };
 
 #define NUMBER_OF_ROWS 7
@@ -73,19 +73,19 @@ typedef struct city_s city_t;
  * \brief A cell within the map of the city.
  */
 struct cell_s {
-	int column;			  /*!< Column of the cell. */
-	int row;			  /*!< Row of the cell. */
-	cell_type_t type;	  /*!< Type of the cell (\see \enum e_cell_type). */
-	int nb_of_characters; /*!< Number of characters on the cell. */
+    int column;              /*!< Column of the cell. */
+    int row;              /*!< Row of the cell. */
+    cell_type_t type;      /*!< Type of the cell (\see \enum e_cell_type). */
+    int nb_of_characters; /*!< Number of characters on the cell. */
 };
 
 /**
  * \brief The map of the city.
  */
 struct city_s {
-	int width;		/*!< Width of the map. */
-	int height;		/*!< Height of the map. */
-	cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells of the map. */
+    int width;        /*!< Width of the map. */
+    int height;        /*!< Height of the map. */
+    cell_t cells[MAX_ROWS][MAX_COLUMNS]; /*!< Cells of the map. */
 };
 
 /**

@@ -32,11 +32,11 @@
  * map and the general information about the simulation.
  */
 
-WINDOW *main_window;
-WINDOW *city_window;
-WINDOW *character_window;
-WINDOW *mailbox_content_window;
-WINDOW *enemy_country_monitor;
+WINDOW* main_window;
+WINDOW* city_window;
+WINDOW* character_window;
+WINDOW* mailbox_content_window;
+WINDOW* enemy_country_monitor;
 
 int old_cursor;
 int cell_type_colors[5];
@@ -91,7 +91,7 @@ void create_color_pairs(void) {
     color_pair_black = COLOR_PAIR(9);
 }
 
-void init_monitor_elements(WINDOW *window, memory_t *mem, int rows, int columns) {
+void init_monitor_elements(WINDOW* window, memory_t* mem, int rows, int columns) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from mem to get the map               */
     /* ---------------------------------------------------------------------- */
@@ -125,7 +125,7 @@ void init_monitor_elements(WINDOW *window, memory_t *mem, int rows, int columns)
     display_enemy_country_monitor(enemy_country_monitor, mem);
 }
 
-void set_monitor_title(WINDOW *window, const char *title) {
+void set_monitor_title(WINDOW* window, const char* title) {
     int title_column, maxx;
 
     maxx = getmaxx(window);
@@ -136,7 +136,7 @@ void set_monitor_title(WINDOW *window, const char *title) {
     wattroff(window, A_BOLD);
 }
 
-void set_city_legend(WINDOW *window, int row, int col) {
+void set_city_legend(WINDOW* window, int row, int col) {
     wattron(window, A_BOLD);
     mvwprintw(window, row, col, "City map caption");
     wattroff(window, A_BOLD);
@@ -157,7 +157,7 @@ void set_city_legend(WINDOW *window, int row, int col) {
     mvwprintw(window, row + 10, col + 4, "Wasteland");
 }
 
-void display_city(WINDOW *window, city_t map, int rows, int columns) {
+void display_city(WINDOW* window, city_t map, int rows, int columns) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from map to display city              */
     int map_columns;
@@ -211,15 +211,15 @@ void display_city(WINDOW *window, city_t map, int rows, int columns) {
     wrefresh(window);
 }
 
-void set_cell_color(WINDOW *window, int color, int row, int col) {
+void set_cell_color(WINDOW* window, int color, int row, int col) {
     wattron(window, color);
     mvwprintw(window, row, col, "  ");
     wattroff(window, color);
 }
 
-void show_general_information(WINDOW *window) {
+void show_general_information(WINDOW* window) {
     int title_column, maxx;
-    char *title = "CITY MAP AND GENERAL INFORMATION";
+    char* title = "CITY MAP AND GENERAL INFORMATION";
 
     maxx = getmaxx(window);
     title_column = maxx / 2 - strlen(title) / 2;
@@ -233,14 +233,14 @@ void show_general_information(WINDOW *window) {
     wrefresh(window);
 }
 
-void display_general_information_values(WINDOW *window, memory_t *mem) {
+void display_general_information_values(WINDOW* window, memory_t* mem) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from mem about simulation             */
     double elapsed_time;
     int simulation_has_ended;
     int hour;
     int minutes;
-    char *result = NULL;
+    char* result = NULL;
 
     elapsed_time = mem->timer.turns;
     simulation_has_ended = 0;
@@ -271,7 +271,7 @@ void display_general_information_values(WINDOW *window, memory_t *mem) {
     wrefresh(window);
 }
 
-void display_citizen_information(WINDOW *window, memory_t *mem, int row, int column) {
+void display_citizen_information(WINDOW* window, memory_t* mem, int row, int column) {
     /* --------------------------------------------------------------------- */
     /*                 Get information from mem about citizens               */
     int number_of_citizens_at_home;
@@ -305,7 +305,7 @@ void display_citizen_information(WINDOW *window, memory_t *mem, int row, int col
     wrefresh(window);
 }
 
-void display_spy_information(WINDOW *window, memory_t *mem, int row, int column, int number) {
+void display_spy_information(WINDOW* window, memory_t* mem, int row, int column, int number) {
     /* --------------------------------------------------------------------- */
     /*     Get information from mem about the spy with the given number      */
     int id;
@@ -355,7 +355,7 @@ void display_spy_information(WINDOW *window, memory_t *mem, int row, int column,
     wrefresh(window);
 }
 
-void display_case_officer_information(WINDOW *window, memory_t *mem, int row, int column) {
+void display_case_officer_information(WINDOW* window, memory_t* mem, int row, int column) {
     /* --------------------------------------------------------------------- */
     /*           Get information from mem about the case officer             */
     int id;
@@ -391,8 +391,8 @@ void display_case_officer_information(WINDOW *window, memory_t *mem, int row, in
     mvwprintw(window, row + 5, column, "  Mailbox pos: (%d,%d)", mailbox_row, mailbox_column);
 }
 
-void display_counterintelligence_officer_information(WINDOW *window,
-                                                     memory_t *mem,
+void display_counterintelligence_officer_information(WINDOW* window,
+                                                     memory_t* mem,
                                                      int row,
                                                      int col) {
     /* --------------------------------------------------------------------- */
@@ -437,12 +437,12 @@ void display_counterintelligence_officer_information(WINDOW *window,
     wrefresh(window);
 }
 
-void display_character_information(WINDOW *window, memory_t *mem) {
+void display_character_information(WINDOW* window, memory_t* mem) {
     int title_column;
     int first_column;
     int second_column;
     int maxx;
-    char *title = "CHARACTERS";
+    char* title = "CHARACTERS";
 
     maxx = getmaxx(window);
     title_column = maxx / 2 - strlen(title) / 2;
@@ -462,7 +462,7 @@ void display_character_information(WINDOW *window, memory_t *mem) {
     wrefresh(window);
 }
 
-void display_mailbox_content(WINDOW *window, memory_t *mem) {
+void display_mailbox_content(WINDOW* window, memory_t* mem) {
     /* --------------------------------------------------------------------- */
     /*              Get information from mem about the mailbox               */
     int mailbox_nb_of_msgs;
@@ -477,7 +477,7 @@ void display_mailbox_content(WINDOW *window, memory_t *mem) {
     int title_column;
     int nb_lines;
     int maxx;
-    char *title = "MAILBOX CONTENT";
+    char* title = "MAILBOX CONTENT";
 
     maxx = getmaxx(window);
     nb_lines = 1;
@@ -502,12 +502,12 @@ void display_mailbox_content(WINDOW *window, memory_t *mem) {
     wrefresh(window);
 }
 
-void display_enemy_country_monitor(WINDOW *window, memory_t *mem) {
+void display_enemy_country_monitor(WINDOW* window, memory_t* mem) {
     int nb_lines;
     int title_column;
     int maxx;
     char buffer[MAX_LENGTH_OF_MESSAGE];
-    char *title = "ENEMY COUNTRY MONITOR";
+    char* title = "ENEMY COUNTRY MONITOR";
 
     int i;
     int mailbox_nb_of_msgs = mem->decrypted_mailbox_size;
@@ -540,7 +540,7 @@ void display_enemy_country_monitor(WINDOW *window, memory_t *mem) {
     wrefresh(window);
 }
 
-void update_values(memory_t *mem) {
+void update_values(memory_t* mem) {
     display_general_information_values(city_window, mem);
     display_character_information(character_window, mem);
     display_mailbox_content(mailbox_content_window, mem);

@@ -26,7 +26,7 @@
  *
  * \param memory_start Pointer to the start of shared memory.
  */
-void set_memory(memory_t *memory_start);
+void set_memory(memory_t* memory_start);
 
 /**
  * \brief Sets the process IDs (PIDs) for timer management.
@@ -34,7 +34,7 @@ void set_memory(memory_t *memory_start);
  * \param argc The argument count.
  * \param argv The argument vector containing PIDs.
  */
-void set_pids(int argc, char **argv);
+void set_pids(int argc, char** argv);
 
 /**
  * \brief Checks if the simulation is finished.
@@ -42,7 +42,7 @@ void set_pids(int argc, char **argv);
  * \param memory Pointer to the shared memory.
  * \return Returns 1 if the simulation is finished, otherwise 0.
  */
-int simulationFinished(memory_t *memory);
+int simulationFinished(memory_t* memory);
 
 
 /**

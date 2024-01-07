@@ -28,7 +28,7 @@
  */
 typedef struct {
     int index;
-    memory_t *mem;
+    memory_t* mem;
 } citizen_monitor_args_t;
 
 /**
@@ -36,7 +36,7 @@ typedef struct {
  *
  * \param sem Pointer to the semaphore to be used for movement control.
  */
-void set_semaphore(sem_t *sem);
+void set_semaphore(sem_t* sem);
 
 /**
  * \brief Handler for timer signals, used to manage citizen movements.
@@ -70,7 +70,7 @@ void set_signal_handler(void);
  * \param row The destination row for the citizen.
  * \param column The destination column for the citizen.
  */
-void move_citizen(citizen_monitor_args_t *arg, int row, int column);
+void move_citizen(citizen_monitor_args_t* arg, int row, int column);
 
 /**
  * \brief Thread function for moving citizens to work.
@@ -80,7 +80,7 @@ void move_citizen(citizen_monitor_args_t *arg, int row, int column);
  * \param args Pointer to `citizen_monitor_args_t` containing citizen and memory information.
  * @return NULL.
  */
-void *citizen_to_work(void *args);
+void* citizen_to_work(void* args);
 
 /**
  * \brief Thread function for moving citizens to home.
@@ -90,7 +90,7 @@ void *citizen_to_work(void *args);
  * \param args Pointer to `citizen_monitor_args_t` containing citizen and memory information.
  * @return NULL.
  */
-void *citizen_to_home(void *args);
+void* citizen_to_home(void* args);
 
 /**
  * \brief Thread function for moving citizens to home via supermarket.
@@ -100,7 +100,7 @@ void *citizen_to_home(void *args);
  * \param args Pointer to `citizen_monitor_args_t` containing citizen and memory information.
  * @return NULL.
  */
-void *citizen_to_home_supermarket(void *args);
+void* citizen_to_home_supermarket(void* args);
 
 /**
  * \brief Checks if a citizen works in a supermarket.
@@ -119,7 +119,7 @@ int work_in_supermarket(memory_t mem, character_t citizen);
  * \param args Array of arguments for the citizen threads.
  */
 void
-create_morning_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]);
+create_morning_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
 
 /**
  * \brief Creates threads for citizens to move home from companies in the evening.
@@ -128,8 +128,8 @@ create_morning_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT], citizen_m
  * \param ids Array of thread IDs for the citizens.
  * \param args Array of arguments for the citizen threads.
  */
-void create_evening_company_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT],
-                                   citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]);
+void create_evening_company_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT],
+                                   citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
 
 /**
  * \brief Creates threads for citizens to move home from supermarkets in the evening.
@@ -138,8 +138,8 @@ void create_evening_company_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUN
  * \param ids Array of thread IDs for the citizens.
  * \param args Array of arguments for the citizen threads.
  */
-void create_evening_supermarket_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_COUNT],
-                                       citizen_monitor_args_t *args[MAX_CITIZEN_COUNT]);
+void create_evening_supermarket_thread(memory_t* mem, pthread_t ids[MAX_CITIZEN_COUNT],
+                                       citizen_monitor_args_t* args[MAX_CITIZEN_COUNT]);
 
 /**
  * \brief Creates and manages threads for all citizens' movements.
@@ -148,6 +148,6 @@ void create_evening_supermarket_thread(memory_t *mem, pthread_t ids[MAX_CITIZEN_
  *
  * \param mem Pointer to the shared memory containing simulation data.
  */
-void create_citizens_thread(memory_t *mem);
+void create_citizens_thread(memory_t* mem);
 
 #endif //TP_SYS_CITIZEN_MANGER_H

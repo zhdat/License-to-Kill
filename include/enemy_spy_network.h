@@ -32,7 +32,7 @@
  */
 typedef struct {
     int id;
-    memory_t *mem;
+    memory_t* mem;
 } agent_thread_args_t;
 
 /**
@@ -52,7 +52,7 @@ typedef struct {
  * \param row The destination row for the agent.
  * \param column The destination column for the agent.
  */
-void move_source_agent(agent_thread_args_t *arg, int row, int column);
+void move_source_agent(agent_thread_args_t* arg, int row, int column);
 
 /**
  * \brief Moves an attending officer to a specified location.
@@ -61,7 +61,7 @@ void move_source_agent(agent_thread_args_t *arg, int row, int column);
  * \param row The destination row for the officer.
  * \param column The destination column for the officer.
  */
-void move_attending_officer(agent_thread_args_t *arg, int row, int column);
+void move_attending_officer(agent_thread_args_t* arg, int row, int column);
 
 /**
  * \brief Thread function for the morning routine of a source agent.
@@ -69,7 +69,7 @@ void move_attending_officer(agent_thread_args_t *arg, int row, int column);
  * \param arg Pointer to agent_thread_args_t containing agent and memory information.
  * @return NULL.
  */
-void *morning_source_agent(void *arg);
+void* morning_source_agent(void* arg);
 
 /**
  * \brief Thread function for the morning routine of an attending officer.
@@ -77,7 +77,7 @@ void *morning_source_agent(void *arg);
  * \param arg Pointer to agent_thread_args_t containing officer and memory information.
  * @return NULL.
  */
-void *morning_attending_officer(void *arg);
+void* morning_attending_officer(void* arg);
 
 /**
  * \brief Thread function for the evening routine of a source agent.
@@ -85,7 +85,7 @@ void *morning_attending_officer(void *arg);
  * \param arg Pointer to agent_thread_args_t containing agent and memory information.
  * @return NULL.
  */
-void *evening_source_agent(void *arg);
+void* evening_source_agent(void* arg);
 
 /**
  * \brief Thread function for the evening routine of an attending officer.
@@ -93,7 +93,7 @@ void *evening_source_agent(void *arg);
  * \param arg Pointer to agent_thread_args_t containing officer and memory information.
  * @return NULL.
  */
-void *evening_attending_officer(void *arg);
+void* evening_attending_officer(void* arg);
 
 /**
  * \brief Thread function for attempting information theft by a source agent.
@@ -101,7 +101,7 @@ void *evening_attending_officer(void *arg);
  * \param arg Pointer to agent_thread_args_t containing agent and memory information.
  * @return NULL.
  */
-void *attempt_information_theft(void *arg);
+void* attempt_information_theft(void* arg);
 
 /**
  * \brief Creates and manages threads for the morning activities of the spy network.
@@ -109,7 +109,7 @@ void *attempt_information_theft(void *arg);
  * \param mem Pointer to the shared memory containing simulation data.
  * \param threads Pointer to all_threads_t structure containing thread information.
  */
-void create_network_morning_thread(memory_t *mem, all_threads_t *threads);
+void create_network_morning_thread(memory_t* mem, all_threads_t* threads);
 
 /**
  * \brief Creates and manages threads for the evening activities of the spy network.
@@ -117,7 +117,7 @@ void create_network_morning_thread(memory_t *mem, all_threads_t *threads);
  * \param mem Pointer to the shared memory containing simulation data.
  * \param threads Pointer to all_threads_t structure containing thread information.
  */
-void create_network_evening_thread(memory_t *mem, all_threads_t *threads);
+void create_network_evening_thread(memory_t* mem, all_threads_t* threads);
 
 /**
  * \brief Creates and manages threads for the night activities of the spy network.
@@ -125,7 +125,7 @@ void create_network_evening_thread(memory_t *mem, all_threads_t *threads);
  * \param mem Pointer to the shared memory containing simulation data.
  * \param threads Pointer to all_threads_t structure containing thread information.
  */
-void create_network_night_thread(memory_t *mem, all_threads_t *threads);
+void create_network_night_thread(memory_t* mem, all_threads_t* threads);
 
 /**
  * \brief Handles signal reception for the enemy spy network.
@@ -144,14 +144,14 @@ void set_signals(void);
  *
  * \param sem Pointer to the semaphore to be used for movement control.
  */
-void set_semaphore(sem_t *sem);
+void set_semaphore(sem_t* sem);
 
 /**
  * \brief Creates and manages threads for the enemy spy network's activities.
  *
  * \param mem Pointer to the shared memory containing simulation data.
  */
-void create_enemy_spy_thread(memory_t *mem);
+void create_enemy_spy_thread(memory_t* mem);
 
 /**
  * \brief Maps a source agent to its ID for signal handling.
@@ -159,7 +159,7 @@ void create_enemy_spy_thread(memory_t *mem);
  * \param agent Pointer to the source_agent_t structure representing the agent.
  * \param id The ID of the agent to be mapped.
  */
-void agent_mapping(source_agent_t *agent, int id);
+void agent_mapping(source_agent_t* agent, int id);
 
 
 /**
@@ -169,7 +169,7 @@ void agent_mapping(source_agent_t *agent, int id);
  * \param info Signal information structure.
  * \param unused Unused parameter.
  */
-void handle_sigusr1(int sig, siginfo_t *info, void *unused);
+void handle_sigusr1(int sig, siginfo_t* info, void* unused);
 
 /**
  * \brief Sets up signal handling for a weak bullet attack (SIGUSR1).
@@ -184,7 +184,7 @@ void set_signals_weak_bullet(void);
  * \param info Signal information structure.
  * \param unused Unused parameter.
  */
-void handle_sigusr2(int sig, siginfo_t *info, void *unused);
+void handle_sigusr2(int sig, siginfo_t* info, void* unused);
 
 /**
  * \brief Sets up signal handling for a strong bullet attack (SIGUSR2).
@@ -198,7 +198,7 @@ void set_signals_strong_bullet(void);
  * \param company The target company's coordinate.
  * @return The cruciality level of the information obtained.
  */
-InformationCruciality accomplish_mission(memory_t *mem, coordinate_t company);
+InformationCruciality accomplish_mission(memory_t* mem, coordinate_t company);
 
 /**
  * \brief Posts a message with a specified priority and type.
@@ -213,7 +213,7 @@ void post_message(InformationCruciality priority, int type);
  *
  * \param mem Pointer to the shared memory structure.
  */
-void pickup_messages(memory_t *mem);
+void pickup_messages(memory_t* mem);
 
 
 #endif //PROJECT_ENEMY_SPY_NETWORK_H

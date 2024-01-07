@@ -6,11 +6,11 @@
  * \brief Defines function for initializing and managing the enemy country.
  */
 
-void writeToSharedMemory(memory_t *mem) {
+void writeToSharedMemory(memory_t* mem) {
     char buffer[MAX_LENGTH_OF_MESSAGE];
     ssize_t msg_size;
     mqd_t mq;
-    char *pos, *endptr;
+    char* pos, * endptr;
     int priority;
 
     mq = create_message_queue();

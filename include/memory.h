@@ -137,14 +137,14 @@ struct memory_s {
  *
  * @return Pointer to the mapped shared memory structure.
  */
-memory_t *open_shared_memory(void);
+memory_t* open_shared_memory(void);
 
 /**
  * \brief Unmaps and ends the use of shared memory in the process.
  *
  * \param mem Pointer to the shared memory structure.
  */
-void end_shared_memory(memory_t *mem);
+void end_shared_memory(memory_t* mem);
 
 /**
  * \brief Destroys the shared memory segment.
@@ -156,42 +156,42 @@ void destroy_shared_memory(void);
  *
  * @return Pointer to the created semaphore.
  */
-sem_t *create_semaphore(void);
+sem_t* create_semaphore(void);
 
 /**
  * \brief Opens an existing semaphore.
  *
  * @return Pointer to the opened semaphore.
  */
-sem_t *open_semaphore(void);
+sem_t* open_semaphore(void);
 
 /**
  * \brief Closes a semaphore.
  *
  * \param sem Pointer to the semaphore to be closed.
  */
-void close_semaphore(sem_t *sem);
+void close_semaphore(sem_t* sem);
 
 /**
  * \brief Destroys a semaphore.
  *
  * \param sem Pointer to the semaphore to be destroyed.
  */
-void destroy_semaphore(sem_t *sem);
+void destroy_semaphore(sem_t* sem);
 
 /**
  * \brief Creates a semaphore for message synchronization.
  *
  * @return Pointer to the created semaphore for message synchronization.
  */
-sem_t *create_semaphore_message();
+sem_t* create_semaphore_message();
 
 /**
  * \brief Opens an existing semaphore for message synchronization.
  *
  * @return Pointer to the opened semaphore for message synchronization.
  */
-sem_t *open_semaphore_message();
+sem_t* open_semaphore_message();
 
 
 /**

@@ -12,10 +12,10 @@ int generate_unique_id(void) {
     return ++last_id;
 }
 
-character_factory_t *new_character_factory(character_t (*factory_method)(int, int)) {
-    character_factory_t *factory;
+character_factory_t* new_character_factory(character_t (* factory_method)(int, int)) {
+    character_factory_t* factory;
 
-    factory = (character_factory_t *) malloc(sizeof(character_factory_t));
+    factory = (character_factory_t*) malloc(sizeof(character_factory_t));
     factory->factory_method = factory_method;
 
     return factory;
@@ -37,10 +37,10 @@ character_t new_citizen(int row, int column) {
     return citizen;
 }
 
-source_agent_factory_t *new_source_agent_factory(source_agent_t (*factory_method)(int, int)) {
-    source_agent_factory_t *factory;
+source_agent_factory_t* new_source_agent_factory(source_agent_t (* factory_method)(int, int)) {
+    source_agent_factory_t* factory;
 
-    factory = (source_agent_factory_t *) malloc(sizeof(source_agent_factory_t));
+    factory = (source_agent_factory_t*) malloc(sizeof(source_agent_factory_t));
     factory->factory_method = factory_method;
 
     return factory;
@@ -86,10 +86,10 @@ source_agent_t new_spy_without_licence(int row, int column) {
     return spy;
 }
 
-attending_officer_factory_t *new_attending_officer_factory(attending_officer_t (*factory_method)(int, int)) {
-    attending_officer_factory_t *factory;
+attending_officer_factory_t* new_attending_officer_factory(attending_officer_t (* factory_method)(int, int)) {
+    attending_officer_factory_t* factory;
 
-    factory = (attending_officer_factory_t *) malloc(sizeof(attending_officer_factory_t));
+    factory = (attending_officer_factory_t*) malloc(sizeof(attending_officer_factory_t));
     factory->factory_method = factory_method;
 
     return factory;
@@ -111,11 +111,11 @@ attending_officer_t new_case_officer(int row, int column) {
     return case_officer;
 }
 
-counter_intelligence_officer_factory_t *
-new_counter_intelligence_officer_factory(counter_intelligence_officer_t (*factory_method)(int, int, int)) {
-    counter_intelligence_officer_factory_t *factory;
+counter_intelligence_officer_factory_t*
+new_counter_intelligence_officer_factory(counter_intelligence_officer_t (* factory_method)(int, int, int)) {
+    counter_intelligence_officer_factory_t* factory;
 
-    factory = (counter_intelligence_officer_factory_t *) malloc(sizeof(counter_intelligence_officer_factory_t));
+    factory = (counter_intelligence_officer_factory_t*) malloc(sizeof(counter_intelligence_officer_factory_t));
     factory->factory_method = factory_method;
 
     return factory;

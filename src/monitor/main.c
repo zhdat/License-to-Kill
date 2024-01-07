@@ -37,7 +37,7 @@
 
 #define MAP_WRITE 0x0002
 
-extern WINDOW *main_window;
+extern WINDOW* main_window;
 extern int old_cursor;
 
 /**
@@ -58,7 +58,7 @@ int main(void) {
     int rows;
     int cols;
     int key;
-    monitor_t *monitor;
+    monitor_t* monitor;
 
     /* ---------------------------------------------------------------------- */
     /* The following code only allows to avoid segmentation fault !           */
@@ -67,13 +67,13 @@ int main(void) {
     //mem = (memory_t*)malloc(sizeof(memory_t));
 
     //log_info("Starting monitor");
-    memory_t *memory = open_shared_memory();
+    memory_t* memory = open_shared_memory();
     //set_memory(memory);
 
 
     /* ---------------------------------------------------------------------- */
 
-    monitor = (monitor_t *) malloc(sizeof(monitor_t));
+    monitor = (monitor_t*) malloc(sizeof(monitor_t));
     monitor->has_to_update = 0;
 
     set_timer();

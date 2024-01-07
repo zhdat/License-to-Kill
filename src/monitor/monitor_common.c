@@ -32,16 +32,16 @@
  *
  */
 
-extern WINDOW *main_window;
-extern WINDOW *city_window;
-extern WINDOW *character_window;
-extern WINDOW *mailbox_content_window;
-extern WINDOW *enemy_country_monitor;
+extern WINDOW* main_window;
+extern WINDOW* city_window;
+extern WINDOW* character_window;
+extern WINDOW* mailbox_content_window;
+extern WINDOW* enemy_country_monitor;
 
 extern int old_cursor;
-memory_t *mem;
+memory_t* mem;
 
-void quit_after_error(const char *msg) {
+void quit_after_error(const char* msg) {
     delwin(city_window);
     delwin(character_window);
     delwin(mailbox_content_window);
@@ -83,7 +83,7 @@ void quit_nicely(int reason) {
     exit(EXIT_SUCCESS);
 }
 
-void clear_line(WINDOW *window, int row) {
+void clear_line(WINDOW* window, int row) {
     /* Have an idea for something smarter? */
     wmove(window, row, 1);
     wclrtoeol(window);
@@ -94,7 +94,7 @@ void clear_line(WINDOW *window, int row) {
 /*
  * A call to: "getmaxyx(stdscr, rows, cols);" should be as efficient.
  */
-void get_terminal_size(int *rows, int *cols) {
+void get_terminal_size(int* rows, int* cols) {
     struct winsize ws;
 
     if (ioctl(0, TIOCGWINSZ, &ws) < 0) {
@@ -106,7 +106,7 @@ void get_terminal_size(int *rows, int *cols) {
     *cols = (int) ws.ws_col;
 }
 
-int is_terminal_size_larger_enough(int *rows, int *cols) {
+int is_terminal_size_larger_enough(int* rows, int* cols) {
     int is_larger = 0;
 
     get_terminal_size(rows, cols);

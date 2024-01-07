@@ -77,7 +77,7 @@ typedef struct {
  * \brief Structure to store the messages.
  */
 typedef struct {
-    char *messages[CRUCIALITY_LEVELS][MAX_MESSAGES]; /*< The messages. */
+    char* messages[CRUCIALITY_LEVELS][MAX_MESSAGES]; /*< The messages. */
 } MessageBank;
 
 #endif /* COMMON_H */

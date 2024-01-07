@@ -16,9 +16,9 @@
  */
 
 
-memory_t *open_shared_memory(void) {
+memory_t* open_shared_memory(void) {
     int fd;
-    memory_t *mem;
+    memory_t* mem;
 
     fd = shm_open(SHARED_MEMORY_NAME, O_RDWR, 0660);
     if (fd == -1) {
@@ -34,7 +34,7 @@ memory_t *open_shared_memory(void) {
     return mem;
 }
 
-void end_shared_memory(memory_t *mem) {
+void end_shared_memory(memory_t* mem) {
     if (munmap(mem, sizeof(memory_t)) == -1) {
         perror("munmap");
         exit(EXIT_FAILURE);
@@ -48,8 +48,8 @@ void destroy_shared_memory(void) {
     }
 }
 
-sem_t *create_semaphore(void) {
-    sem_t *sem;
+sem_t* create_semaphore(void) {
+    sem_t* sem;
     sem = sem_open(SEMAPHORE_NAME, O_CREAT | O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
@@ -59,8 +59,8 @@ sem_t *create_semaphore(void) {
     return sem;
 }
 
-sem_t *open_semaphore(void) {
-    sem_t *sem;
+sem_t* open_semaphore(void) {
+    sem_t* sem;
     sem = sem_open(SEMAPHORE_NAME, O_RDWR, 0644, 1);
     if (sem == SEM_FAILED) {
         perror("sem_open");
@@ -70,22 +70,22 @@ sem_t *open_semaphore(void) {
     return sem;
 }
 
-void close_semaphore(sem_t *sem) {
+void close_semaphore(sem_t* sem) {
     if (sem_close(sem) == -1) {
         perror("sem_close");
         exit(EXIT_FAILURE);
     }
 }
 
-void destroy_semaphore(sem_t *sem) {
+void destroy_semaphore(sem_t* sem) {
     if (sem_unlink(SEMAPHORE_NAME) == -1) {
         perror("sem_unlink");
         exit(EXIT_FAILURE);
     }
 }
 
-sem_t *create_semaphore_message() {
-    sem_t *semaphore;
+sem_t* create_semaphore_message() {
+    sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_CREAT, 0644, 0);
 
     if (semaphore == SEM_FAILED) {
@@ -98,8 +98,8 @@ sem_t *create_semaphore_message() {
     return semaphore;
 }
 
-sem_t *open_semaphore_message() {
-    sem_t *semaphore;
+sem_t* open_semaphore_message() {
+    sem_t* semaphore;
     semaphore = sem_open("/sem_spy_simulation_message", O_RDWR, 0644, 0);
 
     if (semaphore == SEM_FAILED) {
