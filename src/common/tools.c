@@ -184,7 +184,7 @@ int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row,
 
 void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int *new_pos_col, int *new_pos_row,
                character_t character) {
-    /* int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
+    int step_row = (cell_end.row > cell_start.row) ? 1 : ((cell_end.row < cell_start.row) ? -1 : 0);
     int step_col = (cell_end.column > cell_start.column) ? 1 : ((cell_end.column < cell_start.column) ? -1 : 0);
 
     int current_row = cell_start.row, current_column = cell_start.column;
@@ -222,8 +222,10 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
 
     // Mettre a jour les nouvelles positions
     *new_pos_row = current_row;
-    *new_pos_col = current_column; */
+    *new_pos_col = current_column;
 
+
+    /* bfs
     coordinate_t path[MAX_PATH_LENGTH];
 
     int path_length = 0;
@@ -241,6 +243,7 @@ void next_move(city_t *city, coordinate_t cell_start, coordinate_t cell_end, int
         *new_pos_row = cell_start.row;
         *new_pos_col = cell_start.column;
     }
+     */
 }
 
 coordinate_t *findNeighbouringCells(city_t *city, int row, int col, int *neighbouring_cells_count) {
