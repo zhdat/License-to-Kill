@@ -35,84 +35,6 @@ struct thread_s {
 };
 
 /**
- * @struct queue_node_s
- * @brief Structure representing a node in a queue.
- *
- * Each node holds a cell coordinate.
- */
-struct queue_node_s {
-    coordinate_t cell;
-};
-
-/**
- * @struct queue_s
- * @brief Structure representing a queue, used for BFS pathfinding.
- *
- * The queue is used in BFS pathfinding algorithms to store and manage coordinates.
- */
-struct queue_s {
-    queue_node_t nodes[MAX_QUEUE_SIZE]; /**< Array of queue nodes */
-    int front; /**< Index of the front element in the queue */
-    int rear; /**< Index of the rear element in the queue */
-    int size; /**< Current number of elements in the queue */
-    pthread_mutex_t mutex; /**< Mutex for protecting the queue in a multithreaded environment */
-};
-
-/**
- * @brief Initializes a queue.
- *
- * This function initializes the given queue with default values and prepares the mutex for use.
- *
- * @param q Pointer to the queue to be initialized.
- */
-void create_queue(queue_t* q);
-
-/**
- * @brief Adds a new coordinate to the queue.
- *
- * Enqueues a coordinate cell at the end of the queue. If the queue is full, the function
- * returns an error code.
- *
- * @param q Pointer to the queue.
- * @param cell The coordinate to add to the queue.
- * @return int Returns 0 on success, -1 if the queue is full.
- */
-int en_queue(queue_t* q, coordinate_t cell);
-
-/**
- * @brief Removes and returns the front coordinate from the queue.
- *
- * Dequeues and returns the coordinate at the front of the queue. If the queue is empty,
- * it returns a coordinate with negative values.
- *
- * @param q Pointer to the queue.
- * @return coordinate_t The coordinate at the front of the queue.
- */
-coordinate_t de_queue(queue_t* q);
-
-/**
- * @brief Checks if the queue is empty.
- *
- * @param q Pointer to the queue.
- * @return int Returns 1 if the queue is empty, 0 otherwise.
- */
-int is_queue_empty(queue_t* q);
-
-/**
- * @brief Finds the shortest path from start to end using BFS.
- *
- * This function uses the Breadth-First Search (BFS) algorithm to find the shortest path
- * in a city grid from a starting coordinate to an ending coordinate.
- *
- * @param city Pointer to the city grid.
- * @param start Starting coordinate for the path.
- * @param end Ending coordinate for the path.
- * @param path Array to store the path coordinates.
- * @return int The length of the path found.
- */
-int bfs_find_path(city_t* city, coordinate_t start, coordinate_t end, coordinate_t* path);
-
-/**
  * @brief Calculates the Euclidean distance between two points.
  *
  * @param x1 X-coordinate of the first point.
@@ -201,6 +123,20 @@ void find_shortest_path(city_t* city, coordinate_t start, coordinate_t end, coor
                         character_t character);
 
 /**
+ * @brief Checks if a cell is accessible for a given character.
+ *
+ * Determines whether a particular cell in the grid is accessible based on the character's
+ * attributes and the properties of the cell.
+ *
+ * @param cells The grid of cells in the city.
+ * @param row The row index of the cell to check.
+ * @param col The column index of the cell to check.
+ * @param character The character attempting to access the cell.
+ * @return int Returns 1 if the cell is accessible, 0 otherwise.
+ */
+int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character);
+
+/**
  * @brief Determines the next move for a character based on the start and end cells.
  *
  * This function calculates the next position for a character to move towards the target
@@ -216,22 +152,6 @@ void find_shortest_path(city_t* city, coordinate_t start, coordinate_t end, coor
  */
 void next_move(city_t* city, coordinate_t cell_start, coordinate_t cell_end, int* new_pos_col, int* new_pos_row,
                character_t character);
-
-/**
- * @brief Checks if a cell is accessible for a given character.
- *
- * Determines whether a particular cell in the grid is accessible based on the character's
- * attributes and the properties of the cell.
- *
- * @param cells The grid of cells in the city.
- * @param row The row index of the cell to check.
- * @param col The column index of the cell to check.
- * @param character The character attempting to access the cell.
- * @return int Returns 1 if the cell is accessible, 0 otherwise.
- */
-int is_cell_accessible(cell_t cells[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS], int row, int col, character_t character);
-
-// Additional utility functions...
 
 /**
  * @brief Checks if two cells are the same.
